@@ -1,0 +1,307 @@
+<div class="site">
+  <div class="grid-overlay" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="#top" aria-label="Gemini home">
+        <span class="brand-mark">G</span>
+        <span class="brand-copy">
+          <strong>Gemini</strong>
+          <small>AI Software Engineering</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        @for (item of navItems; track item.label) {
+        <a [href]="item.href">{{ item.label }}</a>
+        }
+      </nav>
+
+      <a class="nav-cta" href="#contact">Book a Call</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section hero" id="top">
+      <div class="hero-copy">
+        <p class="kicker">Complete digital solutions for enterprises and small businesses</p>
+        <h1>
+          Your AI engineering partner.
+          <span>Built to automate processes and grow revenue.</span>
+        </h1>
+        <p class="lead">
+          Gemini combines software engineering, AI, and product strategy to redesign digital presence, automate core
+          business operations, and create new measurable value.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn-primary" href="#contact">Start Transformation</a>
+          <a class="btn-secondary" href="#ai-lab">Explore AI Lab</a>
+        </div>
+
+        <div class="hero-tags" aria-label="Technology focus">
+          @for (tech of technologies; track tech) {
+          <span>{{ tech }}</span>
+          }
+        </div>
+      </div>
+
+      <aside
+        #heroLab
+        class="hero-lab"
+        aria-label="Interactive automation engine"
+        (mousemove)="onHeroMove($event, heroLab)"
+        (mouseleave)="resetHeroFocus()"
+        [style.--cursor-x]="cursorX() + '%'"
+        [style.--cursor-y]="cursorY() + '%'"
+        [style.--tilt-x]="tiltX() + 'deg'"
+        [style.--tilt-y]="tiltY() + 'deg'"
+      >
+        <div class="lab-card">
+          <p class="lab-kicker">Gemini / AI Execution Engine</p>
+
+          <div class="lab-rows">
+            <div class="lab-row">
+              <span>Lead Qualification Automation</span>
+              <strong>ACTIVE</strong>
+            </div>
+            <div class="lab-row">
+              <span>Workflow Anomaly Detection</span>
+              <strong>MONITORING</strong>
+            </div>
+            <div class="lab-row">
+              <span>Conversion Optimization Loop</span>
+              <strong>LEARNING</strong>
+            </div>
+          </div>
+
+          <div class="lab-meters">
+            <div class="meter">
+              <div class="meter-head">
+                <span>Automation Coverage</span>
+                <strong>82%</strong>
+              </div>
+              <div class="track"><span style="--w: 82%"></span></div>
+            </div>
+            <div class="meter">
+              <div class="meter-head">
+                <span>Operational Velocity Gain</span>
+                <strong>+37%</strong>
+              </div>
+              <div class="track"><span style="--w: 73%"></span></div>
+            </div>
+            <div class="meter">
+              <div class="meter-head">
+                <span>Revenue Efficiency Lift</span>
+                <strong>+29%</strong>
+              </div>
+              <div class="track"><span style="--w: 66%"></span></div>
+            </div>
+          </div>
+
+          <pre class="lab-terminal" aria-label="Terminal status">
+SYNC :: SALES_PIPELINE.OK
+SYNC :: OPS_AUTOMATION.OK
+SYNC :: SUPPORT_ROUTING.OK
+STATUS :: VALUE_CREATION.LIVE</pre
+          >
+        </div>
+      </aside>
+    </section>
+
+    <section class="ticker" aria-label="Technology ticker">
+      <div class="ticker-track">
+        @for (tech of technologies; track tech) {
+        <span>{{ tech }}</span>
+        }
+        @for (tech of technologies; track tech + '-repeat') {
+        <span>{{ tech }}</span>
+        }
+      </div>
+    </section>
+
+    <section class="section capabilities" id="capabilities">
+      <div class="section-head">
+        <p class="kicker">Capabilities</p>
+        <h2>AI-first software engineering focused on real business outcomes</h2>
+      </div>
+
+      <div class="capability-grid">
+        @for (capability of capabilities; track capability.title) {
+        <article class="capability-card">
+          <h3>{{ capability.title }}</h3>
+          <p>{{ capability.description }}</p>
+          <p class="value">{{ capability.value }}</p>
+          <ul>
+            @for (bullet of capability.bullets; track bullet) {
+            <li>{{ bullet }}</li>
+            }
+          </ul>
+        </article>
+        }
+      </div>
+    </section>
+
+    <section class="section impact" id="impact">
+      <div class="section-head">
+        <p class="kicker">Impact</p>
+        <h2>Measured improvements across execution speed, automation, and growth</h2>
+      </div>
+
+      <div class="impact-grid">
+        @for (metric of impactMetrics; track metric.label) {
+        <article>
+          <p class="metric-value">{{ metric.value }}</p>
+          <h3>{{ metric.label }}</h3>
+          <p>{{ metric.detail }}</p>
+        </article>
+        }
+      </div>
+    </section>
+
+    <section class="section ai-lab" id="ai-lab">
+      <div class="section-head">
+        <p class="kicker">AI Lab</p>
+        <h2>Map high-value automation opportunities before implementation</h2>
+      </div>
+
+      <div class="ai-layout">
+        <div class="case-tabs" role="tablist" aria-label="Use cases">
+          @for (useCase of useCases; track useCase.name; let i = $index) {
+          <button
+            type="button"
+            class="case-tab"
+            role="tab"
+            [class.active]="activeUseCase() === i"
+            [attr.aria-selected]="activeUseCase() === i"
+            (click)="setUseCase(i)"
+          >
+            {{ useCase.name }}
+          </button>
+          }
+        </div>
+
+        <article class="case-panel" aria-live="polite">
+          <p class="panel-label">Current bottleneck</p>
+          <h3>{{ useCases[activeUseCase()].problem }}</h3>
+          <p>{{ useCases[activeUseCase()].solution }}</p>
+          <p class="outcome">{{ useCases[activeUseCase()].outcome }}</p>
+        </article>
+      </div>
+
+      <div class="simulator">
+        <div class="sim-controls">
+          <label>
+            <span>Monthly revenue baseline</span>
+            <strong>{{ monthlyRevenueLabel() }}</strong>
+            <input
+              type="range"
+              min="25000"
+              max="500000"
+              step="5000"
+              [value]="monthlyRevenue()"
+              (input)="setMonthlyRevenue($any($event.target).value)"
+            />
+          </label>
+
+          <label>
+            <span>Automation lift (%)</span>
+            <strong>{{ automationLift() }}%</strong>
+            <input
+              type="range"
+              min="5"
+              max="40"
+              step="1"
+              [value]="automationLift()"
+              (input)="setAutomationLift($any($event.target).value)"
+            />
+          </label>
+
+          <label>
+            <span>AI growth impact (%)</span>
+            <strong>{{ aiUpside() }}%</strong>
+            <input
+              type="range"
+              min="3"
+              max="30"
+              step="1"
+              [value]="aiUpside()"
+              (input)="setAiUpside($any($event.target).value)"
+            />
+          </label>
+
+          <label>
+            <span>Efficiency recovery (%)</span>
+            <strong>{{ efficiencyRecovery() }}%</strong>
+            <input
+              type="range"
+              min="5"
+              max="35"
+              step="1"
+              [value]="efficiencyRecovery()"
+              (input)="setEfficiencyRecovery($any($event.target).value)"
+            />
+          </label>
+        </div>
+
+        <div class="sim-results">
+          <article>
+            <p>Automation value/month</p>
+            <h3>{{ monthlyAutomationLabel() }}</h3>
+          </article>
+          <article>
+            <p>AI growth value/month</p>
+            <h3>{{ monthlyAiLabel() }}</h3>
+          </article>
+          <article>
+            <p>Recovered capacity/month</p>
+            <h3>{{ monthlyRecoveryLabel() }}</h3>
+          </article>
+          <article class="total">
+            <p>Total value/month</p>
+            <h3>{{ monthlyTotalLabel() }}</h3>
+            <small>Annual projection: {{ annualTotalLabel() }}</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section technology" id="technology">
+      <div class="section-head">
+        <p class="kicker">Technology</p>
+        <h2>Core technologies we deploy to modernize business systems</h2>
+      </div>
+
+      <div class="tech-grid">
+        @for (item of technologyStack; track item.name) {
+        <article>
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.summary }}</p>
+        </article>
+        }
+      </div>
+    </section>
+
+    <section class="section contact" id="contact">
+      <div class="contact-copy">
+        <p class="kicker">Contact</p>
+        <h2>Let’s build your next AI-powered growth system</h2>
+        <p>
+          Gemini helps businesses redesign digital presence, automate workflows, and ship modern software that creates
+          measurable revenue and efficiency gains.
+        </p>
+      </div>
+
+      <div class="contact-actions">
+        <a class="btn-primary" href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
+        <a class="btn-secondary" href="tel:+15550123456">+1 (555) 012-3456</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© {{ year }} Gemini. AI software engineering for business transformation and growth.</p>
+    </div>
+  </footer>
+</div>
