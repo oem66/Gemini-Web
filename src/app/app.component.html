@@ -1,42 +1,46 @@
-<div class="site">
-  <div class="grid-overlay" aria-hidden="true"></div>
+<div class="site-shell">
+  <div class="ambient-glow" aria-hidden="true">
+    <div class="glow-grid"></div>
+    <div class="glow-halo"></div>
+    <div class="glow-wordmark">GEMINI</div>
+  </div>
 
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <a class="brand" href="#top" aria-label="Gemini home">
-        <span class="brand-mark">G</span>
+  <header class="site-header">
+    <div class="header-frame container">
+      <a class="brand" href="#top" aria-label="Gemini Home">
+        <span class="brand-logo">G</span>
         <span class="brand-copy">
           <strong>Gemini</strong>
           <small>AI Software Engineering</small>
         </span>
       </a>
 
-      <nav class="nav-links" aria-label="Primary">
+      <nav class="main-nav" aria-label="Primary">
         @for (item of navItems; track item.label) {
         <a [href]="item.href">{{ item.label }}</a>
         }
       </nav>
 
-      <a class="nav-cta" href="#contact">Book a Call</a>
+      <a class="header-cta" href="#contact">Book Demo</a>
     </div>
   </header>
 
   <main>
-    <section class="section hero" id="top">
-      <div class="hero-copy">
-        <p class="kicker">Complete digital solutions for enterprises and small businesses</p>
+    <section class="hero container" id="top">
+      <div class="hero-left">
+        <p class="eyebrow">Complete digital solutions for businesses and small businesses</p>
         <h1>
           Your AI engineering partner.
-          <span>Built to automate processes and grow revenue.</span>
+          <span>Automate operations. Improve decisions. Increase revenue.</span>
         </h1>
         <p class="lead">
-          Gemini combines software engineering, AI, and product strategy to redesign digital presence, automate core
-          business operations, and create new measurable value.
+          Gemini combines software engineering, machine learning, and practical AI to build modern digital presence and
+          transform business processes into scalable value engines.
         </p>
 
         <div class="hero-actions">
-          <a class="btn-primary" href="#contact">Start Transformation</a>
-          <a class="btn-secondary" href="#ai-lab">Explore AI Lab</a>
+          <a class="primary-btn" href="#contact">Get Started</a>
+          <a class="secondary-btn" href="#ai-lab">Open AI Lab</a>
         </div>
 
         <div class="hero-tags" aria-label="Technology focus">
@@ -48,68 +52,62 @@
 
       <aside
         #heroLab
-        class="hero-lab"
-        aria-label="Interactive automation engine"
+        class="hero-right"
         (mousemove)="onHeroMove($event, heroLab)"
         (mouseleave)="resetHeroFocus()"
         [style.--cursor-x]="cursorX() + '%'"
         [style.--cursor-y]="cursorY() + '%'"
         [style.--tilt-x]="tiltX() + 'deg'"
         [style.--tilt-y]="tiltY() + 'deg'"
+        aria-label="Gemini AI Control Center"
       >
-        <div class="lab-card">
-          <p class="lab-kicker">Gemini / AI Execution Engine</p>
+        <div class="control-panel">
+          <p class="panel-label">Gemini Control Center</p>
 
-          <div class="lab-rows">
-            <div class="lab-row">
-              <span>Lead Qualification Automation</span>
+          <div class="status-list">
+            <article>
+              <span>Deployment verification</span>
+              <strong>PASS</strong>
+            </article>
+            <article>
+              <span>AI issue detection</span>
               <strong>ACTIVE</strong>
-            </div>
-            <div class="lab-row">
-              <span>Workflow Anomaly Detection</span>
-              <strong>MONITORING</strong>
-            </div>
-            <div class="lab-row">
-              <span>Conversion Optimization Loop</span>
-              <strong>LEARNING</strong>
-            </div>
+            </article>
+            <article>
+              <span>Workflow remediation</span>
+              <strong>READY</strong>
+            </article>
           </div>
 
-          <div class="lab-meters">
-            <div class="meter">
-              <div class="meter-head">
-                <span>Automation Coverage</span>
-                <strong>82%</strong>
-              </div>
-              <div class="track"><span style="--w: 82%"></span></div>
+          <div class="signal-block">
+            <div class="signal-row">
+              <span>Process automation coverage</span>
+              <strong>82%</strong>
             </div>
-            <div class="meter">
-              <div class="meter-head">
-                <span>Operational Velocity Gain</span>
-                <strong>+37%</strong>
-              </div>
-              <div class="track"><span style="--w: 73%"></span></div>
+            <div class="signal-track"><span style="--bar: 82%"></span></div>
+
+            <div class="signal-row">
+              <span>Operational velocity gain</span>
+              <strong>+37%</strong>
             </div>
-            <div class="meter">
-              <div class="meter-head">
-                <span>Revenue Efficiency Lift</span>
-                <strong>+29%</strong>
-              </div>
-              <div class="track"><span style="--w: 66%"></span></div>
+            <div class="signal-track"><span style="--bar: 72%"></span></div>
+
+            <div class="signal-row">
+              <span>Revenue efficiency lift</span>
+              <strong>+29%</strong>
             </div>
+            <div class="signal-track"><span style="--bar: 65%"></span></div>
           </div>
 
-          <pre class="lab-terminal" aria-label="Terminal status">
-SYNC :: SALES_PIPELINE.OK
-SYNC :: OPS_AUTOMATION.OK
-SYNC :: SUPPORT_ROUTING.OK
-STATUS :: VALUE_CREATION.LIVE</pre
-          >
+          <pre class="terminal">INIT :: WORKFLOW_MAP.COMPLETE
+SYNC :: AI_AUTOMATION.ACTIVE
+SCAN :: ML_MODELS.OPTIMIZED
+VALUE :: BUSINESS_UPSIDE.LIVE</pre>
         </div>
       </aside>
     </section>
 
-    <section class="ticker" aria-label="Technology ticker">
+    <section class="ticker-wrap" aria-label="Technology ticker">
       <div class="ticker-track">
         @for (tech of technologies; track tech) {
         <span>{{ tech }}</span>
@@ -120,15 +118,15 @@ STATUS :: VALUE_CREATION.LIVE</pre
       </div>
     </section>
 
-    <section class="section capabilities" id="capabilities">
+    <section class="section container" id="capabilities">
       <div class="section-head">
-        <p class="kicker">Capabilities</p>
-        <h2>AI-first software engineering focused on real business outcomes</h2>
+        <p class="eyebrow">Capabilities</p>
+        <h2>AI-first engineering designed for measurable business transformation</h2>
       </div>
 
       <div class="capability-grid">
         @for (capability of capabilities; track capability.title) {
-        <article class="capability-card">
+        <article class="panel">
           <h3>{{ capability.title }}</h3>
           <p>{{ capability.description }}</p>
           <p class="value">{{ capability.value }}</p>
@@ -142,16 +140,16 @@ STATUS :: VALUE_CREATION.LIVE</pre
       </div>
     </section>
 
-    <section class="section impact" id="impact">
+    <section class="section container" id="impact">
       <div class="section-head">
-        <p class="kicker">Impact</p>
-        <h2>Measured improvements across execution speed, automation, and growth</h2>
+        <p class="eyebrow">Impact</p>
+        <h2>Results delivered through AI automation and software modernization</h2>
       </div>
 
       <div class="impact-grid">
         @for (metric of impactMetrics; track metric.label) {
-        <article>
-          <p class="metric-value">{{ metric.value }}</p>
+        <article class="panel">
+          <p class="metric">{{ metric.value }}</p>
           <h3>{{ metric.label }}</h3>
           <p>{{ metric.detail }}</p>
         </article>
@@ -159,19 +157,19 @@ STATUS :: VALUE_CREATION.LIVE</pre
       </div>
     </section>
 
-    <section class="section ai-lab" id="ai-lab">
+    <section class="section container" id="ai-lab">
       <div class="section-head">
-        <p class="kicker">AI Lab</p>
-        <h2>Map high-value automation opportunities before implementation</h2>
+        <p class="eyebrow">AI Value Lab</p>
+        <h2>Simulate high-value automation opportunities before implementation</h2>
       </div>
 
-      <div class="ai-layout">
-        <div class="case-tabs" role="tablist" aria-label="Use cases">
+      <div class="lab-layout">
+        <div class="tab-list" role="tablist" aria-label="AI Use Cases">
           @for (useCase of useCases; track useCase.name; let i = $index) {
           <button
             type="button"
-            class="case-tab"
             role="tab"
+            class="case-tab"
             [class.active]="activeUseCase() === i"
             [attr.aria-selected]="activeUseCase() === i"
             (click)="setUseCase(i)"
@@ -181,16 +179,16 @@ STATUS :: VALUE_CREATION.LIVE</pre
           }
         </div>
 
-        <article class="case-panel" aria-live="polite">
-          <p class="panel-label">Current bottleneck</p>
+        <article class="panel case-panel" aria-live="polite">
+          <p class="case-label">Current bottleneck</p>
           <h3>{{ useCases[activeUseCase()].problem }}</h3>
           <p>{{ useCases[activeUseCase()].solution }}</p>
-          <p class="outcome">{{ useCases[activeUseCase()].outcome }}</p>
+          <p class="case-outcome">{{ useCases[activeUseCase()].outcome }}</p>
         </article>
       </div>
 
-      <div class="simulator">
-        <div class="sim-controls">
+      <div class="sim-layout">
+        <div class="panel sim-controls">
           <label>
             <span>Monthly revenue baseline</span>
             <strong>{{ monthlyRevenueLabel() }}</strong>
@@ -245,20 +243,20 @@ STATUS :: VALUE_CREATION.LIVE</pre
         </div>
 
         <div class="sim-results">
-          <article>
-            <p>Automation value/month</p>
+          <article class="panel">
+            <p>Automation value / month</p>
             <h3>{{ monthlyAutomationLabel() }}</h3>
           </article>
-          <article>
-            <p>AI growth value/month</p>
+          <article class="panel">
+            <p>AI growth value / month</p>
             <h3>{{ monthlyAiLabel() }}</h3>
           </article>
-          <article>
-            <p>Recovered capacity/month</p>
+          <article class="panel">
+            <p>Recovered capacity / month</p>
             <h3>{{ monthlyRecoveryLabel() }}</h3>
           </article>
-          <article class="total">
-            <p>Total value/month</p>
+          <article class="panel total">
+            <p>Total projected value / month</p>
             <h3>{{ monthlyTotalLabel() }}</h3>
             <small>Annual projection: {{ annualTotalLabel() }}</small>
           </article>
@@ -266,15 +264,15 @@ STATUS :: VALUE_CREATION.LIVE</pre
       </div>
     </section>
 
-    <section class="section technology" id="technology">
+    <section class="section container" id="technology">
       <div class="section-head">
-        <p class="kicker">Technology</p>
-        <h2>Core technologies we deploy to modernize business systems</h2>
+        <p class="eyebrow">Technology Stack</p>
+        <h2>Automation, Machine Learning, AI, iOS, Android, and DevOps</h2>
       </div>
 
-      <div class="tech-grid">
+      <div class="technology-grid">
         @for (item of technologyStack; track item.name) {
-        <article>
+        <article class="panel">
           <h3>{{ item.name }}</h3>
           <p>{{ item.summary }}</p>
         </article>
@@ -282,24 +280,24 @@ STATUS :: VALUE_CREATION.LIVE</pre
       </div>
     </section>
 
-    <section class="section contact" id="contact">
+    <section class="section container contact" id="contact">
       <div class="contact-copy">
-        <p class="kicker">Contact</p>
-        <h2>Let’s build your next AI-powered growth system</h2>
+        <p class="eyebrow">Contact Gemini</p>
+        <h2>Build digital systems that automate work and create new value</h2>
         <p>
-          Gemini helps businesses redesign digital presence, automate workflows, and ship modern software that creates
-          measurable revenue and efficiency gains.
+          We partner with companies and businesses to deliver AI-powered software systems that improve process speed,
+          product quality, and revenue outcomes.
         </p>
       </div>
 
       <div class="contact-actions">
-        <a class="btn-primary" href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
-        <a class="btn-secondary" href="tel:+15550123456">+1 (555) 012-3456</a>
+        <a class="primary-btn" href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
+        <a class="secondary-btn" href="tel:+15550123456">+1 (555) 012-3456</a>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="site-footer">
     <div class="container">
       <p>© {{ year }} Gemini. AI software engineering for business transformation and growth.</p>
     </div>
