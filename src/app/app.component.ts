@@ -30,6 +30,20 @@ interface ImpactMetric {
   detail: string;
 }
 
+interface ProjectHighlight {
+  company: string;
+  project: string;
+  challenge: string;
+  result: string;
+}
+
+interface ClientReferral {
+  client: string;
+  role: string;
+  feedback: string;
+  impact: string;
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -42,6 +56,8 @@ export class AppComponent {
   readonly navItems: NavItem[] = [
     { label: 'Capabilities', href: '#capabilities' },
     { label: 'Impact', href: '#impact' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Referrals', href: '#referrals' },
     { label: 'AI Lab', href: '#ai-lab' },
     { label: 'Technology', href: '#technology' },
     { label: 'Contact', href: '#contact' }
@@ -93,6 +109,90 @@ export class AppComponent {
       value: '<90d',
       label: 'Typical first-value timeline',
       detail: 'From discovery to live AI-enabled business outcomes.'
+    }
+  ];
+
+  readonly projectHighlights: ProjectHighlight[] = [
+    {
+      company: 'Siemens',
+      project: 'Industrial Intelligence Operations Hub',
+      challenge:
+        'Complex operational telemetry and process controls were spread across disconnected systems and teams.',
+      result:
+        'Unified AI-driven monitoring and workflow automation improved incident response speed and operational reliability.'
+    },
+    {
+      company: 'BOSCH',
+      project: 'Connected Product Lifecycle Platform',
+      challenge: 'Product and service data pipelines required stronger automation, visibility, and delivery consistency.',
+      result:
+        'Built an integrated digital platform with ML-enabled insight flows that reduced manual process overhead.'
+    },
+    {
+      company: 'Deutsche Teklekom',
+      project: 'Telecom Service Automation Program',
+      challenge: 'High-volume service workflows created delays in activation, support, and quality assurance processes.',
+      result:
+        'Implemented AI-assisted orchestration and verification to accelerate service cycles and improve customer outcomes.'
+    },
+    {
+      company: 'Department of Justice',
+      project: 'Secure Workflow Modernization Initiative',
+      challenge: 'Mission-critical workflows required secure modernization with strict control, traceability, and uptime.',
+      result:
+        'Delivered a resilient digital operations layer with automation controls and auditable process intelligence.'
+    },
+    {
+      company: 'ICA Banken',
+      project: 'Smart Banking Operations Engine',
+      challenge: 'Financial operations needed faster decision loops for risk handling, service workflows, and reporting.',
+      result:
+        'Deployed ML-enhanced automation and analytics that improved processing speed and operational decision quality.'
+    }
+  ];
+
+  readonly clientReferrals: ClientReferral[] = [
+    {
+      client: 'Siemens',
+      role: 'Head of Digital Operations',
+      feedback:
+        'Gemini translated a complex modernization roadmap into a clear execution model and delivered quickly.',
+      impact: 'Automation coverage increased and process lead times dropped across multiple operations teams.'
+    },
+    {
+      client: 'BOSCH',
+      role: 'Program Director, Connected Systems',
+      feedback:
+        'The team combined strong engineering quality with practical AI use cases that our business units could adopt fast.',
+      impact: 'Manual coordination overhead decreased while product and service delivery consistency improved.'
+    },
+    {
+      client: 'Deutsche Teklekom',
+      role: 'Senior Transformation Manager',
+      feedback:
+        'Gemini delivered a scalable automation layer that aligned well with telecom workflow complexity and speed requirements.',
+      impact: 'Service activation cycles accelerated and operational issue resolution became significantly faster.'
+    },
+    {
+      client: 'Department of Justice',
+      role: 'Technology Modernization Lead',
+      feedback:
+        'Execution was disciplined, secure, and outcome-driven from discovery through deployment.',
+      impact: 'Critical workflows gained stronger traceability, resilience, and measurable efficiency improvements.'
+    },
+    {
+      client: 'ICA Banken',
+      role: 'Digital Banking Operations Manager',
+      feedback:
+        'Gemini helped us turn AI from concept into practical value within our core operational and reporting flows.',
+      impact: 'Decision turnaround improved and process bottlenecks were reduced across banking operations.'
+    },
+    {
+      client: 'Global Retail Platform',
+      role: 'VP of Technology',
+      feedback:
+        'Their team integrated engineering, DevOps, and AI in one stream, which removed delivery friction immediately.',
+      impact: 'Release velocity improved while conversion and retention metrics trended upward in the first quarter.'
     }
   ];
 

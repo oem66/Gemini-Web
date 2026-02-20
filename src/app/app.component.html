@@ -140,7 +140,7 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
       </div>
     </section>
 
-    <section class="section container" id="impact">
+    <section class="section container section-dark" id="impact">
       <div class="section-head">
         <p class="eyebrow">Impact</p>
         <h2>Results delivered through AI automation and software modernization</h2>
@@ -157,7 +157,43 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
       </div>
     </section>
 
-    <section class="section container" id="ai-lab">
+    <section class="section container" id="projects">
+      <div class="section-head">
+        <p class="eyebrow">Projects</p>
+        <h2>Highlighted enterprise and institutional project initiatives</h2>
+      </div>
+
+      <div class="project-grid">
+        @for (project of projectHighlights; track project.company) {
+        <article class="panel project-card">
+          <p class="project-company">{{ project.company }}</p>
+          <h3>{{ project.project }}</h3>
+          <p>{{ project.challenge }}</p>
+          <p class="project-result">{{ project.result }}</p>
+        </article>
+        }
+      </div>
+    </section>
+
+    <section class="section container" id="referrals">
+      <div class="section-head">
+        <p class="eyebrow">Client Referrals</p>
+        <h2>Positive client feedback and measurable impact on business performance</h2>
+      </div>
+
+      <div class="referrals-grid">
+        @for (referral of clientReferrals; track referral.client) {
+        <article class="panel referral-card">
+          <p class="referral-client">{{ referral.client }}</p>
+          <p class="referral-role">{{ referral.role }}</p>
+          <p class="referral-feedback">“{{ referral.feedback }}”</p>
+          <p class="referral-impact">{{ referral.impact }}</p>
+        </article>
+        }
+      </div>
+    </section>
+
+    <section class="section container section-dark" id="ai-lab">
       <div class="section-head">
         <p class="eyebrow">AI Value Lab</p>
         <h2>Simulate high-value automation opportunities before implementation</h2>
@@ -280,7 +316,7 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
       </div>
     </section>
 
-    <section class="section container contact" id="contact">
+    <section class="section container contact section-dark" id="contact">
       <div class="contact-copy">
         <p class="eyebrow">Contact Gemini</p>
         <h2>Build digital systems that automate work and create new value</h2>
