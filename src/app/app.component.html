@@ -175,6 +175,24 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
       </div>
     </section>
 
+    <section class="section container" id="referrals">
+      <div class="section-head">
+        <p class="eyebrow">Client Referrals</p>
+        <h2>Positive client feedback and measurable impact on business performance</h2>
+      </div>
+
+      <div class="referrals-grid">
+        @for (referral of clientReferrals; track referral.client) {
+        <article class="panel referral-card">
+          <p class="referral-client">{{ referral.client }}</p>
+          <p class="referral-role">{{ referral.role }}</p>
+          <p class="referral-feedback">“{{ referral.feedback }}”</p>
+          <p class="referral-impact">{{ referral.impact }}</p>
+        </article>
+        }
+      </div>
+    </section>
+
     <section class="section container section-dark" id="ai-lab">
       <div class="section-head">
         <p class="eyebrow">AI Value Lab</p>
