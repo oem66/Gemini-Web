@@ -157,6 +157,24 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
       </div>
     </section>
 
+    <section class="section container" id="projects">
+      <div class="section-head">
+        <p class="eyebrow">Projects</p>
+        <h2>Highlighted enterprise and institutional project initiatives</h2>
+      </div>
+
+      <div class="project-grid">
+        @for (project of projectHighlights; track project.company) {
+        <article class="panel project-card">
+          <p class="project-company">{{ project.company }}</p>
+          <h3>{{ project.project }}</h3>
+          <p>{{ project.challenge }}</p>
+          <p class="project-result">{{ project.result }}</p>
+        </article>
+        }
+      </div>
+    </section>
+
     <section class="section container" id="ai-lab">
       <div class="section-head">
         <p class="eyebrow">AI Value Lab</p>

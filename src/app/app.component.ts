@@ -30,6 +30,13 @@ interface ImpactMetric {
   detail: string;
 }
 
+interface ProjectHighlight {
+  company: string;
+  project: string;
+  challenge: string;
+  result: string;
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -42,6 +49,7 @@ export class AppComponent {
   readonly navItems: NavItem[] = [
     { label: 'Capabilities', href: '#capabilities' },
     { label: 'Impact', href: '#impact' },
+    { label: 'Projects', href: '#projects' },
     { label: 'AI Lab', href: '#ai-lab' },
     { label: 'Technology', href: '#technology' },
     { label: 'Contact', href: '#contact' }
@@ -93,6 +101,45 @@ export class AppComponent {
       value: '<90d',
       label: 'Typical first-value timeline',
       detail: 'From discovery to live AI-enabled business outcomes.'
+    }
+  ];
+
+  readonly projectHighlights: ProjectHighlight[] = [
+    {
+      company: 'Siemens',
+      project: 'Industrial Intelligence Operations Hub',
+      challenge:
+        'Complex operational telemetry and process controls were spread across disconnected systems and teams.',
+      result:
+        'Unified AI-driven monitoring and workflow automation improved incident response speed and operational reliability.'
+    },
+    {
+      company: 'BOSCH',
+      project: 'Connected Product Lifecycle Platform',
+      challenge: 'Product and service data pipelines required stronger automation, visibility, and delivery consistency.',
+      result:
+        'Built an integrated digital platform with ML-enabled insight flows that reduced manual process overhead.'
+    },
+    {
+      company: 'Deutsche Teklekom',
+      project: 'Telecom Service Automation Program',
+      challenge: 'High-volume service workflows created delays in activation, support, and quality assurance processes.',
+      result:
+        'Implemented AI-assisted orchestration and verification to accelerate service cycles and improve customer outcomes.'
+    },
+    {
+      company: 'Department of Justice',
+      project: 'Secure Workflow Modernization Initiative',
+      challenge: 'Mission-critical workflows required secure modernization with strict control, traceability, and uptime.',
+      result:
+        'Delivered a resilient digital operations layer with automation controls and auditable process intelligence.'
+    },
+    {
+      company: 'ICA Banken',
+      project: 'Smart Banking Operations Engine',
+      challenge: 'Financial operations needed faster decision loops for risk handling, service workflows, and reporting.',
+      result:
+        'Deployed ML-enhanced automation and analytics that improved processing speed and operational decision quality.'
     }
   ];
 
