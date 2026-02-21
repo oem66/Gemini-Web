@@ -26,8 +26,6 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-# ORSite
-
 # Welcome to portfolio site
 This README guides new developers through LearnNorsk project's tools and techniques for debugging, performance monitoring, and development. For more detailed information, please refer to the specific files and folders mentioned.
 This guide provides a comprehensive overview to ease the initial setup and ongoing development for new team members. Always refer to inline comments and documentation in code files for detailed explanations.
