@@ -110,7 +110,6 @@ This README outlines our approach to structuring SwiftUI projects using the MVVM
 6. [Best Practices](#best-practices)
 
 ## Overall Structure
-
 Our app is structured using the following components:
 
 - **Views**: SwiftUI views that represent the UI
@@ -119,7 +118,6 @@ Our app is structured using the following components:
 - **Services**: Objects that handle external interactions (e.g., networking, persistence)
 
 ## MVVM Pattern
-
 ### Views
 
 - Create a separate SwiftUI view file for each screen or major UI component.
