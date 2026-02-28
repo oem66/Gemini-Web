@@ -63,7 +63,14 @@ export class AppComponent {
     { label: 'Contact', href: '#contact' }
   ];
 
-  readonly technologies: string[] = ['Automation', 'Machine Learning', 'AI', 'iOS', 'Android', 'DevOps'];
+  readonly technologies: string[] = [
+    'Automation',
+    'Machine Learning',
+    'AI Systems',
+    'Web Platforms',
+    'Mobile Products',
+    'DevOps'
+  ];
 
   readonly capabilities: Capability[] = [
     {
@@ -122,14 +129,14 @@ export class AppComponent {
         'Unified AI-driven monitoring and workflow automation improved incident response speed and operational reliability.'
     },
     {
-      company: 'BOSCH',
+      company: 'Bosch',
       project: 'Connected Product Lifecycle Platform',
       challenge: 'Product and service data pipelines required stronger automation, visibility, and delivery consistency.',
       result:
         'Built an integrated digital platform with ML-enabled insight flows that reduced manual process overhead.'
     },
     {
-      company: 'Deutsche Teklekom',
+      company: 'Deutsche Telekom',
       project: 'Telecom Service Automation Program',
       challenge: 'High-volume service workflows created delays in activation, support, and quality assurance processes.',
       result:
@@ -160,14 +167,14 @@ export class AppComponent {
       impact: 'Automation coverage increased and process lead times dropped across multiple operations teams.'
     },
     {
-      client: 'BOSCH',
+      client: 'Bosch',
       role: 'Program Director, Connected Systems',
       feedback:
         'The team combined strong engineering quality with practical AI use cases that our business units could adopt fast.',
       impact: 'Manual coordination overhead decreased while product and service delivery consistency improved.'
     },
     {
-      client: 'Deutsche Teklekom',
+      client: 'Deutsche Telekom',
       role: 'Senior Transformation Manager',
       feedback:
         'Gemini delivered a scalable automation layer that aligned well with telecom workflow complexity and speed requirements.',

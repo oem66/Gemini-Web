@@ -1,17 +1,13 @@
 <div class="site-shell">
-  <div class="ambient-glow" aria-hidden="true">
-    <div class="glow-grid"></div>
-    <div class="glow-halo"></div>
-    <div class="glow-wordmark">GEMINI</div>
-  </div>
+  <div class="page-grid" aria-hidden="true"></div>
 
   <header class="site-header">
     <div class="header-frame container">
       <a class="brand" href="#top" aria-label="Gemini Home">
-        <span class="brand-logo">G</span>
+        <span class="brand-mark">G</span>
         <span class="brand-copy">
           <strong>Gemini</strong>
-          <small>AI Software Engineering</small>
+          <small>AI software engineering</small>
         </span>
       </a>
 
@@ -21,26 +17,39 @@
         }
       </nav>
 
-      <a class="header-cta" href="#contact">Book Demo</a>
+      <a class="header-cta" href="#contact">Schedule Review</a>
     </div>
   </header>
 
   <main>
     <section class="hero container" id="top">
-      <div class="hero-left">
-        <p class="eyebrow">Complete digital solutions for businesses and small businesses</p>
-        <h1>
-          Your AI engineering partner.
-          <span>Automate operations. Improve decisions. Increase revenue.</span>
-        </h1>
+      <div class="hero-intro">
+        <p class="section-label">Swiss-grade digital systems</p>
+        <p class="hero-index">01 / Strategy, product, delivery</p>
+        <h1>Precision-built AI systems for companies that need clarity and momentum.</h1>
         <p class="lead">
-          Gemini combines software engineering, machine learning, and practical AI to build modern digital presence and
-          transform business processes into scalable value engines.
+          Gemini designs, engineers, and operationalizes digital products with the discipline of a Swiss grid:
+          structured interfaces, dependable systems, and measurable business outcomes.
         </p>
 
         <div class="hero-actions">
-          <a class="primary-btn" href="#contact">Get Started</a>
+          <a class="primary-btn" href="#contact">Start a Project</a>
           <a class="secondary-btn" href="#ai-lab">Open AI Lab</a>
+        </div>
+
+        <div class="hero-highlights" aria-label="Selected performance indicators">
+          <article class="stat-block">
+            <p>{{ impactMetrics[0].value }}</p>
+            <span>{{ impactMetrics[0].label }}</span>
+          </article>
+          <article class="stat-block">
+            <p>{{ impactMetrics[1].value }}</p>
+            <span>{{ impactMetrics[1].label }}</span>
+          </article>
+          <article class="stat-block">
+            <p>{{ impactMetrics[3].value }}</p>
+            <span>{{ impactMetrics[3].label }}</span>
+          </article>
         </div>
 
         <div class="hero-tags" aria-label="Technology focus">
@@ -59,22 +68,30 @@
         [style.--cursor-y]="cursorY() + '%'"
         [style.--tilt-x]="tiltX() + 'deg'"
         [style.--tilt-y]="tiltY() + 'deg'"
-        aria-label="Gemini AI Control Center"
+        aria-label="Gemini operating model"
       >
         <div class="control-panel">
-          <p class="panel-label">Gemini Control Center</p>
+          <div class="panel-topline">
+            <p class="panel-label">Live operating model</p>
+            <span class="panel-code">Edition 2026</span>
+          </div>
+
+          <div class="hero-summary">
+            <p>Current priority</p>
+            <strong>{{ useCases[activeUseCase()].name }}</strong>
+          </div>
 
           <div class="status-list">
             <article>
-              <span>Deployment verification</span>
+              <span>Design review</span>
               <strong>PASS</strong>
             </article>
             <article>
-              <span>AI issue detection</span>
+              <span>AI oversight</span>
               <strong>ACTIVE</strong>
             </article>
             <article>
-              <span>Workflow remediation</span>
+              <span>Release readiness</span>
               <strong>READY</strong>
             </article>
           </div>
@@ -99,29 +116,37 @@
             <div class="signal-track"><span style="--bar: 65%"></span></div>
           </div>
 
-          <pre class="terminal">INIT :: WORKFLOW_MAP.COMPLETE
-SYNC :: AI_AUTOMATION.ACTIVE
-SCAN :: ML_MODELS.OPTIMIZED
-VALUE :: BUSINESS_UPSIDE.LIVE</pre>
+          <pre class="terminal">MAP :: SERVICE_BLUEPRINT.CALIBRATED
+BUILD :: AUTOMATION_STREAMS.ACTIVE
+TEST :: RELEASE_GATES.VERIFIED
+MEASURE :: BUSINESS_UPSIDE.VISIBLE</pre>
         </div>
       </aside>
     </section>
 
     <section class="ticker-wrap" aria-label="Technology ticker">
-      <div class="ticker-track">
-        @for (tech of technologies; track tech) {
-        <span>{{ tech }}</span>
-        }
-        @for (tech of technologies; track tech + '-repeat') {
-        <span>{{ tech }}</span>
-        }
+      <div class="ticker-inner container">
+        <p class="ticker-label">Core disciplines</p>
+        <div class="ticker-track">
+          @for (tech of technologies; track tech) {
+          <span>{{ tech }}</span>
+          }
+          @for (tech of technologies; track tech + '-repeat') {
+          <span>{{ tech }}</span>
+          }
+        </div>
       </div>
     </section>
 
     <section class="section container" id="capabilities">
       <div class="section-head">
-        <p class="eyebrow">Capabilities</p>
-        <h2>AI-first engineering designed for measurable business transformation</h2>
+        <p class="section-label">Capabilities</p>
+        <div>
+          <h2>Structured engineering, from interface design to operational automation.</h2>
+          <p class="section-copy">
+            Every engagement is framed around clear systems, measured constraints, and production-ready delivery.
+          </p>
+        </div>
       </div>
 
       <div class="capability-grid">
@@ -140,10 +165,15 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
       </div>
     </section>
 
-    <section class="section container section-dark" id="impact">
+    <section class="section container" id="impact">
       <div class="section-head">
-        <p class="eyebrow">Impact</p>
-        <h2>Results delivered through AI automation and software modernization</h2>
+        <p class="section-label">Impact</p>
+        <div>
+          <h2>Measured outcomes designed to improve operating speed, reliability, and revenue quality.</h2>
+          <p class="section-copy">
+            Gemini focuses on practical leverage: faster workflows, cleaner decisions, and durable business upside.
+          </p>
+        </div>
       </div>
 
       <div class="impact-grid">
@@ -159,8 +189,13 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
 
     <section class="section container" id="projects">
       <div class="section-head">
-        <p class="eyebrow">Projects</p>
-        <h2>Highlighted enterprise and institutional project initiatives</h2>
+        <p class="section-label">Projects</p>
+        <div>
+          <h2>Programs delivered for enterprise, institutional, and regulated environments.</h2>
+          <p class="section-copy">
+            Large systems need disciplined execution. These engagements reflect the type of complexity Gemini is built for.
+          </p>
+        </div>
       </div>
 
       <div class="project-grid">
@@ -177,8 +212,13 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
 
     <section class="section container" id="referrals">
       <div class="section-head">
-        <p class="eyebrow">Client Referrals</p>
-        <h2>Positive client feedback and measurable impact on business performance</h2>
+        <p class="section-label">Referrals</p>
+        <div>
+          <h2>Client feedback focused on execution quality, structure, and measurable results.</h2>
+          <p class="section-copy">
+            The strongest signal is repeatable trust: disciplined delivery that moves from strategy into shipped outcomes.
+          </p>
+        </div>
       </div>
 
       <div class="referrals-grid">
@@ -186,17 +226,22 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
         <article class="panel referral-card">
           <p class="referral-client">{{ referral.client }}</p>
           <p class="referral-role">{{ referral.role }}</p>
-          <p class="referral-feedback">“{{ referral.feedback }}”</p>
+          <p class="referral-feedback">"{{ referral.feedback }}"</p>
           <p class="referral-impact">{{ referral.impact }}</p>
         </article>
         }
       </div>
     </section>
 
-    <section class="section container section-dark" id="ai-lab">
+    <section class="section container" id="ai-lab">
       <div class="section-head">
-        <p class="eyebrow">AI Value Lab</p>
-        <h2>Simulate high-value automation opportunities before implementation</h2>
+        <p class="section-label">AI Value Lab</p>
+        <div>
+          <h2>Model commercial upside before implementation and align investment to clear value.</h2>
+          <p class="section-copy">
+            Review the bottleneck, test the assumptions, and translate operational improvement into revenue terms.
+          </p>
+        </div>
       </div>
 
       <div class="lab-layout">
@@ -302,8 +347,13 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
 
     <section class="section container" id="technology">
       <div class="section-head">
-        <p class="eyebrow">Technology Stack</p>
-        <h2>Automation, Machine Learning, AI, iOS, Android, and DevOps</h2>
+        <p class="section-label">Technology Stack</p>
+        <div>
+          <h2>Automation, machine learning, product engineering, and dependable delivery infrastructure.</h2>
+          <p class="section-copy">
+            The stack is selected for clarity and longevity, with each layer supporting scale, observability, and pace.
+          </p>
+        </div>
       </div>
 
       <div class="technology-grid">
@@ -316,26 +366,40 @@ VALUE :: BUSINESS_UPSIDE.LIVE</pre>
       </div>
     </section>
 
-    <section class="section container contact section-dark" id="contact">
-      <div class="contact-copy">
-        <p class="eyebrow">Contact Gemini</p>
-        <h2>Build digital systems that automate work and create new value</h2>
-        <p>
-          We partner with companies and businesses to deliver AI-powered software systems that improve process speed,
-          product quality, and revenue outcomes.
-        </p>
+    <section class="section container section-contact" id="contact">
+      <div class="section-head">
+        <p class="section-label">Contact</p>
+        <div>
+          <h2>Build digital systems that feel exact, modern, and commercially useful.</h2>
+          <p class="section-copy">
+            We partner with teams that want disciplined execution, sharper interfaces, and durable AI-enabled operations.
+          </p>
+        </div>
       </div>
 
-      <div class="contact-actions">
-        <a class="primary-btn" href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
-        <a class="secondary-btn" href="tel:+15550123456">+1 (555) 012-3456</a>
+      <div class="contact-shell panel">
+        <div class="contact-copy">
+          <p>
+            From conversion-led websites to internal workflow platforms, Gemini turns strategy into shipped systems with
+            a measured operating model.
+          </p>
+        </div>
+
+        <div class="contact-meta">
+          <div class="contact-actions">
+            <a class="primary-btn" href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
+            <a class="secondary-btn" href="tel:+15550123456">+1 (555) 012-3456</a>
+          </div>
+          <p class="contact-note">Initial response within two business days.</p>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <p>© {{ year }} Gemini. AI software engineering for business transformation and growth.</p>
+    <div class="container footer-frame">
+      <p>Gemini</p>
+      <p>© {{ year }}. Precision digital systems for ambitious teams.</p>
     </div>
   </footer>
 </div>
