@@ -54,67 +54,67 @@ export class AppComponent {
   readonly year = new Date().getFullYear();
 
   readonly navItems: NavItem[] = [
-    { label: 'Capabilities', href: '#capabilities' },
-    { label: 'Impact', href: '#impact' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Referrals', href: '#referrals' },
-    { label: 'AI Lab', href: '#ai-lab' },
-    { label: 'Technology', href: '#technology' },
-    { label: 'Contact', href: '#contact' }
+    { label: 'Systems', href: '#capabilities' },
+    { label: 'Signals', href: '#impact' },
+    { label: 'Missions', href: '#projects' },
+    { label: 'Crew Logs', href: '#referrals' },
+    { label: 'Flight Lab', href: '#ai-lab' },
+    { label: 'Stack', href: '#technology' },
+    { label: 'Docking', href: '#contact' }
   ];
 
   readonly technologies: string[] = [
-    'Automation',
+    'Orbital UI',
+    'AI Autopilot',
     'Machine Learning',
-    'AI Systems',
-    'Web Platforms',
-    'Mobile Products',
+    'Motion Systems',
+    'Cloud Telemetry',
     'DevOps'
   ];
 
   readonly capabilities: Capability[] = [
     {
-      title: 'AI Process Automation',
+      title: 'AI Autopilot Workflows',
       description:
-        'Gemini maps repetitive business workflows and deploys intelligent automation layers that remove operational bottlenecks.',
-      value: 'Faster execution with lower cost per process.',
-      bullets: ['Workflow discovery and redesign', 'AI-assisted task orchestration', 'Automation governance and reliability']
+        'Gemini maps repetitive operational gravity and launches autonomous workflow streams that keep teams moving at mission speed.',
+      value: 'Lower drag, faster execution, cleaner control loops.',
+      bullets: ['Workflow discovery and redesign', 'AI-assisted task orchestration', 'Command-grade governance and reliability']
     },
     {
-      title: 'Digital Product Engineering',
+      title: 'Extraterrestrial Frontends',
       description:
-        'We build complete digital solutions for enterprises and small businesses, from conversion-driven websites to internal platforms.',
-      value: 'Modern digital presence that improves revenue performance.',
-      bullets: ['Web and mobile product development', 'Scalable API and data architecture', 'Performance and conversion optimization']
+        'We build cinematic, high-performance web experiences with layered depth, advanced motion, and interaction systems that feel beyond terrestrial templates.',
+      value: 'Modern product surfaces with stronger brand pull.',
+      bullets: ['Responsive Angular interface systems', 'Motion, scaling, and spatial interaction', 'Performance and conversion optimization']
     },
     {
-      title: 'ML + Decision Intelligence',
+      title: 'Deep-Space Intelligence',
       description:
-        'Machine learning systems are integrated directly into business operations to improve forecasting, prioritization, and risk control.',
-      value: 'Higher decision quality and measurable growth upside.',
-      bullets: ['Predictive model deployment', 'Operational intelligence dashboards', 'Continuous model tuning loops']
+        'Machine learning systems are integrated into operational telemetry to improve forecasting, prioritization, and risk navigation.',
+      value: 'Sharper decisions from live signal fields.',
+      bullets: ['Predictive model deployment', 'Mission-control intelligence dashboards', 'Continuous model tuning loops']
     }
   ];
 
   readonly impactMetrics: ImpactMetric[] = [
     {
       value: '41%',
-      label: 'Average process time reduction',
-      detail: 'After AI automation rollout in core operational workflows.'
+      label: 'Process time reduction',
+      detail: 'After autonomous workflow launch in high-friction operational lanes.'
     },
     {
       value: '29%',
-      label: 'Revenue efficiency improvement',
-      detail: 'Through funnel optimization, intelligent routing, and decision automation.'
+      label: 'Revenue thrust improvement',
+      detail: 'Through funnel optimization, intelligent routing, and AI decision support.'
     },
     {
       value: '82%',
-      label: 'Workflow automation coverage',
+      label: 'Automation orbit coverage',
       detail: 'Across recurring tasks in sales, service, and internal operations.'
     },
     {
       value: '<90d',
-      label: 'Typical first-value timeline',
+      label: 'Typical launch window',
       detail: 'From discovery to live AI-enabled business outcomes.'
     }
   ];
@@ -122,36 +122,36 @@ export class AppComponent {
   readonly projectHighlights: ProjectHighlight[] = [
     {
       company: 'Siemens',
-      project: 'Industrial Intelligence Operations Hub',
+      project: 'Industrial Mission Control Hub',
       challenge:
-        'Complex operational telemetry and process controls were spread across disconnected systems and teams.',
+        'Complex operational telemetry and process controls were spread across disconnected systems, consoles, and teams.',
       result:
         'Unified AI-driven monitoring and workflow automation improved incident response speed and operational reliability.'
     },
     {
       company: 'Bosch',
-      project: 'Connected Product Lifecycle Platform',
+      project: 'Connected Product Orbit Platform',
       challenge: 'Product and service data pipelines required stronger automation, visibility, and delivery consistency.',
       result:
         'Built an integrated digital platform with ML-enabled insight flows that reduced manual process overhead.'
     },
     {
       company: 'Deutsche Telekom',
-      project: 'Telecom Service Automation Program',
+      project: 'Telecom Signal Automation Program',
       challenge: 'High-volume service workflows created delays in activation, support, and quality assurance processes.',
       result:
         'Implemented AI-assisted orchestration and verification to accelerate service cycles and improve customer outcomes.'
     },
     {
       company: 'Department of Justice',
-      project: 'Secure Workflow Modernization Initiative',
+      project: 'Secure Workflow Launch Initiative',
       challenge: 'Mission-critical workflows required secure modernization with strict control, traceability, and uptime.',
       result:
         'Delivered a resilient digital operations layer with automation controls and auditable process intelligence.'
     },
     {
       company: 'ICA Banken',
-      project: 'Smart Banking Operations Engine',
+      project: 'Smart Banking Navigation Engine',
       challenge: 'Financial operations needed faster decision loops for risk handling, service workflows, and reporting.',
       result:
         'Deployed ML-enhanced automation and analytics that improved processing speed and operational decision quality.'
@@ -163,7 +163,7 @@ export class AppComponent {
       client: 'Siemens',
       role: 'Head of Digital Operations',
       feedback:
-        'Gemini translated a complex modernization roadmap into a clear execution model and delivered quickly.',
+        'Gemini translated a complex modernization roadmap into a clear launch sequence and delivered quickly.',
       impact: 'Automation coverage increased and process lead times dropped across multiple operations teams.'
     },
     {
@@ -206,14 +206,14 @@ export class AppComponent {
   readonly useCases: UseCase[] = [
     {
       name: 'Sales Operations',
-      problem: 'Leads are lost between systems, reducing conversion and wasting marketing spend.',
+      problem: 'Leads drift between systems, reducing conversion and wasting acquisition fuel.',
       solution:
         'Gemini automates qualification, prioritization, and follow-up execution with AI-driven routing and scoring.',
-      outcome: 'Higher close rates, faster sales response, and cleaner pipeline visibility.'
+      outcome: 'Higher close rates, faster response, and cleaner pipeline visibility.'
     },
     {
       name: 'Finance Workflows',
-      problem: 'Invoice and reconciliation tasks consume capacity that should be focused on growth strategy.',
+      problem: 'Invoice and reconciliation tasks consume crew capacity that should be focused on growth strategy.',
       solution:
         'We automate financial workflows, anomaly detection, and exception handling with ML-supported controls.',
       outcome: 'Lower processing friction, better accuracy, and improved planning confidence.'
@@ -236,24 +236,24 @@ export class AppComponent {
 
   readonly technologyStack: Technology[] = [
     {
-      name: 'Automation',
-      summary: 'Process orchestration that removes repetitive work and accelerates delivery cycles.'
+      name: 'Motion Frontend',
+      summary: 'Responsive Angular surfaces with dimensional layouts, scaling interactions, and cinematic transitions.'
     },
     {
       name: 'Machine Learning',
       summary: 'Production-grade ML models for prediction, optimization, and operational prioritization.'
     },
     {
-      name: 'AI',
+      name: 'AI Autopilot',
       summary: 'Applied AI systems that generate measurable business value across departments.'
     },
     {
-      name: 'iOS',
-      summary: 'Premium iOS product engineering connected to secure services and analytics.'
+      name: 'Cloud Telemetry',
+      summary: 'Event streams, observability, and operating dashboards for live mission awareness.'
     },
     {
-      name: 'Android',
-      summary: 'Reliable Android experiences designed for retention, performance, and scale.'
+      name: 'Mobile Command',
+      summary: 'Premium mobile experiences connected to secure services, analytics, and retention loops.'
     },
     {
       name: 'DevOps',
