@@ -1,5 +1,9 @@
 <div class="site-shell">
-  <div class="page-grid" aria-hidden="true"></div>
+  <div class="page-decor" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
 
   <header class="site-header">
     <div class="header-frame container">
@@ -7,7 +11,7 @@
         <span class="brand-mark">G</span>
         <span class="brand-copy">
           <strong>Gemini</strong>
-          <small>Interstellar AI engineering</small>
+          <small>AI work management</small>
         </span>
       </a>
 
@@ -17,45 +21,39 @@
         }
       </nav>
 
-      <a class="header-cta" href="#contact">Launch Brief</a>
+      <a class="header-cta" href="#contact">Kostenlos starten</a>
     </div>
   </header>
 
   <main>
     <section class="hero container" id="top">
       <div class="hero-intro">
-        <p class="section-label">Extraterrestrial digital systems</p>
-        <p class="hero-index">Mission 01 / Orbit, automate, accelerate</p>
-        <h1>Interstellar AI products for teams ready to leave ordinary software behind.</h1>
+        <p class="section-label">Gemini project intelligence</p>
+        <h1>Ein gemeinsames Bild. Fuer jedes digitale Team.</h1>
+        <p class="hero-subline">Endlich AI Workflows, die jeder versteht</p>
         <p class="lead">
-          Gemini designs and engineers dark, cinematic digital systems with AI autopilot, orbital interfaces,
-          and measurable business thrust for ambitious teams.
+          Gemini verbindet Projektstruktur, Automatisierung und AI-gestuetzte Entscheidungen in einer ruhigen,
+          klaren Oberflaeche fuer Teams, die schneller liefern wollen.
         </p>
 
-        <div class="hero-actions">
-          <a class="primary-btn" href="#contact">Launch Mission</a>
-          <a class="secondary-btn" href="#ai-lab">Open Flight Lab</a>
+        <div class="email-capture" aria-label="Start request">
+          <input type="email" placeholder="Deine Business E-Mail-Adresse" aria-label="Business email address" />
+          <a class="primary-btn" href="#contact">Starte kostenlos</a>
         </div>
 
-        <div class="hero-highlights" aria-label="Selected performance indicators">
+        <div class="hero-trust" aria-label="Selected performance indicators">
           <article class="stat-block">
             <p>{{ impactMetrics[0].value }}</p>
             <span>{{ impactMetrics[0].label }}</span>
           </article>
           <article class="stat-block">
-            <p>{{ impactMetrics[1].value }}</p>
-            <span>{{ impactMetrics[1].label }}</span>
+            <p>{{ impactMetrics[2].value }}</p>
+            <span>{{ impactMetrics[2].label }}</span>
           </article>
           <article class="stat-block">
             <p>{{ impactMetrics[3].value }}</p>
             <span>{{ impactMetrics[3].label }}</span>
           </article>
-        </div>
-
-        <div class="hero-tags" aria-label="Technology focus">
-          @for (tech of technologies; track tech) {
-          <span>{{ tech }}</span>
-          }
         </div>
       </div>
 
@@ -68,73 +66,84 @@
         [style.--cursor-y]="cursorY() + '%'"
         [style.--tilt-x]="tiltX() + 'deg'"
         [style.--tilt-y]="tiltY() + 'deg'"
-        aria-label="Gemini flight model"
+        aria-label="Gemini product preview"
       >
-        <div class="control-panel">
-          <div class="panel-topline">
-            <p class="panel-label">Live flight deck</p>
-            <span class="panel-code">Deep Space 2026</span>
+        <div class="product-window">
+          <div class="window-bar">
+            <span></span>
+            <span></span>
+            <span></span>
+            <strong>Gemini Board</strong>
           </div>
 
-          <div class="orbital-visual" aria-hidden="true">
-            <span class="orbit orbit-one"></span>
-            <span class="orbit orbit-two"></span>
-            <span class="orbit orbit-three"></span>
-            <span class="core-star"></span>
-            <span class="ship-trace"></span>
-          </div>
-
-          <div class="hero-summary">
-            <p>Current trajectory</p>
-            <strong>{{ useCases[activeUseCase()].name }}</strong>
-          </div>
-
-          <div class="status-list">
-            <article>
-              <span>Navigation AI</span>
-              <strong>LOCKED</strong>
-            </article>
-            <article>
-              <span>Launch window</span>
-              <strong>OPEN</strong>
-            </article>
-            <article>
-              <span>Interface gravity</span>
-              <strong>LOW</strong>
-            </article>
-          </div>
-
-          <div class="signal-block">
-            <div class="signal-row">
-              <span>Autopilot coverage</span>
-              <strong>82%</strong>
+          <div class="product-layout">
+            <div class="product-sidebar">
+              <p>Projects</p>
+              @for (tech of technologies; track tech) {
+              <span>{{ tech }}</span>
+              }
             </div>
-            <div class="signal-track"><span style="--bar: 82%"></span></div>
 
-            <div class="signal-row">
-              <span>Velocity gain</span>
-              <strong>+37%</strong>
-            </div>
-            <div class="signal-track"><span style="--bar: 72%"></span></div>
+            <div class="product-main">
+              <div class="product-toolbar">
+                <div>
+                  <p>Current project</p>
+                  <strong>{{ useCases[activeUseCase()].name }}</strong>
+                </div>
+                <span>Live</span>
+              </div>
 
-            <div class="signal-row">
-              <span>Revenue thrust</span>
-              <strong>+29%</strong>
+              <div class="timeline-preview" aria-hidden="true">
+                <span style="--w: 68%; --d: 0s"></span>
+                <span style="--w: 48%; --d: 0.12s"></span>
+                <span style="--w: 78%; --d: 0.24s"></span>
+                <span style="--w: 55%; --d: 0.36s"></span>
+              </div>
+
+              <div class="board-grid">
+                <article>
+                  <p>Backlog</p>
+                  <strong>18 tasks</strong>
+                  <span></span>
+                  <span></span>
+                </article>
+                <article>
+                  <p>In motion</p>
+                  <strong>9 tasks</strong>
+                  <span></span>
+                  <span></span>
+                </article>
+                <article>
+                  <p>AI review</p>
+                  <strong>6 tasks</strong>
+                  <span></span>
+                  <span></span>
+                </article>
+              </div>
+
+              <div class="insight-strip">
+                <div>
+                  <p>Projected value</p>
+                  <strong>{{ monthlyTotalLabel() }}</strong>
+                </div>
+                <div>
+                  <p>Automation lift</p>
+                  <strong>{{ automationLift() }}%</strong>
+                </div>
+                <div>
+                  <p>AI upside</p>
+                  <strong>{{ aiUpside() }}%</strong>
+                </div>
+              </div>
             </div>
-            <div class="signal-track"><span style="--bar: 65%"></span></div>
           </div>
-
-          <pre class="terminal">ORBIT :: INTERFACE_FIELD.CALIBRATED
-LAUNCH :: AUTOMATION_STREAMS.IGNITED
-SCALE :: AI_AUTOPILOT.ACTIVE
-SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
         </div>
       </aside>
     </section>
 
     <section class="ticker-wrap" aria-label="Technology ticker">
       <div class="ticker-inner container">
-        <p class="ticker-label">Flight systems</p>
+        <p class="ticker-label">Plattform fuer</p>
         <div class="ticker-track">
           @for (tech of technologies; track tech) {
           <span>{{ tech }}</span>
@@ -148,12 +157,12 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
 
     <section class="section container" id="capabilities">
       <div class="section-head">
-        <p class="section-label">Capabilities</p>
+        <p class="section-label">Funktionen</p>
         <div>
-          <h2>Frontend craft, AI automation, and product systems built for escape velocity.</h2>
+          <h2>Plane, automatisiere und steuere Arbeit in einer klaren Struktur.</h2>
           <p class="section-copy">
-            Every engagement is framed as a launch sequence: striking interfaces, intelligent operations,
-            and production delivery that can withstand scale.
+            Wie bei einer modernen PM-Plattform stehen Uebersicht, einfache Bedienung und sichtbarer Fortschritt im
+            Vordergrund. AI erweitert diese Struktur um sinnvolle Automatisierung.
           </p>
         </div>
       </div>
@@ -174,16 +183,14 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
       </div>
     </section>
 
-    <section class="section container" id="impact">
-      <div class="section-head">
-        <p class="section-label">Impact</p>
-        <div>
-          <h2>Signal-rich outcomes designed to improve speed, reliability, and revenue thrust.</h2>
-          <p class="section-copy">
-            Gemini focuses on practical leverage: faster workflows, cleaner decisions, and durable business upside
-            presented through a modern dark interface.
-          </p>
-        </div>
+    <section class="feature-band container" id="impact">
+      <div class="feature-copy">
+        <p class="section-label">Was verbessert sich?</p>
+        <h2>Mehr Tempo, weniger Reibung und ein belastbares Bild fuer alle.</h2>
+        <p class="section-copy">
+          Gemini macht operative Wirkung sichtbar: von kuerzeren Durchlaufzeiten bis zu sauberer Priorisierung ueber
+          wiederkehrende Prozesse hinweg.
+        </p>
       </div>
 
       <div class="impact-grid">
@@ -199,11 +206,12 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
 
     <section class="section container" id="projects">
       <div class="section-head">
-        <p class="section-label">Projects</p>
+        <p class="section-label">Ergebnisse</p>
         <div>
-          <h2>Missions delivered for enterprise, institutional, and regulated environments.</h2>
+          <h2>Digitale Programme fuer komplexe Teams und anspruchsvolle Organisationen.</h2>
           <p class="section-copy">
-            Large systems need disciplined navigation. These engagements reflect the type of complexity Gemini is built for.
+            Der Fokus liegt auf Klarheit: ein gemeinsames System, nachvollziehbare Verantwortung und Automatisierung,
+            die echte Arbeit abnimmt.
           </p>
         </div>
       </div>
@@ -220,13 +228,14 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
       </div>
     </section>
 
-    <section class="section container" id="referrals">
+    <section class="section testimonials container" id="referrals">
       <div class="section-head">
-        <p class="section-label">Referrals</p>
+        <p class="section-label">Stimmen</p>
         <div>
-          <h2>Crew logs focused on execution quality, structure, and measurable results.</h2>
+          <h2>Teams schaetzen Struktur, Tempo und messbare Umsetzung.</h2>
           <p class="section-copy">
-            The strongest signal is repeatable trust: disciplined delivery that moves from strategy into shipped outcomes.
+            Referenzen werden als ruhige, sliderartige Karten dargestellt, mit weichen Uebergaengen und klarer
+            Lesbarkeit.
           </p>
         </div>
       </div>
@@ -245,11 +254,12 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
 
     <section class="section container" id="ai-lab">
       <div class="section-head">
-        <p class="section-label">AI Flight Lab</p>
+        <p class="section-label">AI Lab</p>
         <div>
-          <h2>Model commercial upside before launch and align investment to clear value.</h2>
+          <h2>Teste wirtschaftliche Annahmen, bevor Du die naechste Initiative startest.</h2>
           <p class="section-copy">
-            Review the bottleneck, test the assumptions, and translate operational improvement into mission economics.
+            Die interaktive Modellierung bleibt erhalten, wirkt aber wie ein eingebettetes SaaS-Tool statt wie ein
+            dunkles Cockpit.
           </p>
         </div>
       </div>
@@ -271,7 +281,7 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
         </div>
 
         <article class="panel case-panel" aria-live="polite">
-          <p class="case-label">Current gravity well</p>
+          <p class="case-label">Aktuelle Herausforderung</p>
           <h3>{{ useCases[activeUseCase()].problem }}</h3>
           <p>{{ useCases[activeUseCase()].solution }}</p>
           <p class="case-outcome">{{ useCases[activeUseCase()].outcome }}</p>
@@ -294,7 +304,7 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
           </label>
 
           <label>
-            <span>Autopilot lift (%)</span>
+            <span>Automation lift (%)</span>
             <strong>{{ automationLift() }}%</strong>
             <input
               type="range"
@@ -307,7 +317,7 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
           </label>
 
           <label>
-            <span>AI thrust impact (%)</span>
+            <span>AI upside (%)</span>
             <strong>{{ aiUpside() }}%</strong>
             <input
               type="range"
@@ -320,7 +330,7 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
           </label>
 
           <label>
-            <span>Crew capacity recovery (%)</span>
+            <span>Capacity recovery (%)</span>
             <strong>{{ efficiencyRecovery() }}%</strong>
             <input
               type="range"
@@ -335,11 +345,11 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
 
         <div class="sim-results">
           <article class="panel">
-            <p>Autopilot value / month</p>
+            <p>Automation value / month</p>
             <h3>{{ monthlyAutomationLabel() }}</h3>
           </article>
           <article class="panel">
-            <p>AI thrust value / month</p>
+            <p>AI value / month</p>
             <h3>{{ monthlyAiLabel() }}</h3>
           </article>
           <article class="panel">
@@ -347,7 +357,7 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
             <h3>{{ monthlyRecoveryLabel() }}</h3>
           </article>
           <article class="panel total">
-            <p>Total projected thrust / month</p>
+            <p>Total projected value / month</p>
             <h3>{{ monthlyTotalLabel() }}</h3>
             <small>Annual projection: {{ annualTotalLabel() }}</small>
           </article>
@@ -357,11 +367,11 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
 
     <section class="section container" id="technology">
       <div class="section-head">
-        <p class="section-label">Technology Stack</p>
+        <p class="section-label">Stack</p>
         <div>
-          <h2>Motion frontends, AI systems, machine learning, and dependable delivery infrastructure.</h2>
+          <h2>Eine moderne Plattform braucht klares Frontend, solide Daten und verlaesslichen Betrieb.</h2>
           <p class="section-copy">
-            The stack is selected for clarity and longevity, with each layer supporting scale, observability, and pace.
+            Die Technologie bleibt bewusst pragmatisch: schnell nutzbar, sauber integrierbar und stabil im Alltag.
           </p>
         </div>
       </div>
@@ -377,21 +387,13 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
     </section>
 
     <section class="section container section-contact" id="contact">
-      <div class="section-head">
-        <p class="section-label">Contact</p>
-        <div>
-          <h2>Build a darker, sharper digital system with extraterrestrial presence.</h2>
-          <p class="section-copy">
-            We partner with teams that want advanced frontend craft, sharper interfaces, and durable AI-enabled operations.
-          </p>
-        </div>
-      </div>
-
-      <div class="contact-shell panel">
+      <div class="contact-shell">
         <div class="contact-copy">
+          <p class="section-label">Kontakt</p>
+          <h2>Starte mit einem klaren Bild Deiner naechsten digitalen Initiative.</h2>
           <p>
-            From conversion-led websites to internal workflow platforms, Gemini turns strategy into shipped systems with
-            cinematic motion, AI automation, and a measured operating model.
+            Gemini entwickelt Websites, AI-gestuetzte Workflows und interne Plattformen mit derselben Haltung:
+            einfach zu verstehen, angenehm zu bedienen und messbar wirksam.
           </p>
         </div>
 
@@ -400,7 +402,7 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
             <a class="primary-btn" href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
             <a class="secondary-btn" href="tel:+15550123456">+1 (555) 012-3456</a>
           </div>
-          <p class="contact-note">Initial signal returned within two business days.</p>
+          <p class="contact-note">Antwort innerhalb von zwei Werktagen.</p>
         </div>
       </div>
     </section>
@@ -409,7 +411,7 @@ SIGNAL :: BUSINESS_THRUST.VISIBLE</pre>
   <footer class="site-footer">
     <div class="container footer-frame">
       <p>Gemini</p>
-      <p>© {{ year }}. Interstellar AI systems for ambitious teams.</p>
+      <p>© {{ year }}. AI work management for ambitious teams.</p>
     </div>
   </footer>
 </div>

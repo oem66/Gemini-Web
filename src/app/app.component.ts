@@ -54,67 +54,67 @@ export class AppComponent {
   readonly year = new Date().getFullYear();
 
   readonly navItems: NavItem[] = [
-    { label: 'Systems', href: '#capabilities' },
-    { label: 'Signals', href: '#impact' },
-    { label: 'Missions', href: '#projects' },
-    { label: 'Crew Logs', href: '#referrals' },
-    { label: 'Flight Lab', href: '#ai-lab' },
+    { label: 'Funktionen', href: '#capabilities' },
+    { label: 'Wirkung', href: '#impact' },
+    { label: 'Ergebnisse', href: '#projects' },
+    { label: 'Stimmen', href: '#referrals' },
+    { label: 'AI Lab', href: '#ai-lab' },
     { label: 'Stack', href: '#technology' },
-    { label: 'Docking', href: '#contact' }
+    { label: 'Kontakt', href: '#contact' }
   ];
 
   readonly technologies: string[] = [
-    'Orbital UI',
-    'AI Autopilot',
-    'Machine Learning',
-    'Motion Systems',
-    'Cloud Telemetry',
+    'Strukturbaum',
+    'Zeitplan',
+    'Kanban',
+    'AI Automation',
+    'Dashboards',
     'DevOps'
   ];
 
   readonly capabilities: Capability[] = [
     {
-      title: 'AI Autopilot Workflows',
+      title: 'AI Workflow Automation',
       description:
-        'Gemini maps repetitive operational gravity and launches autonomous workflow streams that keep teams moving at mission speed.',
-      value: 'Lower drag, faster execution, cleaner control loops.',
-      bullets: ['Workflow discovery and redesign', 'AI-assisted task orchestration', 'Command-grade governance and reliability']
+        'Gemini erkennt wiederkehrende Arbeitsschritte und macht daraus klare Automationen, die Teams ohne Komplexitaet nutzen koennen.',
+      value: 'Weniger manuelle Reibung, schnellere Entscheidungen.',
+      bullets: ['Workflow discovery and redesign', 'AI-assisted task orchestration', 'Governance, Rollen und Freigaben']
     },
     {
-      title: 'Extraterrestrial Frontends',
+      title: 'Clear Product Frontends',
       description:
-        'We build cinematic, high-performance web experiences with layered depth, advanced motion, and interaction systems that feel beyond terrestrial templates.',
-      value: 'Modern product surfaces with stronger brand pull.',
-      bullets: ['Responsive Angular interface systems', 'Motion, scaling, and spatial interaction', 'Performance and conversion optimization']
+        'Wir bauen ruhige, schnelle Oberflaechen mit viel Weissraum, klarer Hierarchie und Motion, die Orientierung gibt.',
+      value: 'Moderne Produktflaechen mit hoher Nutzbarkeit.',
+      bullets: ['Responsive Angular interface systems', 'Scroll reveals and soft product motion', 'Performance and conversion optimization']
     },
     {
-      title: 'Deep-Space Intelligence',
+      title: 'Decision Dashboards',
       description:
-        'Machine learning systems are integrated into operational telemetry to improve forecasting, prioritization, and risk navigation.',
-      value: 'Sharper decisions from live signal fields.',
-      bullets: ['Predictive model deployment', 'Mission-control intelligence dashboards', 'Continuous model tuning loops']
+        'Daten, Projektstatus und wirtschaftliche Signale werden in Dashboards zusammengefuehrt, die Fuehrung und Teams verstehen.',
+      value: 'Bessere Priorisierung aus live verfuegbaren Signalen.',
+      bullets: ['Predictive model deployment', 'Management dashboards', 'Continuous model tuning loops']
     }
   ];
 
   readonly impactMetrics: ImpactMetric[] = [
     {
       value: '41%',
-      label: 'Process time reduction',
-      detail: 'After autonomous workflow launch in high-friction operational lanes.'
+      label: 'Shorter process time',
+      detail: 'After structured automation in recurring operational workflows.'
     },
     {
       value: '29%',
-      label: 'Revenue thrust improvement',
+      label: 'Revenue lift',
       detail: 'Through funnel optimization, intelligent routing, and AI decision support.'
     },
     {
       value: '82%',
-      label: 'Automation orbit coverage',
+      label: 'Automation coverage',
       detail: 'Across recurring tasks in sales, service, and internal operations.'
     },
     {
       value: '<90d',
-      label: 'Typical launch window',
+      label: 'Typical launch',
       detail: 'From discovery to live AI-enabled business outcomes.'
     }
   ];
@@ -122,7 +122,7 @@ export class AppComponent {
   readonly projectHighlights: ProjectHighlight[] = [
     {
       company: 'Siemens',
-      project: 'Industrial Mission Control Hub',
+      project: 'Industrial Work Management Hub',
       challenge:
         'Complex operational telemetry and process controls were spread across disconnected systems, consoles, and teams.',
       result:
@@ -130,28 +130,28 @@ export class AppComponent {
     },
     {
       company: 'Bosch',
-      project: 'Connected Product Orbit Platform',
+      project: 'Connected Product Delivery Platform',
       challenge: 'Product and service data pipelines required stronger automation, visibility, and delivery consistency.',
       result:
         'Built an integrated digital platform with ML-enabled insight flows that reduced manual process overhead.'
     },
     {
       company: 'Deutsche Telekom',
-      project: 'Telecom Signal Automation Program',
+      project: 'Telecom Workflow Automation Program',
       challenge: 'High-volume service workflows created delays in activation, support, and quality assurance processes.',
       result:
         'Implemented AI-assisted orchestration and verification to accelerate service cycles and improve customer outcomes.'
     },
     {
       company: 'Department of Justice',
-      project: 'Secure Workflow Launch Initiative',
+      project: 'Secure Workflow Modernization',
       challenge: 'Mission-critical workflows required secure modernization with strict control, traceability, and uptime.',
       result:
         'Delivered a resilient digital operations layer with automation controls and auditable process intelligence.'
     },
     {
       company: 'ICA Banken',
-      project: 'Smart Banking Navigation Engine',
+      project: 'Smart Banking Operations Engine',
       challenge: 'Financial operations needed faster decision loops for risk handling, service workflows, and reporting.',
       result:
         'Deployed ML-enhanced automation and analytics that improved processing speed and operational decision quality.'
@@ -206,14 +206,14 @@ export class AppComponent {
   readonly useCases: UseCase[] = [
     {
       name: 'Sales Operations',
-      problem: 'Leads drift between systems, reducing conversion and wasting acquisition fuel.',
+      problem: 'Leads move between tools without one clear view, reducing response speed and conversion.',
       solution:
         'Gemini automates qualification, prioritization, and follow-up execution with AI-driven routing and scoring.',
       outcome: 'Higher close rates, faster response, and cleaner pipeline visibility.'
     },
     {
       name: 'Finance Workflows',
-      problem: 'Invoice and reconciliation tasks consume crew capacity that should be focused on growth strategy.',
+      problem: 'Invoice and reconciliation tasks consume capacity that should be focused on growth strategy.',
       solution:
         'We automate financial workflows, anomaly detection, and exception handling with ML-supported controls.',
       outcome: 'Lower processing friction, better accuracy, and improved planning confidence.'
@@ -227,7 +227,7 @@ export class AppComponent {
     },
     {
       name: 'Executive Intelligence',
-      problem: 'Leadership lacks real-time clarity on what is driving growth, margin, and operational drag.',
+      problem: 'Leadership lacks real-time clarity on what is driving growth, margin, and operational friction.',
       solution:
         'Gemini builds unified intelligence layers combining product, sales, and operational data into decision-ready signals.',
       outcome: 'Sharper strategic decisions with continuous visibility into business performance.'
@@ -236,8 +236,8 @@ export class AppComponent {
 
   readonly technologyStack: Technology[] = [
     {
-      name: 'Motion Frontend',
-      summary: 'Responsive Angular surfaces with dimensional layouts, scaling interactions, and cinematic transitions.'
+      name: 'Product Frontend',
+      summary: 'Responsive Angular surfaces with clear layout systems, soft motion, and fast interactions.'
     },
     {
       name: 'Machine Learning',
@@ -249,10 +249,10 @@ export class AppComponent {
     },
     {
       name: 'Cloud Telemetry',
-      summary: 'Event streams, observability, and operating dashboards for live mission awareness.'
+      summary: 'Event streams, observability, and operating dashboards for live business awareness.'
     },
     {
-      name: 'Mobile Command',
+      name: 'Mobile Workflows',
       summary: 'Premium mobile experiences connected to secure services, analytics, and retention loops.'
     },
     {
