@@ -64,35 +64,58 @@ export class AppComponent {
   ];
 
   readonly technologies: string[] = [
-    'Strukturbaum',
-    'Zeitplan',
-    'Kanban',
+    'Backend APIs',
+    'Frontend Apps',
+    'iOS Swift',
+    'Android Kotlin',
+    'Mobile Solutions',
+    'Cloud DevOps',
     'AI Automation',
-    'Dashboards',
-    'DevOps'
+    'Dashboards'
   ];
 
   readonly capabilities: Capability[] = [
     {
+      title: 'Mobile Solutions',
+      description:
+        'Gemini entwickelt mobile Produkte fuer kleine und grosse Unternehmen, von der ersten App-Idee bis zum stabilen Betrieb.',
+      value: 'Spezialisierte mobile Loesungen mit klarer Produktlogik.',
+      bullets: ['Discovery, UX flows and product architecture', 'MVP, scale-up and enterprise app delivery', 'Analytics, release planning and maintenance']
+    },
+    {
+      title: 'Native iOS Development',
+      description:
+        'Native iOS Apps werden in Swift entwickelt und auf Performance, gute Bedienbarkeit und saubere App-Store-Auslieferung ausgelegt.',
+      value: 'Premium iPhone und iPad Apps fuer reale Geschaeftsprozesse.',
+      bullets: ['Swift, SwiftUI and UIKit implementation', 'Device APIs, push, camera and location flows', 'App Store preparation and release support']
+    },
+    {
+      title: 'Native Android Development',
+      description:
+        'Android Apps entstehen mit Kotlin, modernen UI-Patterns und stabilen Datenfluesse fuer Smartphones, Tablets und Business Devices.',
+      value: 'Verlaessliche Android Produkte fuer Teams, Kunden und Operations.',
+      bullets: ['Kotlin and Jetpack Compose development', 'Offline sync, notifications and secure storage', 'Google Play release and device testing']
+    },
+    {
+      title: 'Backend Engineering',
+      description:
+        'Robuste Backends verbinden mobile Apps, Web-Frontends, Datenbanken und externe Systeme zu belastbaren digitalen Produkten.',
+      value: 'APIs, Authentifizierung und Datenmodelle, die Wachstum aushalten.',
+      bullets: ['REST and event-driven API development', 'Cloud services, databases and integrations', 'Security, permissions and audit-ready workflows']
+    },
+    {
+      title: 'Frontend Platforms',
+      description:
+        'Wir bauen schnelle Web-Frontends und interne Plattformen mit klarer Nutzerfuehrung, responsivem Layout und sauberer Komponentenstruktur.',
+      value: 'Moderne Frontends fuer Kundenportale, Dashboards und SaaS-Produkte.',
+      bullets: ['Angular, TypeScript and responsive UI systems', 'Design systems and reusable components', 'Performance, accessibility and conversion quality']
+    },
+    {
       title: 'AI Workflow Automation',
       description:
-        'Gemini erkennt wiederkehrende Arbeitsschritte und macht daraus klare Automationen, die Teams ohne Komplexitaet nutzen koennen.',
+        'AI wird dort eingesetzt, wo sie Softwareprodukte messbar verbessert: Automatisierung, Priorisierung, Support und operative Entscheidungen.',
       value: 'Weniger manuelle Reibung, schnellere Entscheidungen.',
-      bullets: ['Workflow discovery and redesign', 'AI-assisted task orchestration', 'Governance, Rollen und Freigaben']
-    },
-    {
-      title: 'Clear Product Frontends',
-      description:
-        'Wir bauen ruhige, schnelle Oberflaechen mit viel Weissraum, klarer Hierarchie und Motion, die Orientierung gibt.',
-      value: 'Moderne Produktflaechen mit hoher Nutzbarkeit.',
-      bullets: ['Responsive Angular interface systems', 'Scroll reveals and soft product motion', 'Performance and conversion optimization']
-    },
-    {
-      title: 'Decision Dashboards',
-      description:
-        'Daten, Projektstatus und wirtschaftliche Signale werden in Dashboards zusammengefuehrt, die Fuehrung und Teams verstehen.',
-      value: 'Bessere Priorisierung aus live verfuegbaren Signalen.',
-      bullets: ['Predictive model deployment', 'Management dashboards', 'Continuous model tuning loops']
+      bullets: ['Workflow discovery and redesign', 'AI-assisted task orchestration', 'Dashboards, governance and human review']
     }
   ];
 
@@ -205,25 +228,25 @@ export class AppComponent {
 
   readonly useCases: UseCase[] = [
     {
-      name: 'Sales Operations',
-      problem: 'Leads move between tools without one clear view, reducing response speed and conversion.',
+      name: 'Mobile Product Launch',
+      problem: 'A new business idea needs a clear mobile product, native app delivery, backend services, and a realistic release path.',
       solution:
-        'Gemini automates qualification, prioritization, and follow-up execution with AI-driven routing and scoring.',
-      outcome: 'Higher close rates, faster response, and cleaner pipeline visibility.'
+        'Gemini designs the app experience, builds iOS with Swift, Android with Kotlin, and connects both platforms to secure backend APIs.',
+      outcome: 'A launch-ready mobile solution with product analytics, release support, and room to scale.'
     },
     {
-      name: 'Finance Workflows',
-      problem: 'Invoice and reconciliation tasks consume capacity that should be focused on growth strategy.',
+      name: 'Business App Modernization',
+      problem: 'Existing tools are slow, fragmented, or no longer fit the way teams and customers actually work.',
       solution:
-        'We automate financial workflows, anomaly detection, and exception handling with ML-supported controls.',
-      outcome: 'Lower processing friction, better accuracy, and improved planning confidence.'
+        'We rebuild critical workflows as modern mobile, web, and backend systems with cleaner UX and stronger integration points.',
+      outcome: 'Less operational friction, better adoption, and software that supports current business processes.'
     },
     {
-      name: 'Customer Support',
-      problem: 'Support demand scales faster than teams can maintain high-quality response times.',
+      name: 'Customer Platforms',
+      problem: 'Customers expect fast digital access across mobile and web, but internal systems often slow the experience down.',
       solution:
-        'AI triage, intent detection, and agent copilots are integrated into your support stack and service flows.',
-      outcome: 'Faster resolution, stronger customer experience, and lower operating cost.'
+        'Gemini creates customer portals, account areas, mobile self-service flows, and connected dashboards on top of reliable APIs.',
+      outcome: 'A smoother customer journey across iOS, Android, and browser-based touchpoints.'
     },
     {
       name: 'Executive Intelligence',
@@ -236,28 +259,36 @@ export class AppComponent {
 
   readonly technologyStack: Technology[] = [
     {
-      name: 'Product Frontend',
-      summary: 'Responsive Angular surfaces with clear layout systems, soft motion, and fast interactions.'
+      name: 'Backend Development',
+      summary: 'Secure APIs, cloud services, databases, auth, integrations, and data models for reliable product foundations.'
     },
     {
-      name: 'Machine Learning',
-      summary: 'Production-grade ML models for prediction, optimization, and operational prioritization.'
+      name: 'Frontend Development',
+      summary: 'Angular and TypeScript frontends with responsive layouts, reusable components, clear UX, and fast interactions.'
     },
     {
-      name: 'AI Autopilot',
-      summary: 'Applied AI systems that generate measurable business value across departments.'
+      name: 'iOS Development',
+      summary: 'Native Swift apps for iPhone and iPad, including SwiftUI, UIKit, device APIs, testing, and App Store release.'
     },
     {
-      name: 'Cloud Telemetry',
-      summary: 'Event streams, observability, and operating dashboards for live business awareness.'
+      name: 'Android Development',
+      summary: 'Native Kotlin apps with Jetpack Compose, offline-ready flows, push notifications, and Google Play delivery.'
     },
     {
-      name: 'Mobile Workflows',
-      summary: 'Premium mobile experiences connected to secure services, analytics, and retention loops.'
+      name: 'Mobile Product Strategy',
+      summary: 'Specialized mobile solution design for small businesses, growing teams, and large enterprise environments.'
     },
     {
-      name: 'DevOps',
-      summary: 'CI/CD automation, infrastructure-as-code, and observability for stable growth.'
+      name: 'AI Automation',
+      summary: 'Applied AI systems for workflow automation, decision support, support operations, and business dashboards.'
+    },
+    {
+      name: 'DevOps and Cloud',
+      summary: 'CI/CD, infrastructure automation, monitoring, observability, and release pipelines for stable growth.'
+    },
+    {
+      name: 'Quality and Release',
+      summary: 'Automated checks, manual QA, App Store and Google Play preparation, staged rollouts, and post-launch support.'
     }
   ];
 
