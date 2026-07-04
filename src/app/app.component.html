@@ -1,131 +1,145 @@
-<div class="site-shell">
-  <div class="page-decor" aria-hidden="true">
-    <span></span>
-    <span></span>
-    <span></span>
+<div class="progress-bar" [style.width.%]="scrollProgress()" aria-hidden="true"></div>
+
+<div class="site" id="top">
+  <div class="backdrop" aria-hidden="true">
+    <div class="grid-overlay"></div>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
   </div>
 
-  <header class="site-header">
-    <div class="header-frame container">
-      <a class="brand" href="#top" aria-label="Gemini Home">
+  <header class="site-header" [class.scrolled]="scrolled() || menuOpen()">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Gemini Home" (click)="closeMenu()">
         <span class="brand-mark">G</span>
-        <span class="brand-copy">
-          <strong>Gemini</strong>
-          <small>Mobile & software studio</small>
-        </span>
+        <span class="brand-name">gemini<span class="brand-accent">.dev</span></span>
       </a>
 
       <nav class="main-nav" aria-label="Primary">
-        @for (item of navItems; track item.label) {
-        <a [href]="item.href">{{ item.label }}</a>
+        @for (item of navItems; track item.id) {
+        <a [href]="item.href" [class.active]="activeSection() === item.id">{{ item.label }}</a>
         }
       </nav>
 
-      <a class="header-cta" href="#contact">Kostenlos starten</a>
+      <div class="header-actions">
+        <a class="btn btn-primary btn-sm" href="#contact">Projekt starten</a>
+        <button
+          type="button"
+          class="menu-toggle"
+          [class.open]="menuOpen()"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-label="Menü umschalten"
+        >
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </div>
+
+    @if (menuOpen()) {
+    <nav class="mobile-nav" aria-label="Mobile">
+      @for (item of navItems; track item.id) {
+      <a [href]="item.href" (click)="closeMenu()">{{ item.label }}</a>
+      }
+      <a class="btn btn-primary" href="#contact" (click)="closeMenu()">Projekt starten</a>
+    </nav>
+    }
   </header>
 
   <main>
-    <section class="hero container" id="top">
-      <div class="hero-intro">
-        <p class="section-label">Full-stack software development</p>
-        <h1>Mobile Apps. Web Software. AI.</h1>
-        <p class="hero-subline">iOS, Android, Backend und Frontend aus einer Hand</p>
-        <p class="lead">
-          Gemini entwickelt mobile Loesungen fuer kleine und grosse Unternehmen: native iOS Apps in Swift,
-          Android Apps in Kotlin, robuste Backends, moderne Frontends und AI-gestuetzte Workflows.
+    <section class="hero container">
+      <div class="hero-copy">
+        <p class="status-pill reveal">
+          <span class="pulse-dot"></span>
+          Verfügbar für neue Projekte
         </p>
 
-        <div class="email-capture" aria-label="Start request">
-          <input type="email" placeholder="Deine Business E-Mail-Adresse" aria-label="Business email address" />
-          <a class="primary-btn" href="#contact">Starte kostenlos</a>
+        <h1 class="reveal" style="--d: 60ms">
+          Mobile Apps. Web-Plattformen.
+          <span class="gradient-text">AI-Systeme.</span>
+        </h1>
+
+        <p class="lead reveal" style="--d: 120ms">
+          Gemini entwickelt native iOS- und Android-Apps, moderne Frontends, robuste Backends und
+          AI-gestützte Workflows — engineered aus einer Hand, live in unter 90 Tagen.
+        </p>
+
+        <div class="hero-actions reveal" style="--d: 180ms">
+          <a class="btn btn-primary" href="#contact">
+            Projekt starten
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="btn btn-ghost" href="#capabilities">Leistungen ansehen</a>
+        </div>
+
+        <div class="hero-chips reveal" style="--d: 240ms" aria-label="Kern-Technologien">
+          @for (chip of heroChips; track chip) {
+          <span class="mono-chip">{{ chip }}</span>
+          }
         </div>
       </div>
 
-      <aside
+      <div
         #heroLab
-        class="hero-right"
+        class="hero-visual reveal"
+        style="--d: 160ms"
         (mousemove)="onHeroMove($event, heroLab)"
         (mouseleave)="resetHeroFocus()"
         [style.--cursor-x]="cursorX() + '%'"
         [style.--cursor-y]="cursorY() + '%'"
         [style.--tilt-x]="tiltX() + 'deg'"
         [style.--tilt-y]="tiltY() + 'deg'"
-        aria-label="Gemini product preview"
       >
-        <div class="product-window">
-          <div class="window-bar">
-            <span></span>
-            <span></span>
-            <span></span>
-            <strong>Gemini Delivery OS</strong>
+        <div class="terminal" aria-label="Gemini Delivery Terminal Demo">
+          <div class="terminal-bar">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <p class="terminal-title">gemini — deploy · zsh</p>
+            <span class="terminal-badge">
+              <span class="pulse-dot"></span>
+              live
+            </span>
           </div>
 
-          <div class="product-layout">
-            <div class="product-sidebar">
-              <p>Projects</p>
-              @for (tech of technologies; track tech) {
-              <span>{{ tech }}</span>
+          <div class="terminal-body" aria-live="off">
+            @for (line of terminalLines(); track $index) {
+            <p class="term-line" [class]="'kind-' + line.kind">
+              @if (line.kind === 'cmd') {
+              <span class="prompt">➜&nbsp;~</span>
+              } @else if (line.kind === 'ok') {
+              <span class="mark">✓</span>
               }
-            </div>
+              <span class="term-text">{{ line.text }}</span>
+            </p>
+            }
 
-            <div class="product-main">
-              <div class="product-toolbar">
-                <div>
-                  <p>Current project</p>
-                  <strong>{{ useCases[activeUseCase()].name }}</strong>
-                </div>
-                <span>Live</span>
-              </div>
+            <p class="term-line kind-cmd">
+              <span class="prompt">➜&nbsp;~</span>
+              <span class="term-text">{{ typingLine() }}</span>
+              <span class="caret" aria-hidden="true"></span>
+            </p>
+          </div>
 
-              <div class="timeline-preview" aria-hidden="true">
-                <span style="--w: 68%; --d: 0s"></span>
-                <span style="--w: 48%; --d: 0.12s"></span>
-                <span style="--w: 78%; --d: 0.24s"></span>
-                <span style="--w: 55%; --d: 0.36s"></span>
-              </div>
-
-              <div class="board-grid">
-                <article>
-                  <p>Backlog</p>
-                  <strong>18 tasks</strong>
-                  <span></span>
-                  <span></span>
-                </article>
-                <article>
-                  <p>In motion</p>
-                  <strong>9 tasks</strong>
-                  <span></span>
-                  <span></span>
-                </article>
-                <article>
-                  <p>AI review</p>
-                  <strong>6 tasks</strong>
-                  <span></span>
-                  <span></span>
-                </article>
-              </div>
-
-              <div class="insight-strip">
-                <div>
-                  <p>Projected value</p>
-                  <strong>{{ monthlyTotalLabel() }}</strong>
-                </div>
-                <div>
-                  <p>Automation lift</p>
-                  <strong>{{ automationLift() }}%</strong>
-                </div>
-                <div>
-                  <p>AI upside</p>
-                  <strong>{{ aiUpside() }}%</strong>
-                </div>
-              </div>
-            </div>
+          <div class="terminal-status">
+            <span class="mono">main*</span>
+            <span class="mono">swift · kotlin · ts</span>
+            <span class="mono status-ok">● 99.9% uptime</span>
           </div>
         </div>
-      </aside>
 
-      <div class="hero-trust" aria-label="Selected performance indicators">
+        <div class="float-chip chip-a" aria-hidden="true">
+          <strong>&lt;90d</strong>
+          <span>bis Launch</span>
+        </div>
+        <div class="float-chip chip-b" aria-hidden="true">
+          <strong>82%</strong>
+          <span>Automation</span>
+        </div>
+      </div>
+
+      <div class="hero-stats reveal" style="--d: 260ms" aria-label="Ausgewählte Kennzahlen">
         <article class="stat-block">
           <p>{{ impactMetrics[0].value }}</p>
           <span>{{ impactMetrics[0].label }}</span>
@@ -141,39 +155,40 @@
       </div>
     </section>
 
-    <section class="ticker-wrap" aria-label="Technology ticker">
-      <div class="ticker-inner container">
-        <p class="ticker-label">Plattform fuer</p>
-        <div class="ticker-track">
-          @for (tech of technologies; track tech) {
-          <span>{{ tech }}</span>
-          }
-          @for (tech of technologies; track tech + '-repeat') {
-          <span>{{ tech }}</span>
-          }
-        </div>
+    <section class="marquee" aria-label="Technologie-Ticker">
+      <div class="marquee-track">
+        @for (tech of technologies; track tech) {
+        <span class="marquee-item">{{ tech }}</span>
+        <span class="marquee-sep" aria-hidden="true">◆</span>
+        }
+        @for (tech of technologies; track tech + '-repeat') {
+        <span class="marquee-item" aria-hidden="true">{{ tech }}</span>
+        <span class="marquee-sep" aria-hidden="true">◆</span>
+        }
       </div>
     </section>
 
     <section class="section container" id="capabilities">
-      <div class="section-head">
-        <p class="section-label">Funktionen</p>
-        <div>
-          <h2>Entwickle mobile Apps, Plattformen und Backends mit einem spezialisierten Team.</h2>
-          <p class="section-copy">
-            Der Schwerpunkt liegt auf Software, die im Alltag funktioniert: native mobile Apps, solide Backend-Systeme,
-            schnelle Frontends und Automatisierung, die kleine und grosse Unternehmen direkt nutzen koennen.
-          </p>
-        </div>
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-index">01</span> Leistungen</p>
+        <h2>Ein spezialisiertes Team für Apps, Plattformen und Backends.</h2>
+        <p class="section-copy">
+          Der Schwerpunkt liegt auf Software, die im Alltag funktioniert: native mobile Apps, solide
+          Backend-Systeme, schnelle Frontends und Automatisierung mit direktem Business-Nutzen.
+        </p>
       </div>
 
-      <div class="capability-grid">
-        @for (capability of capabilities; track capability.title) {
-        <article class="panel">
+      <div class="bento-grid">
+        @for (capability of capabilities; track capability.title; let i = $index) {
+        <article class="card capability-card reveal" [style.--d]="(i % 3) * 90 + 'ms'" (mousemove)="onCardMove($event)">
+          <div class="card-top">
+            <span class="card-index mono">0{{ i + 1 }}</span>
+            <span class="card-tag mono">{{ capability.tag }}</span>
+          </div>
           <h3>{{ capability.title }}</h3>
-          <p>{{ capability.description }}</p>
-          <p class="value">{{ capability.value }}</p>
-          <ul>
+          <p class="card-desc">{{ capability.description }}</p>
+          <p class="card-value">{{ capability.value }}</p>
+          <ul class="card-bullets">
             @for (bullet of capability.bullets; track bullet) {
             <li>{{ bullet }}</li>
             }
@@ -183,88 +198,100 @@
       </div>
     </section>
 
-    <section class="feature-band container" id="impact">
-      <div class="feature-copy">
-        <p class="section-label">Was verbessert sich?</p>
-        <h2>Mehr Tempo, weniger Reibung und digitale Produkte, die sauber skalieren.</h2>
-        <p class="section-copy">
-          Gemini verbindet Produktstrategie, mobile Entwicklung, Backend-Engineering und AI-Automation zu belastbaren
-          Loesungen, die schneller live gehen und leichter weiterentwickelt werden koennen.
-        </p>
-      </div>
+    <section class="section container" id="impact">
+      <div class="impact-layout">
+        <div class="impact-copy reveal">
+          <p class="eyebrow"><span class="eyebrow-index">02</span> Wirkung</p>
+          <h2>Mehr Tempo, weniger Reibung — Produkte, die sauber skalieren.</h2>
+          <p class="section-copy">
+            Gemini verbindet Produktstrategie, mobile Entwicklung, Backend-Engineering und AI-Automation zu
+            belastbaren Lösungen, die schneller live gehen und leichter weiterentwickelt werden können.
+          </p>
+          <a class="btn btn-ghost" href="#contact">Wirkung besprechen <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
 
-      <div class="impact-grid">
-        @for (metric of impactMetrics; track metric.label) {
-        <article class="panel">
-          <p class="metric">{{ metric.value }}</p>
-          <h3>{{ metric.label }}</h3>
-          <p>{{ metric.detail }}</p>
-        </article>
-        }
+        <div class="impact-grid">
+          @for (metric of impactMetrics; track metric.label; let i = $index) {
+          <article class="card metric-card reveal" [style.--d]="i * 80 + 'ms'">
+            <p class="metric-value">{{ metricDisplays()[i] }}</p>
+            <h3>{{ metric.label }}</h3>
+            <p class="metric-detail">{{ metric.detail }}</p>
+          </article>
+          }
+        </div>
       </div>
     </section>
 
     <section class="section container" id="projects">
-      <div class="section-head">
-        <p class="section-label">Ergebnisse</p>
-        <div>
-          <h2>Digitale Produkte fuer Startups, Mittelstand und anspruchsvolle Organisationen.</h2>
-          <p class="section-copy">
-            Der Fokus liegt auf Klarheit: mobile Apps, Web-Plattformen, Backends und Automatisierung werden so gebaut,
-            dass Teams, Kunden und Entscheider sie langfristig nutzen koennen.
-          </p>
-        </div>
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-index">03</span> Projekte</p>
+        <h2>Digitale Produkte für Startups, Mittelstand und anspruchsvolle Organisationen.</h2>
+        <p class="section-copy">
+          Der Fokus liegt auf Klarheit: mobile Apps, Web-Plattformen, Backends und Automatisierung — gebaut,
+          damit Teams, Kunden und Entscheider sie langfristig nutzen können.
+        </p>
       </div>
 
       <div class="project-grid">
-        @for (project of projectHighlights; track project.company) {
-        <article class="panel project-card">
-          <p class="project-company">{{ project.company }}</p>
+        @for (project of projectHighlights; track project.company; let i = $index) {
+        <article class="card project-card reveal" [style.--d]="(i % 3) * 90 + 'ms'" (mousemove)="onCardMove($event)">
+          <div class="project-head">
+            <p class="project-company mono">{{ project.company }}</p>
+            <div class="project-tags">
+              @for (tag of project.tags; track tag) {
+              <span class="mono">{{ tag }}</span>
+              }
+            </div>
+          </div>
           <h3>{{ project.project }}</h3>
-          <p>{{ project.challenge }}</p>
-          <p class="project-result">{{ project.result }}</p>
+          <p class="project-challenge">{{ project.challenge }}</p>
+          <p class="project-result">
+            <span class="mark" aria-hidden="true">✓</span>
+            {{ project.result }}
+          </p>
         </article>
         }
       </div>
     </section>
 
-    <section class="section testimonials container" id="referrals">
-      <div class="section-head">
-        <p class="section-label">Stimmen</p>
-        <div>
-          <h2>Teams schaetzen Struktur, Tempo und messbare Umsetzung.</h2>
-          <p class="section-copy">
-            Ausgewaehlte Rueckmeldungen von Teams, die klare Produktfuehrung, stabile Architektur und messbare
-            Umsetzung brauchen.
-          </p>
-        </div>
+    <section class="section container" id="referrals">
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-index">04</span> Stimmen</p>
+        <h2>Teams schätzen Struktur, Tempo und messbare Umsetzung.</h2>
+        <p class="section-copy">
+          Ausgewählte Rückmeldungen von Teams, die klare Produktführung, stabile Architektur und messbare
+          Umsetzung brauchen.
+        </p>
       </div>
 
       <div class="referrals-grid">
-        @for (referral of clientReferrals; track referral.client) {
-        <article class="panel referral-card">
-          <p class="referral-client">{{ referral.client }}</p>
-          <p class="referral-role">{{ referral.role }}</p>
-          <p class="referral-feedback">"{{ referral.feedback }}"</p>
+        @for (referral of clientReferrals; track referral.client; let i = $index) {
+        <article class="card referral-card reveal" [style.--d]="(i % 3) * 90 + 'ms'">
+          <p class="referral-quote">"{{ referral.feedback }}"</p>
           <p class="referral-impact">{{ referral.impact }}</p>
+          <div class="referral-person">
+            <span class="avatar mono">{{ referral.initials }}</span>
+            <div>
+              <p class="referral-client">{{ referral.client }}</p>
+              <p class="referral-role">{{ referral.role }}</p>
+            </div>
+          </div>
         </article>
         }
       </div>
     </section>
 
     <section class="section container" id="ai-lab">
-      <div class="section-head">
-        <p class="section-label">AI Lab</p>
-        <div>
-          <h2>Teste wirtschaftliche Annahmen, bevor Du die naechste App oder Plattform startest.</h2>
-          <p class="section-copy">
-            Die interaktive Modellierung zeigt, wie mobile Apps, Backend-Automation und AI-Funktionen wirtschaftliche
-            Wirkung erzeugen koennen.
-          </p>
-        </div>
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-index">05</span> AI Lab</p>
+        <h2>Teste wirtschaftliche Annahmen, bevor du die nächste Plattform startest.</h2>
+        <p class="section-copy">
+          Die interaktive Modellierung zeigt, wie mobile Apps, Backend-Automation und AI-Funktionen
+          wirtschaftliche Wirkung erzeugen können.
+        </p>
       </div>
 
-      <div class="lab-layout">
+      <div class="lab-layout reveal">
         <div class="tab-list" role="tablist" aria-label="AI Use Cases">
           @for (useCase of useCases; track useCase.name; let i = $index) {
           <button
@@ -275,24 +302,32 @@
             [attr.aria-selected]="activeUseCase() === i"
             (click)="setUseCase(i)"
           >
+            <span class="mono tab-index">0{{ i + 1 }}</span>
             {{ useCase.name }}
           </button>
           }
         </div>
 
-        <article class="panel case-panel" aria-live="polite">
-          <p class="case-label">Aktuelle Herausforderung</p>
+        <article class="card case-panel" aria-live="polite">
+          <p class="case-label mono">// Herausforderung</p>
           <h3>{{ useCases[activeUseCase()].problem }}</h3>
-          <p>{{ useCases[activeUseCase()].solution }}</p>
-          <p class="case-outcome">{{ useCases[activeUseCase()].outcome }}</p>
+          <p class="case-solution">{{ useCases[activeUseCase()].solution }}</p>
+          <p class="case-outcome">
+            <span class="mark" aria-hidden="true">✓</span>
+            {{ useCases[activeUseCase()].outcome }}
+          </p>
         </article>
       </div>
 
-      <div class="sim-layout">
-        <div class="panel sim-controls">
+      <div class="sim-layout reveal">
+        <div class="card sim-controls">
+          <p class="sim-title mono">// roi-simulator.config</p>
+
           <label>
-            <span>Monthly revenue baseline</span>
-            <strong>{{ monthlyRevenueLabel() }}</strong>
+            <span class="slider-head">
+              <span>Monatlicher Umsatz (Baseline)</span>
+              <strong class="mono">{{ monthlyRevenueLabel() }}</strong>
+            </span>
             <input
               type="range"
               min="25000"
@@ -304,8 +339,10 @@
           </label>
 
           <label>
-            <span>Automation lift (%)</span>
-            <strong>{{ automationLift() }}%</strong>
+            <span class="slider-head">
+              <span>Automation Lift</span>
+              <strong class="mono">{{ automationLift() }}%</strong>
+            </span>
             <input
               type="range"
               min="5"
@@ -317,8 +354,10 @@
           </label>
 
           <label>
-            <span>AI upside (%)</span>
-            <strong>{{ aiUpside() }}%</strong>
+            <span class="slider-head">
+              <span>AI Upside</span>
+              <strong class="mono">{{ aiUpside() }}%</strong>
+            </span>
             <input
               type="range"
               min="3"
@@ -330,8 +369,10 @@
           </label>
 
           <label>
-            <span>Capacity recovery (%)</span>
-            <strong>{{ efficiencyRecovery() }}%</strong>
+            <span class="slider-head">
+              <span>Capacity Recovery</span>
+              <strong class="mono">{{ efficiencyRecovery() }}%</strong>
+            </span>
             <input
               type="range"
               min="5"
@@ -344,42 +385,41 @@
         </div>
 
         <div class="sim-results">
-          <article class="panel">
-            <p>Automation value / month</p>
-            <h3>{{ monthlyAutomationLabel() }}</h3>
+          <article class="card sim-card">
+            <p>Automation Value / Monat</p>
+            <h3 class="mono">{{ monthlyAutomationLabel() }}</h3>
           </article>
-          <article class="panel">
-            <p>AI value / month</p>
-            <h3>{{ monthlyAiLabel() }}</h3>
+          <article class="card sim-card">
+            <p>AI Value / Monat</p>
+            <h3 class="mono">{{ monthlyAiLabel() }}</h3>
           </article>
-          <article class="panel">
-            <p>Recovered capacity / month</p>
-            <h3>{{ monthlyRecoveryLabel() }}</h3>
+          <article class="card sim-card">
+            <p>Recovered Capacity / Monat</p>
+            <h3 class="mono">{{ monthlyRecoveryLabel() }}</h3>
           </article>
-          <article class="panel total">
-            <p>Total projected value / month</p>
-            <h3>{{ monthlyTotalLabel() }}</h3>
-            <small>Annual projection: {{ annualTotalLabel() }}</small>
+          <article class="card sim-card sim-total">
+            <p>Projizierter Gesamtwert / Monat</p>
+            <h3 class="mono">{{ monthlyTotalLabel() }}</h3>
+            <small class="mono">Jahresprojektion: {{ annualTotalLabel() }}</small>
           </article>
         </div>
       </div>
     </section>
 
     <section class="section container" id="technology">
-      <div class="section-head">
-        <p class="section-label">Stack</p>
-        <div>
-          <h2>Moderne Software braucht starke Backends, Frontends und native mobile Apps.</h2>
-          <p class="section-copy">
-            Swift fuer iOS, Kotlin fuer Android, TypeScript fuer Frontends, robuste APIs, Cloud-Infrastruktur und
-            AI-Services werden pragmatisch kombiniert, damit Produkte schnell nutzbar und stabil im Betrieb sind.
-          </p>
-        </div>
+      <div class="section-head reveal">
+        <p class="eyebrow"><span class="eyebrow-index">06</span> Stack</p>
+        <h2>Starke Backends, schnelle Frontends, native mobile Apps.</h2>
+        <p class="section-copy">
+          Swift für iOS, Kotlin für Android, TypeScript für Frontends, robuste APIs, Cloud-Infrastruktur und
+          AI-Services — pragmatisch kombiniert, damit Produkte schnell nutzbar und stabil im Betrieb sind.
+        </p>
       </div>
 
-      <div class="technology-grid">
-        @for (item of technologyStack; track item.name) {
-        <article class="panel">
+      <div class="stack-grid">
+        @for (item of technologyStack; track item.name; let i = $index) {
+        <article class="card stack-card reveal" [style.--d]="(i % 4) * 70 + 'ms'" (mousemove)="onCardMove($event)">
+          <span class="stack-index mono">0{{ i + 1 }}</span>
           <h3>{{ item.name }}</h3>
           <p>{{ item.summary }}</p>
         </article>
@@ -387,32 +427,74 @@
       </div>
     </section>
 
-    <section class="section container section-contact" id="contact">
-      <div class="contact-shell">
-        <div class="contact-copy">
-          <p class="section-label">Kontakt</p>
-          <h2>Starte mit einem klaren Bild Deiner naechsten digitalen Initiative.</h2>
-          <p>
-            Gemini entwickelt mobile Apps, Web-Frontends, Backend-Systeme, AI-gestuetzte Workflows und interne
-            Plattformen mit derselben Haltung: einfach zu verstehen, angenehm zu bedienen und messbar wirksam.
-          </p>
-        </div>
+    <section class="section container" id="contact">
+      <div class="contact-panel reveal">
+        <div class="contact-glow" aria-hidden="true"></div>
+        <p class="eyebrow eyebrow-center"><span class="eyebrow-index">07</span> Kontakt</p>
+        <h2>Bereit, dein nächstes Produkt zu bauen?</h2>
+        <p class="contact-copy">
+          Mobile Apps, Web-Frontends, Backend-Systeme und AI-Workflows — einfach zu verstehen, angenehm zu
+          bedienen und messbar wirksam.
+        </p>
 
-        <div class="contact-meta">
-          <div class="contact-actions">
-            <a class="primary-btn" href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
-            <a class="secondary-btn" href="tel:+15550123456">+1 (555) 012-3456</a>
-          </div>
-          <p class="contact-note">Antwort innerhalb von zwei Werktagen.</p>
+        <form class="email-capture" (submit)="$event.preventDefault()">
+          <input type="email" placeholder="deine@firma.de" aria-label="Business E-Mail-Adresse" required />
+          <button class="btn btn-primary" type="submit">Kostenloses Erstgespräch</button>
+        </form>
+
+        <div class="contact-alt">
+          <a href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
+          <span aria-hidden="true">·</span>
+          <a href="tel:+15550123456">+1 (555) 012-3456</a>
         </div>
+        <p class="contact-note mono">// Antwort innerhalb von zwei Werktagen · NDA auf Wunsch</p>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-frame">
-      <p>Gemini</p>
-      <p>© {{ year }}. Mobile, backend, frontend and AI software for ambitious teams.</p>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#top">
+          <span class="brand-mark">G</span>
+          <span class="brand-name">gemini<span class="brand-accent">.dev</span></span>
+        </a>
+        <p>
+          Native Apps, Web-Plattformen, Backends und AI-Automation für ambitionierte Teams — von Discovery
+          bis Production.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-title mono">// Studio</p>
+        <a href="#capabilities">Leistungen</a>
+        <a href="#projects">Projekte</a>
+        <a href="#ai-lab">AI Lab</a>
+        <a href="#technology">Stack</a>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-title mono">// Engineering</p>
+        <a href="#capabilities">iOS · Swift</a>
+        <a href="#capabilities">Android · Kotlin</a>
+        <a href="#capabilities">Backend & Cloud</a>
+        <a href="#capabilities">AI Automation</a>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-title mono">// Kontakt</p>
+        <a href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
+        <a href="tel:+15550123456">+1 (555) 012-3456</a>
+        <a href="#contact">Erstgespräch buchen</a>
+      </div>
+    </div>
+
+    <div class="container footer-base">
+      <p>© {{ year }} Gemini Software Engineering</p>
+      <p class="footer-status mono">
+        <span class="pulse-dot"></span>
+        all systems operational
+      </p>
     </div>
   </footer>
 </div>

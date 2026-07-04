@@ -1,11 +1,22 @@
-import { Component, computed, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  afterNextRender,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
 
 interface NavItem {
   label: string;
   href: string;
+  id: string;
 }
 
 interface Capability {
+  tag: string;
   title: string;
   description: string;
   value: string;
@@ -25,6 +36,9 @@ interface Technology {
 }
 
 interface ImpactMetric {
+  numeric: number | null;
+  prefix: string;
+  suffix: string;
   value: string;
   label: string;
   detail: string;
@@ -35,13 +49,22 @@ interface ProjectHighlight {
   project: string;
   challenge: string;
   result: string;
+  tags: string[];
 }
 
 interface ClientReferral {
   client: string;
+  initials: string;
   role: string;
   feedback: string;
   impact: string;
+}
+
+type TerminalLineKind = 'cmd' | 'ok' | 'out' | 'accent';
+
+interface TerminalLine {
+  kind: TerminalLineKind;
+  text: string;
 }
 
 @Component({
@@ -51,94 +74,121 @@ interface ClientReferral {
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly timeouts: ReturnType<typeof setTimeout>[] = [];
+
   readonly year = new Date().getFullYear();
 
   readonly navItems: NavItem[] = [
-    { label: 'Funktionen', href: '#capabilities' },
-    { label: 'Wirkung', href: '#impact' },
-    { label: 'Ergebnisse', href: '#projects' },
-    { label: 'Stimmen', href: '#referrals' },
-    { label: 'AI Lab', href: '#ai-lab' },
-    { label: 'Stack', href: '#technology' },
-    { label: 'Kontakt', href: '#contact' }
+    { label: 'Leistungen', href: '#capabilities', id: 'capabilities' },
+    { label: 'Wirkung', href: '#impact', id: 'impact' },
+    { label: 'Projekte', href: '#projects', id: 'projects' },
+    { label: 'Stimmen', href: '#referrals', id: 'referrals' },
+    { label: 'AI Lab', href: '#ai-lab', id: 'ai-lab' },
+    { label: 'Stack', href: '#technology', id: 'technology' }
   ];
 
   readonly technologies: string[] = [
-    'Backend APIs',
-    'Frontend Apps',
-    'iOS Swift',
-    'Android Kotlin',
-    'Mobile Solutions',
+    'Swift',
+    'Kotlin',
+    'TypeScript',
+    'Angular',
+    'Node.js',
+    'SwiftUI',
+    'Jetpack Compose',
+    'PostgreSQL',
     'Cloud DevOps',
     'AI Automation',
-    'Dashboards'
+    'CI/CD',
+    'GraphQL'
   ];
+
+  readonly heroChips: string[] = ['iOS · Swift', 'Android · Kotlin', 'Web · Angular', 'Backend · Node', 'AI · Automation'];
 
   readonly capabilities: Capability[] = [
     {
+      tag: 'Mobile',
       title: 'Mobile Solutions',
       description:
-        'Gemini entwickelt mobile Produkte fuer kleine und grosse Unternehmen, von der ersten App-Idee bis zum stabilen Betrieb.',
-      value: 'Spezialisierte mobile Loesungen mit klarer Produktlogik.',
-      bullets: ['Discovery, UX flows and product architecture', 'MVP, scale-up and enterprise app delivery', 'Analytics, release planning and maintenance']
+        'Gemini entwickelt mobile Produkte für kleine und große Unternehmen — von der ersten App-Idee bis zum stabilen Betrieb.',
+      value: 'Spezialisierte mobile Lösungen mit klarer Produktlogik.',
+      bullets: ['Discovery, UX-Flows und Produktarchitektur', 'MVP, Scale-up und Enterprise Delivery', 'Analytics, Release-Planung und Wartung']
     },
     {
+      tag: 'iOS',
       title: 'Native iOS Development',
       description:
-        'Native iOS Apps werden in Swift entwickelt und auf Performance, gute Bedienbarkeit und saubere App-Store-Auslieferung ausgelegt.',
-      value: 'Premium iPhone und iPad Apps fuer reale Geschaeftsprozesse.',
-      bullets: ['Swift, SwiftUI and UIKit implementation', 'Device APIs, push, camera and location flows', 'App Store preparation and release support']
+        'Native iOS Apps in Swift — ausgelegt auf Performance, exzellente Bedienbarkeit und saubere App-Store-Auslieferung.',
+      value: 'Premium iPhone- und iPad-Apps für reale Geschäftsprozesse.',
+      bullets: ['Swift, SwiftUI und UIKit', 'Device-APIs, Push, Kamera und Location', 'App-Store-Vorbereitung und Release-Support']
     },
     {
+      tag: 'Android',
       title: 'Native Android Development',
       description:
-        'Android Apps entstehen mit Kotlin, modernen UI-Patterns und stabilen Datenfluesse fuer Smartphones, Tablets und Business Devices.',
-      value: 'Verlaessliche Android Produkte fuer Teams, Kunden und Operations.',
-      bullets: ['Kotlin and Jetpack Compose development', 'Offline sync, notifications and secure storage', 'Google Play release and device testing']
+        'Android Apps mit Kotlin, modernen UI-Patterns und stabilen Datenflüssen für Smartphones, Tablets und Business Devices.',
+      value: 'Verlässliche Android-Produkte für Teams, Kunden und Operations.',
+      bullets: ['Kotlin und Jetpack Compose', 'Offline-Sync, Notifications, Secure Storage', 'Google-Play-Release und Device-Testing']
     },
     {
+      tag: 'Backend',
       title: 'Backend Engineering',
       description:
         'Robuste Backends verbinden mobile Apps, Web-Frontends, Datenbanken und externe Systeme zu belastbaren digitalen Produkten.',
       value: 'APIs, Authentifizierung und Datenmodelle, die Wachstum aushalten.',
-      bullets: ['REST and event-driven API development', 'Cloud services, databases and integrations', 'Security, permissions and audit-ready workflows']
+      bullets: ['REST- und Event-getriebene APIs', 'Cloud Services, Datenbanken, Integrationen', 'Security, Permissions, Audit-fähige Workflows']
     },
     {
+      tag: 'Frontend',
       title: 'Frontend Platforms',
       description:
-        'Wir bauen schnelle Web-Frontends und interne Plattformen mit klarer Nutzerfuehrung, responsivem Layout und sauberer Komponentenstruktur.',
-      value: 'Moderne Frontends fuer Kundenportale, Dashboards und SaaS-Produkte.',
-      bullets: ['Angular, TypeScript and responsive UI systems', 'Design systems and reusable components', 'Performance, accessibility and conversion quality']
+        'Schnelle Web-Frontends und interne Plattformen mit klarer Nutzerführung, responsivem Layout und sauberer Komponentenstruktur.',
+      value: 'Moderne Frontends für Kundenportale, Dashboards und SaaS-Produkte.',
+      bullets: ['Angular, TypeScript, responsive UI-Systeme', 'Design Systems und wiederverwendbare Komponenten', 'Performance, Accessibility, Conversion-Qualität']
     },
     {
+      tag: 'AI',
       title: 'AI Workflow Automation',
       description:
-        'AI wird dort eingesetzt, wo sie Softwareprodukte messbar verbessert: Automatisierung, Priorisierung, Support und operative Entscheidungen.',
+        'AI wird dort eingesetzt, wo sie Software messbar verbessert: Automatisierung, Priorisierung, Support und operative Entscheidungen.',
       value: 'Weniger manuelle Reibung, schnellere Entscheidungen.',
-      bullets: ['Workflow discovery and redesign', 'AI-assisted task orchestration', 'Dashboards, governance and human review']
+      bullets: ['Workflow Discovery und Redesign', 'AI-gestützte Task-Orchestrierung', 'Dashboards, Governance und Human Review']
     }
   ];
 
   readonly impactMetrics: ImpactMetric[] = [
     {
+      numeric: 41,
+      prefix: '',
+      suffix: '%',
       value: '41%',
-      label: 'Shorter process time',
-      detail: 'After structured automation in recurring operational workflows.'
+      label: 'Kürzere Prozesszeiten',
+      detail: 'Nach strukturierter Automatisierung wiederkehrender operativer Workflows.'
     },
     {
+      numeric: 29,
+      prefix: '',
+      suffix: '%',
       value: '29%',
-      label: 'Revenue lift',
-      detail: 'Through funnel optimization, intelligent routing, and AI decision support.'
+      label: 'Umsatz-Uplift',
+      detail: 'Durch Funnel-Optimierung, intelligentes Routing und AI Decision Support.'
     },
     {
+      numeric: 82,
+      prefix: '',
+      suffix: '%',
       value: '82%',
-      label: 'Automation coverage',
-      detail: 'Across recurring tasks in sales, service, and internal operations.'
+      label: 'Automation Coverage',
+      detail: 'Über wiederkehrende Aufgaben in Sales, Service und internen Operations.'
     },
     {
+      numeric: 90,
+      prefix: '<',
+      suffix: 'd',
       value: '<90d',
-      label: 'Typical launch',
-      detail: 'From discovery to live AI-enabled business outcomes.'
+      label: 'Typischer Launch',
+      detail: 'Von Discovery bis zu produktiven, AI-fähigen Business-Ergebnissen.'
     }
   ];
 
@@ -147,150 +197,182 @@ export class AppComponent {
       company: 'Siemens',
       project: 'Industrial Work Management Hub',
       challenge:
-        'Complex operational telemetry and process controls were spread across disconnected systems, consoles, and teams.',
+        'Komplexe Telemetrie und Prozesssteuerung waren über getrennte Systeme, Konsolen und Teams verteilt.',
       result:
-        'Unified AI-driven monitoring and workflow automation improved incident response speed and operational reliability.'
+        'Einheitliches AI-gestütztes Monitoring und Workflow-Automation verbesserten Incident Response und Zuverlässigkeit.',
+      tags: ['AI Ops', 'Automation', 'Monitoring']
     },
     {
       company: 'Bosch',
       project: 'Connected Product Delivery Platform',
-      challenge: 'Product and service data pipelines required stronger automation, visibility, and delivery consistency.',
+      challenge: 'Produkt- und Service-Datenpipelines brauchten stärkere Automatisierung, Sichtbarkeit und Konsistenz.',
       result:
-        'Built an integrated digital platform with ML-enabled insight flows that reduced manual process overhead.'
+        'Integrierte digitale Plattform mit ML-Insight-Flows, die manuellen Prozessaufwand deutlich reduzierte.',
+      tags: ['Platform', 'ML', 'Data']
     },
     {
       company: 'Deutsche Telekom',
       project: 'Telecom Workflow Automation Program',
-      challenge: 'High-volume service workflows created delays in activation, support, and quality assurance processes.',
+      challenge: 'High-Volume-Service-Workflows verzögerten Aktivierung, Support und Qualitätssicherung.',
       result:
-        'Implemented AI-assisted orchestration and verification to accelerate service cycles and improve customer outcomes.'
+        'AI-gestützte Orchestrierung und Verifikation beschleunigten Service-Zyklen und verbesserten Customer Outcomes.',
+      tags: ['Orchestration', 'Telecom', 'AI']
     },
     {
       company: 'Department of Justice',
       project: 'Secure Workflow Modernization',
-      challenge: 'Mission-critical workflows required secure modernization with strict control, traceability, and uptime.',
+      challenge: 'Mission-kritische Workflows erforderten sichere Modernisierung mit strikter Kontrolle und Uptime.',
       result:
-        'Delivered a resilient digital operations layer with automation controls and auditable process intelligence.'
+        'Resiliente Digital-Operations-Schicht mit Automation Controls und auditierbarer Prozessintelligenz.',
+      tags: ['Security', 'GovTech', 'Compliance']
     },
     {
       company: 'ICA Banken',
       project: 'Smart Banking Operations Engine',
-      challenge: 'Financial operations needed faster decision loops for risk handling, service workflows, and reporting.',
+      challenge: 'Financial Operations brauchten schnellere Entscheidungsschleifen für Risiko, Service und Reporting.',
       result:
-        'Deployed ML-enhanced automation and analytics that improved processing speed and operational decision quality.'
+        'ML-verstärkte Automation und Analytics verbesserten Verarbeitungsgeschwindigkeit und Entscheidungsqualität.',
+      tags: ['FinTech', 'ML', 'Analytics']
     }
   ];
 
   readonly clientReferrals: ClientReferral[] = [
     {
       client: 'Siemens',
+      initials: 'SI',
       role: 'Head of Digital Operations',
       feedback:
-        'Gemini translated a complex modernization roadmap into a clear launch sequence and delivered quickly.',
-      impact: 'Automation coverage increased and process lead times dropped across multiple operations teams.'
+        'Gemini übersetzte eine komplexe Modernisierungs-Roadmap in eine klare Launch-Sequenz und lieferte schnell.',
+      impact: 'Automation Coverage stieg, Prozesslaufzeiten sanken über mehrere Operations-Teams hinweg.'
     },
     {
       client: 'Bosch',
+      initials: 'BO',
       role: 'Program Director, Connected Systems',
       feedback:
-        'The team combined strong engineering quality with practical AI use cases that our business units could adopt fast.',
-      impact: 'Manual coordination overhead decreased while product and service delivery consistency improved.'
+        'Das Team kombinierte starke Engineering-Qualität mit praktischen AI Use Cases, die unsere Business Units schnell adaptieren konnten.',
+      impact: 'Manueller Koordinationsaufwand sank, während Delivery-Konsistenz messbar stieg.'
     },
     {
       client: 'Deutsche Telekom',
+      initials: 'DT',
       role: 'Senior Transformation Manager',
       feedback:
-        'Gemini delivered a scalable automation layer that aligned well with telecom workflow complexity and speed requirements.',
-      impact: 'Service activation cycles accelerated and operational issue resolution became significantly faster.'
+        'Gemini lieferte eine skalierbare Automation-Schicht, die zur Komplexität und Geschwindigkeit von Telekom-Workflows passte.',
+      impact: 'Service-Aktivierung beschleunigt, operative Issues deutlich schneller gelöst.'
     },
     {
       client: 'Department of Justice',
+      initials: 'DJ',
       role: 'Technology Modernization Lead',
       feedback:
-        'Execution was disciplined, secure, and outcome-driven from discovery through deployment.',
-      impact: 'Critical workflows gained stronger traceability, resilience, and measurable efficiency improvements.'
+        'Die Umsetzung war diszipliniert, sicher und ergebnisorientiert — von Discovery bis Deployment.',
+      impact: 'Kritische Workflows gewannen Nachvollziehbarkeit, Resilienz und messbare Effizienz.'
     },
     {
       client: 'ICA Banken',
+      initials: 'IB',
       role: 'Digital Banking Operations Manager',
       feedback:
-        'Gemini helped us turn AI from concept into practical value within our core operational and reporting flows.',
-      impact: 'Decision turnaround improved and process bottlenecks were reduced across banking operations.'
+        'Gemini half uns, AI vom Konzept in praktischen Mehrwert innerhalb unserer Kernprozesse zu übersetzen.',
+      impact: 'Entscheidungsdurchlauf verbessert, Prozess-Engpässe im Banking-Betrieb reduziert.'
     },
     {
       client: 'Global Retail Platform',
+      initials: 'GR',
       role: 'VP of Technology',
       feedback:
-        'Their team integrated engineering, DevOps, and AI in one stream, which removed delivery friction immediately.',
-      impact: 'Release velocity improved while conversion and retention metrics trended upward in the first quarter.'
+        'Engineering, DevOps und AI in einem Stream — das hat Delivery-Reibung sofort entfernt.',
+      impact: 'Release Velocity stieg, Conversion- und Retention-Metriken trendeten im ersten Quartal nach oben.'
     }
   ];
 
   readonly useCases: UseCase[] = [
     {
       name: 'Mobile Product Launch',
-      problem: 'A new business idea needs a clear mobile product, native app delivery, backend services, and a realistic release path.',
+      problem:
+        'Eine neue Business-Idee braucht ein klares mobiles Produkt, native App Delivery, Backend Services und einen realistischen Release-Pfad.',
       solution:
-        'Gemini designs the app experience, builds iOS with Swift, Android with Kotlin, and connects both platforms to secure backend APIs.',
-      outcome: 'A launch-ready mobile solution with product analytics, release support, and room to scale.'
+        'Gemini designt die App Experience, baut iOS mit Swift, Android mit Kotlin und verbindet beide Plattformen mit sicheren Backend-APIs.',
+      outcome: 'Eine launch-fertige mobile Lösung mit Product Analytics, Release-Support und Raum zum Skalieren.'
     },
     {
       name: 'Business App Modernization',
-      problem: 'Existing tools are slow, fragmented, or no longer fit the way teams and customers actually work.',
+      problem: 'Bestehende Tools sind langsam, fragmentiert oder passen nicht mehr zur Arbeitsweise von Teams und Kunden.',
       solution:
-        'We rebuild critical workflows as modern mobile, web, and backend systems with cleaner UX and stronger integration points.',
-      outcome: 'Less operational friction, better adoption, and software that supports current business processes.'
+        'Wir bauen kritische Workflows als moderne Mobile-, Web- und Backend-Systeme neu — mit klarerer UX und stärkeren Integrationspunkten.',
+      outcome: 'Weniger operative Reibung, bessere Adoption und Software, die aktuelle Geschäftsprozesse trägt.'
     },
     {
       name: 'Customer Platforms',
-      problem: 'Customers expect fast digital access across mobile and web, but internal systems often slow the experience down.',
+      problem:
+        'Kunden erwarten schnellen digitalen Zugang über Mobile und Web, aber interne Systeme bremsen die Experience aus.',
       solution:
-        'Gemini creates customer portals, account areas, mobile self-service flows, and connected dashboards on top of reliable APIs.',
-      outcome: 'A smoother customer journey across iOS, Android, and browser-based touchpoints.'
+        'Gemini baut Kundenportale, Account-Bereiche, Mobile-Self-Service-Flows und verbundene Dashboards auf verlässlichen APIs.',
+      outcome: 'Eine flüssigere Customer Journey über iOS, Android und Browser-Touchpoints.'
     },
     {
       name: 'Executive Intelligence',
-      problem: 'Leadership lacks real-time clarity on what is driving growth, margin, and operational friction.',
+      problem: 'Führung fehlt Echtzeit-Klarheit darüber, was Wachstum, Marge und operative Reibung treibt.',
       solution:
-        'Gemini builds unified intelligence layers combining product, sales, and operational data into decision-ready signals.',
-      outcome: 'Sharper strategic decisions with continuous visibility into business performance.'
+        'Gemini baut vereinheitlichte Intelligence Layer, die Produkt-, Sales- und Operations-Daten in entscheidungsreife Signale übersetzen.',
+      outcome: 'Schärfere strategische Entscheidungen mit kontinuierlicher Sicht auf Business Performance.'
     }
   ];
 
   readonly technologyStack: Technology[] = [
     {
       name: 'Backend Development',
-      summary: 'Secure APIs, cloud services, databases, auth, integrations, and data models for reliable product foundations.'
+      summary: 'Sichere APIs, Cloud Services, Datenbanken, Auth, Integrationen und Datenmodelle als verlässliches Fundament.'
     },
     {
       name: 'Frontend Development',
-      summary: 'Angular and TypeScript frontends with responsive layouts, reusable components, clear UX, and fast interactions.'
+      summary: 'Angular- und TypeScript-Frontends mit responsiven Layouts, wiederverwendbaren Komponenten und klarer UX.'
     },
     {
       name: 'iOS Development',
-      summary: 'Native Swift apps for iPhone and iPad, including SwiftUI, UIKit, device APIs, testing, and App Store release.'
+      summary: 'Native Swift Apps für iPhone und iPad — SwiftUI, UIKit, Device-APIs, Testing und App-Store-Release.'
     },
     {
       name: 'Android Development',
-      summary: 'Native Kotlin apps with Jetpack Compose, offline-ready flows, push notifications, and Google Play delivery.'
+      summary: 'Native Kotlin Apps mit Jetpack Compose, Offline-fähigen Flows, Push Notifications und Google-Play-Delivery.'
     },
     {
       name: 'Mobile Product Strategy',
-      summary: 'Specialized mobile solution design for small businesses, growing teams, and large enterprise environments.'
+      summary: 'Spezialisiertes Mobile Solution Design für kleine Unternehmen, wachsende Teams und Enterprise-Umgebungen.'
     },
     {
       name: 'AI Automation',
-      summary: 'Applied AI systems for workflow automation, decision support, support operations, and business dashboards.'
+      summary: 'Applied AI für Workflow-Automatisierung, Decision Support, Support Operations und Business Dashboards.'
     },
     {
-      name: 'DevOps and Cloud',
-      summary: 'CI/CD, infrastructure automation, monitoring, observability, and release pipelines for stable growth.'
+      name: 'DevOps & Cloud',
+      summary: 'CI/CD, Infrastructure Automation, Monitoring, Observability und Release Pipelines für stabiles Wachstum.'
     },
     {
-      name: 'Quality and Release',
-      summary: 'Automated checks, manual QA, App Store and Google Play preparation, staged rollouts, and post-launch support.'
+      name: 'Quality & Release',
+      summary: 'Automatisierte Checks, manuelle QA, App-Store- und Play-Vorbereitung, Staged Rollouts und Post-Launch-Support.'
     }
   ];
+
+  private readonly terminalScript: TerminalLine[] = [
+    { kind: 'cmd', text: 'gemini init --project "your-next-app"' },
+    { kind: 'ok', text: 'Discovery & Produktarchitektur abgeschlossen' },
+    { kind: 'out', text: 'Stack: Swift · Kotlin · Angular · Node.js' },
+    { kind: 'cmd', text: 'gemini build --platforms ios android web' },
+    { kind: 'ok', text: 'Native Builds kompiliert · Tests grün · CI/CD aktiv' },
+    { kind: 'cmd', text: 'gemini ship --env production' },
+    { kind: 'accent', text: '▲ Live in <90 Tagen · 99.9% Uptime · AI enabled' }
+  ];
+
+  readonly terminalLines = signal<TerminalLine[]>([]);
+  readonly typingLine = signal('');
+  readonly isTyping = signal(false);
+
+  readonly menuOpen = signal(false);
+  readonly scrolled = signal(false);
+  readonly scrollProgress = signal(0);
+  readonly activeSection = signal('');
 
   readonly activeUseCase = signal(0);
 
@@ -298,6 +380,11 @@ export class AppComponent {
   readonly cursorY = signal(50);
   readonly tiltX = signal(0);
   readonly tiltY = signal(0);
+
+  readonly metricDisplays = signal<string[]>(
+    this.impactMetrics.map((metric) => (metric.numeric === null ? metric.value : `${metric.prefix}0${metric.suffix}`))
+  );
+  private metricsAnimated = false;
 
   readonly monthlyRevenue = signal(120000);
   readonly automationLift = signal(22);
@@ -327,8 +414,44 @@ export class AppComponent {
   readonly monthlyTotalLabel = computed(() => this.toCurrency(this.monthlyTotalValue()));
   readonly annualTotalLabel = computed(() => this.toCurrency(this.annualTotalValue()));
 
+  constructor() {
+    afterNextRender(() => {
+      this.startTerminal();
+      this.observeReveals();
+      this.observeSections();
+      this.onWindowScroll();
+    });
+
+    this.destroyRef.onDestroy(() => this.timeouts.forEach(clearTimeout));
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    const y = window.scrollY;
+    this.scrolled.set(y > 24);
+
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    this.scrollProgress.set(max > 0 ? Math.min(100, (y / max) * 100) : 0);
+  }
+
+  toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(false);
+  }
+
   setUseCase(index: number): void {
     this.activeUseCase.set(index);
+  }
+
+  onCardMove(event: MouseEvent): void {
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    target.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+    target.style.setProperty('--my', `${event.clientY - rect.top}px`);
   }
 
   onHeroMove(event: MouseEvent, element: HTMLElement): void {
@@ -341,8 +464,8 @@ export class AppComponent {
 
     this.cursorX.set(this.clampPercentage(x));
     this.cursorY.set(this.clampPercentage(y));
-    this.tiltY.set(this.clampRange(normalizedX * 10, -7, 7));
-    this.tiltX.set(this.clampRange(normalizedY * -9, -6, 6));
+    this.tiltY.set(this.clampRange(normalizedX * 8, -6, 6));
+    this.tiltX.set(this.clampRange(normalizedY * -7, -5, 5));
   }
 
   resetHeroFocus(): void {
@@ -366,6 +489,135 @@ export class AppComponent {
 
   setEfficiencyRecovery(value: string): void {
     this.efficiencyRecovery.set(Number(value));
+  }
+
+  private startTerminal(): void {
+    let index = 0;
+
+    const playNext = () => {
+      if (index >= this.terminalScript.length) {
+        this.schedule(() => {
+          this.terminalLines.set([]);
+          index = 0;
+          playNext();
+        }, 4600);
+        return;
+      }
+
+      const line = this.terminalScript[index];
+
+      if (line.kind === 'cmd') {
+        this.isTyping.set(true);
+        this.typingLine.set('');
+        let char = 0;
+
+        const typeChar = () => {
+          if (char <= line.text.length) {
+            this.typingLine.set(line.text.slice(0, char));
+            char++;
+            this.schedule(typeChar, 22 + Math.random() * 38);
+          } else {
+            this.isTyping.set(false);
+            this.typingLine.set('');
+            this.terminalLines.update((lines) => [...lines, line]);
+            index++;
+            this.schedule(playNext, 300);
+          }
+        };
+
+        typeChar();
+      } else {
+        this.terminalLines.update((lines) => [...lines, line]);
+        index++;
+        this.schedule(playNext, 420);
+      }
+    };
+
+    playNext();
+  }
+
+  private observeReveals(): void {
+    const elements: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('.reveal'));
+
+    if (!('IntersectionObserver' in window)) {
+      elements.forEach((el) => el.classList.add('in'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    this.destroyRef.onDestroy(() => observer.disconnect());
+  }
+
+  private observeSections(): void {
+    const sections: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('section[id]'));
+
+    if (!('IntersectionObserver' in window)) {
+      this.animateMetrics();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) {
+            continue;
+          }
+          this.activeSection.set(entry.target.id);
+          if (entry.target.id === 'impact') {
+            this.animateMetrics();
+          }
+        }
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    this.destroyRef.onDestroy(() => observer.disconnect());
+  }
+
+  private animateMetrics(): void {
+    if (this.metricsAnimated) {
+      return;
+    }
+    this.metricsAnimated = true;
+
+    const duration = 1500;
+    const start = performance.now();
+
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      this.metricDisplays.set(
+        this.impactMetrics.map((metric) =>
+          metric.numeric === null
+            ? metric.value
+            : `${metric.prefix}${Math.round(metric.numeric * eased)}${metric.suffix}`
+        )
+      );
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
+  }
+
+  private schedule(fn: () => void, delay: number): void {
+    this.timeouts.push(setTimeout(fn, delay));
   }
 
   private clampPercentage(value: number): number {
