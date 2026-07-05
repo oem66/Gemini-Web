@@ -16,20 +16,31 @@
       </a>
 
       <nav class="main-nav" aria-label="Primary">
-        @for (item of navItems; track item.id) {
+        @for (item of navItems(); track item.id) {
         <a [href]="item.href" [class.active]="activeSection() === item.id">{{ item.label }}</a>
         }
       </nav>
 
       <div class="header-actions">
-        <a class="btn btn-primary btn-sm" href="#contact">Projekt starten</a>
+        <div class="lang-switch">
+          <select
+            [value]="lang()"
+            (change)="setLanguage($any($event.target).value)"
+            [attr.aria-label]="t().header.languageAria"
+          >
+            @for (language of languages; track language.code) {
+            <option [value]="language.code" [title]="language.name">{{ language.code.toUpperCase() }}</option>
+            }
+          </select>
+        </div>
+        <a class="btn btn-primary btn-sm" href="#contact">{{ t().header.cta }}</a>
         <button
           type="button"
           class="menu-toggle"
           [class.open]="menuOpen()"
           (click)="toggleMenu()"
           [attr.aria-expanded]="menuOpen()"
-          aria-label="Menü umschalten"
+          [attr.aria-label]="t().header.menuToggle"
         >
           <span></span>
           <span></span>
@@ -39,10 +50,22 @@
 
     @if (menuOpen()) {
     <nav class="mobile-nav" aria-label="Mobile">
-      @for (item of navItems; track item.id) {
+      @for (item of navItems(); track item.id) {
       <a [href]="item.href" (click)="closeMenu()">{{ item.label }}</a>
       }
-      <a class="btn btn-primary" href="#contact" (click)="closeMenu()">Projekt starten</a>
+      <div class="mobile-lang" role="group" [attr.aria-label]="t().header.languageAria">
+        @for (language of languages; track language.code) {
+        <button
+          type="button"
+          class="mono"
+          [class.active]="lang() === language.code"
+          (click)="setLanguage(language.code)"
+        >
+          {{ language.code.toUpperCase() }}
+        </button>
+        }
+      </div>
+      <a class="btn btn-primary" href="#contact" (click)="closeMenu()">{{ t().header.cta }}</a>
     </nav>
     }
   </header>
@@ -52,28 +75,27 @@
       <div class="hero-copy">
         <p class="status-pill reveal">
           <span class="pulse-dot"></span>
-          Verfügbar für neue Projekte
+          {{ t().hero.statusPill }}
         </p>
 
         <h1 class="reveal" style="--d: 60ms">
-          Mobile Apps. Web-Plattformen.
-          <span class="gradient-text">AI-Systeme.</span>
+          {{ t().hero.titleLead }}
+          <span class="gradient-text">{{ t().hero.titleAccent }}</span>
         </h1>
 
         <p class="lead reveal" style="--d: 120ms">
-          Gemini entwickelt native iOS- und Android-Apps, moderne Frontends, robuste Backends und
-          AI-gestützte Workflows — engineered aus einer Hand, live in unter 90 Tagen.
+          {{ t().hero.lead }}
         </p>
 
         <div class="hero-actions reveal" style="--d: 180ms">
           <a class="btn btn-primary" href="#contact">
-            Projekt starten
+            {{ t().hero.ctaPrimary }}
             <span class="btn-arrow" aria-hidden="true">→</span>
           </a>
-          <a class="btn btn-ghost" href="#capabilities">Leistungen ansehen</a>
+          <a class="btn btn-ghost" href="#capabilities">{{ t().hero.ctaSecondary }}</a>
         </div>
 
-        <div class="hero-chips reveal" style="--d: 240ms" aria-label="Kern-Technologien">
+        <div class="hero-chips reveal" style="--d: 240ms" [attr.aria-label]="t().hero.chipsAria">
           @for (chip of heroChips; track chip) {
           <span class="mono-chip">{{ chip }}</span>
           }
@@ -130,32 +152,32 @@
         </div>
 
         <div class="float-chip chip-a" aria-hidden="true">
-          <strong>&lt;90d</strong>
-          <span>bis Launch</span>
+          <strong>{{ impactMetrics()[3].value }}</strong>
+          <span>{{ t().hero.floatLaunch }}</span>
         </div>
         <div class="float-chip chip-b" aria-hidden="true">
           <strong>82%</strong>
-          <span>Automation</span>
+          <span>{{ t().hero.floatAutomation }}</span>
         </div>
       </div>
 
-      <div class="hero-stats reveal" style="--d: 260ms" aria-label="Ausgewählte Kennzahlen">
+      <div class="hero-stats reveal" style="--d: 260ms" [attr.aria-label]="t().hero.statsAria">
         <article class="stat-block">
-          <p>{{ impactMetrics[0].value }}</p>
-          <span>{{ impactMetrics[0].label }}</span>
+          <p>{{ impactMetrics()[0].value }}</p>
+          <span>{{ impactMetrics()[0].label }}</span>
         </article>
         <article class="stat-block">
-          <p>{{ impactMetrics[2].value }}</p>
-          <span>{{ impactMetrics[2].label }}</span>
+          <p>{{ impactMetrics()[2].value }}</p>
+          <span>{{ impactMetrics()[2].label }}</span>
         </article>
         <article class="stat-block">
-          <p>{{ impactMetrics[3].value }}</p>
-          <span>{{ impactMetrics[3].label }}</span>
+          <p>{{ impactMetrics()[3].value }}</p>
+          <span>{{ impactMetrics()[3].label }}</span>
         </article>
       </div>
     </section>
 
-    <section class="marquee" aria-label="Technologie-Ticker">
+    <section class="marquee" aria-label="Technology ticker">
       <div class="marquee-track">
         @for (tech of technologies; track tech) {
         <span class="marquee-item">{{ tech }}</span>
@@ -170,16 +192,15 @@
 
     <section class="section container" id="capabilities">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">01</span> Leistungen</p>
-        <h2>Ein spezialisiertes Team für Apps, Plattformen und Backends.</h2>
+        <p class="eyebrow"><span class="eyebrow-index">01</span> {{ t().sections.capabilities.eyebrow }}</p>
+        <h2>{{ t().sections.capabilities.title }}</h2>
         <p class="section-copy">
-          Der Schwerpunkt liegt auf Software, die im Alltag funktioniert: native mobile Apps, solide
-          Backend-Systeme, schnelle Frontends und Automatisierung mit direktem Business-Nutzen.
+          {{ t().sections.capabilities.copy }}
         </p>
       </div>
 
       <div class="bento-grid">
-        @for (capability of capabilities; track capability.title; let i = $index) {
+        @for (capability of capabilities(); track capability.title; let i = $index) {
         <article class="card capability-card reveal" [style.--d]="(i % 3) * 90 + 'ms'" (mousemove)="onCardMove($event)">
           <div class="card-top">
             <span class="card-index mono">0{{ i + 1 }}</span>
@@ -201,17 +222,16 @@
     <section class="section container" id="impact">
       <div class="impact-layout">
         <div class="impact-copy reveal">
-          <p class="eyebrow"><span class="eyebrow-index">02</span> Wirkung</p>
-          <h2>Mehr Tempo, weniger Reibung — Produkte, die sauber skalieren.</h2>
+          <p class="eyebrow"><span class="eyebrow-index">02</span> {{ t().sections.impact.eyebrow }}</p>
+          <h2>{{ t().sections.impact.title }}</h2>
           <p class="section-copy">
-            Gemini verbindet Produktstrategie, mobile Entwicklung, Backend-Engineering und AI-Automation zu
-            belastbaren Lösungen, die schneller live gehen und leichter weiterentwickelt werden können.
+            {{ t().sections.impact.copy }}
           </p>
-          <a class="btn btn-ghost" href="#contact">Wirkung besprechen <span class="btn-arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost" href="#contact">{{ t().sections.impact.cta }} <span class="btn-arrow" aria-hidden="true">→</span></a>
         </div>
 
         <div class="impact-grid">
-          @for (metric of impactMetrics; track metric.label; let i = $index) {
+          @for (metric of impactMetrics(); track metric.label; let i = $index) {
           <article class="card metric-card reveal" [style.--d]="i * 80 + 'ms'">
             <p class="metric-value">{{ metricDisplays()[i] }}</p>
             <h3>{{ metric.label }}</h3>
@@ -224,16 +244,15 @@
 
     <section class="section container" id="projects">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">03</span> Projekte</p>
-        <h2>Digitale Produkte für Startups, Mittelstand und anspruchsvolle Organisationen.</h2>
+        <p class="eyebrow"><span class="eyebrow-index">03</span> {{ t().sections.projects.eyebrow }}</p>
+        <h2>{{ t().sections.projects.title }}</h2>
         <p class="section-copy">
-          Der Fokus liegt auf Klarheit: mobile Apps, Web-Plattformen, Backends und Automatisierung — gebaut,
-          damit Teams, Kunden und Entscheider sie langfristig nutzen können.
+          {{ t().sections.projects.copy }}
         </p>
       </div>
 
       <div class="project-grid">
-        @for (project of projectHighlights; track project.company; let i = $index) {
+        @for (project of projectHighlights(); track project.company; let i = $index) {
         <article class="card project-card reveal" [style.--d]="(i % 3) * 90 + 'ms'" (mousemove)="onCardMove($event)">
           <div class="project-head">
             <p class="project-company mono">{{ project.company }}</p>
@@ -256,16 +275,15 @@
 
     <section class="section container" id="referrals">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">04</span> Stimmen</p>
-        <h2>Teams schätzen Struktur, Tempo und messbare Umsetzung.</h2>
+        <p class="eyebrow"><span class="eyebrow-index">04</span> {{ t().sections.referrals.eyebrow }}</p>
+        <h2>{{ t().sections.referrals.title }}</h2>
         <p class="section-copy">
-          Ausgewählte Rückmeldungen von Teams, die klare Produktführung, stabile Architektur und messbare
-          Umsetzung brauchen.
+          {{ t().sections.referrals.copy }}
         </p>
       </div>
 
       <div class="referrals-grid">
-        @for (referral of clientReferrals; track referral.client; let i = $index) {
+        @for (referral of clientReferrals(); track referral.client; let i = $index) {
         <article class="card referral-card reveal" [style.--d]="(i % 3) * 90 + 'ms'">
           <p class="referral-quote">"{{ referral.feedback }}"</p>
           <p class="referral-impact">{{ referral.impact }}</p>
@@ -283,17 +301,16 @@
 
     <section class="section container" id="ai-lab">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">05</span> AI Lab</p>
-        <h2>Teste wirtschaftliche Annahmen, bevor du die nächste Plattform startest.</h2>
+        <p class="eyebrow"><span class="eyebrow-index">05</span> {{ t().sections.aiLab.eyebrow }}</p>
+        <h2>{{ t().sections.aiLab.title }}</h2>
         <p class="section-copy">
-          Die interaktive Modellierung zeigt, wie mobile Apps, Backend-Automation und AI-Funktionen
-          wirtschaftliche Wirkung erzeugen können.
+          {{ t().sections.aiLab.copy }}
         </p>
       </div>
 
       <div class="lab-layout reveal">
         <div class="tab-list" role="tablist" aria-label="AI Use Cases">
-          @for (useCase of useCases; track useCase.name; let i = $index) {
+          @for (useCase of useCases(); track useCase.name; let i = $index) {
           <button
             type="button"
             role="tab"
@@ -309,12 +326,12 @@
         </div>
 
         <article class="card case-panel" aria-live="polite">
-          <p class="case-label mono">// Herausforderung</p>
-          <h3>{{ useCases[activeUseCase()].problem }}</h3>
-          <p class="case-solution">{{ useCases[activeUseCase()].solution }}</p>
+          <p class="case-label mono">{{ t().lab.challengeLabel }}</p>
+          <h3>{{ useCases()[activeUseCase()].problem }}</h3>
+          <p class="case-solution">{{ useCases()[activeUseCase()].solution }}</p>
           <p class="case-outcome">
             <span class="mark" aria-hidden="true">✓</span>
-            {{ useCases[activeUseCase()].outcome }}
+            {{ useCases()[activeUseCase()].outcome }}
           </p>
         </article>
       </div>
@@ -325,7 +342,7 @@
 
           <label>
             <span class="slider-head">
-              <span>Monatlicher Umsatz (Baseline)</span>
+              <span>{{ t().lab.revenueLabel }}</span>
               <strong class="mono">{{ monthlyRevenueLabel() }}</strong>
             </span>
             <input
@@ -340,7 +357,7 @@
 
           <label>
             <span class="slider-head">
-              <span>Automation Lift</span>
+              <span>{{ t().lab.automationLiftLabel }}</span>
               <strong class="mono">{{ automationLift() }}%</strong>
             </span>
             <input
@@ -355,7 +372,7 @@
 
           <label>
             <span class="slider-head">
-              <span>AI Upside</span>
+              <span>{{ t().lab.aiUpsideLabel }}</span>
               <strong class="mono">{{ aiUpside() }}%</strong>
             </span>
             <input
@@ -370,7 +387,7 @@
 
           <label>
             <span class="slider-head">
-              <span>Capacity Recovery</span>
+              <span>{{ t().lab.capacityRecoveryLabel }}</span>
               <strong class="mono">{{ efficiencyRecovery() }}%</strong>
             </span>
             <input
@@ -386,21 +403,21 @@
 
         <div class="sim-results">
           <article class="card sim-card">
-            <p>Automation Value / Monat</p>
+            <p>{{ t().lab.automationValueLabel }}</p>
             <h3 class="mono">{{ monthlyAutomationLabel() }}</h3>
           </article>
           <article class="card sim-card">
-            <p>AI Value / Monat</p>
+            <p>{{ t().lab.aiValueLabel }}</p>
             <h3 class="mono">{{ monthlyAiLabel() }}</h3>
           </article>
           <article class="card sim-card">
-            <p>Recovered Capacity / Monat</p>
+            <p>{{ t().lab.recoveredCapacityLabel }}</p>
             <h3 class="mono">{{ monthlyRecoveryLabel() }}</h3>
           </article>
           <article class="card sim-card sim-total">
-            <p>Projizierter Gesamtwert / Monat</p>
+            <p>{{ t().lab.totalLabel }}</p>
             <h3 class="mono">{{ monthlyTotalLabel() }}</h3>
-            <small class="mono">Jahresprojektion: {{ annualTotalLabel() }}</small>
+            <small class="mono">{{ t().lab.annualPrefix }} {{ annualTotalLabel() }}</small>
           </article>
         </div>
       </div>
@@ -408,16 +425,15 @@
 
     <section class="section container" id="technology">
       <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">06</span> Stack</p>
-        <h2>Starke Backends, schnelle Frontends, native mobile Apps.</h2>
+        <p class="eyebrow"><span class="eyebrow-index">06</span> {{ t().sections.technology.eyebrow }}</p>
+        <h2>{{ t().sections.technology.title }}</h2>
         <p class="section-copy">
-          Swift für iOS, Kotlin für Android, TypeScript für Frontends, robuste APIs, Cloud-Infrastruktur und
-          AI-Services — pragmatisch kombiniert, damit Produkte schnell nutzbar und stabil im Betrieb sind.
+          {{ t().sections.technology.copy }}
         </p>
       </div>
 
       <div class="stack-grid">
-        @for (item of technologyStack; track item.name; let i = $index) {
+        @for (item of technologyStack(); track item.name; let i = $index) {
         <article class="card stack-card reveal" [style.--d]="(i % 4) * 70 + 'ms'" (mousemove)="onCardMove($event)">
           <span class="stack-index mono">0{{ i + 1 }}</span>
           <h3>{{ item.name }}</h3>
@@ -430,16 +446,20 @@
     <section class="section container" id="contact">
       <div class="contact-panel reveal">
         <div class="contact-glow" aria-hidden="true"></div>
-        <p class="eyebrow eyebrow-center"><span class="eyebrow-index">07</span> Kontakt</p>
-        <h2>Bereit, dein nächstes Produkt zu bauen?</h2>
+        <p class="eyebrow eyebrow-center"><span class="eyebrow-index">07</span> {{ t().sections.contact.eyebrow }}</p>
+        <h2>{{ t().sections.contact.title }}</h2>
         <p class="contact-copy">
-          Mobile Apps, Web-Frontends, Backend-Systeme und AI-Workflows — einfach zu verstehen, angenehm zu
-          bedienen und messbar wirksam.
+          {{ t().sections.contact.copy }}
         </p>
 
         <form class="email-capture" (submit)="$event.preventDefault()">
-          <input type="email" placeholder="deine@firma.de" aria-label="Business E-Mail-Adresse" required />
-          <button class="btn btn-primary" type="submit">Kostenloses Erstgespräch</button>
+          <input
+            type="email"
+            [placeholder]="t().sections.contact.emailPlaceholder"
+            [attr.aria-label]="t().sections.contact.emailAria"
+            required
+          />
+          <button class="btn btn-primary" type="submit">{{ t().sections.contact.submit }}</button>
         </form>
 
         <div class="contact-alt">
@@ -447,7 +467,7 @@
           <span aria-hidden="true">·</span>
           <a href="tel:+15550123456">+1 (555) 012-3456</a>
         </div>
-        <p class="contact-note mono">// Antwort innerhalb von zwei Werktagen · NDA auf Wunsch</p>
+        <p class="contact-note mono">{{ t().sections.contact.note }}</p>
       </div>
     </section>
   </main>
@@ -460,21 +480,20 @@
           <span class="brand-name">gemini<span class="brand-accent">.dev</span></span>
         </a>
         <p>
-          Native Apps, Web-Plattformen, Backends und AI-Automation für ambitionierte Teams — von Discovery
-          bis Production.
+          {{ t().footer.blurb }}
         </p>
       </div>
 
       <div class="footer-col">
-        <p class="footer-title mono">// Studio</p>
-        <a href="#capabilities">Leistungen</a>
-        <a href="#projects">Projekte</a>
-        <a href="#ai-lab">AI Lab</a>
-        <a href="#technology">Stack</a>
+        <p class="footer-title mono">{{ t().footer.studioTitle }}</p>
+        <a href="#capabilities">{{ t().footer.linkCapabilities }}</a>
+        <a href="#projects">{{ t().footer.linkProjects }}</a>
+        <a href="#ai-lab">{{ t().footer.linkAiLab }}</a>
+        <a href="#technology">{{ t().footer.linkStack }}</a>
       </div>
 
       <div class="footer-col">
-        <p class="footer-title mono">// Engineering</p>
+        <p class="footer-title mono">{{ t().footer.engineeringTitle }}</p>
         <a href="#capabilities">iOS · Swift</a>
         <a href="#capabilities">Android · Kotlin</a>
         <a href="#capabilities">Backend & Cloud</a>
@@ -482,10 +501,10 @@
       </div>
 
       <div class="footer-col">
-        <p class="footer-title mono">// Kontakt</p>
+        <p class="footer-title mono">{{ t().footer.contactTitle }}</p>
         <a href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
         <a href="tel:+15550123456">+1 (555) 012-3456</a>
-        <a href="#contact">Erstgespräch buchen</a>
+        <a href="#contact">{{ t().footer.bookCall }}</a>
       </div>
     </div>
 
