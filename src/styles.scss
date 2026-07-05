@@ -1,28 +1,28 @@
 :root {
-  --bg: #05070d;
-  --bg-raised: #0a0f1c;
-  --surface: rgba(148, 163, 184, 0.05);
-  --surface-strong: rgba(148, 163, 184, 0.09);
-  --border: rgba(148, 163, 184, 0.14);
-  --border-strong: rgba(148, 163, 184, 0.26);
-  --text: #e8edf6;
-  --text-muted: #9aa7bd;
+  --bg: #f6f8fc;
+  --bg-raised: #ffffff;
+  --surface: rgba(100, 116, 139, 0.06);
+  --surface-strong: rgba(100, 116, 139, 0.12);
+  --border: rgba(100, 116, 139, 0.18);
+  --border-strong: rgba(100, 116, 139, 0.32);
+  --text: #0f172a;
+  --text-muted: #475569;
   --text-faint: #64748b;
-  --indigo: #6366f1;
-  --indigo-bright: #818cf8;
-  --violet: #a855f7;
-  --cyan: #22d3ee;
-  --green: #34d399;
-  --amber: #fbbf24;
-  --red: #f87171;
-  --gradient: linear-gradient(120deg, #818cf8, #c084fc 45%, #22d3ee);
+  --indigo: #4f46e5;
+  --indigo-bright: #6366f1;
+  --violet: #9333ea;
+  --cyan: #0891b2;
+  --green: #059669;
+  --amber: #d97706;
+  --red: #dc2626;
+  --gradient: linear-gradient(120deg, #6366f1, #a855f7 45%, #0891b2);
   --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --radius: 14px;
   --radius-sm: 9px;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -50,8 +50,8 @@ body {
 }
 
 ::selection {
-  background: rgba(129, 140, 248, 0.4);
-  color: #ffffff;
+  background: rgba(99, 102, 241, 0.25);
+  color: #0f172a;
 }
 
 a {
@@ -90,13 +90,13 @@ select {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.22);
+  background: rgba(100, 116, 139, 0.35);
   border-radius: 99px;
   border: 2px solid var(--bg);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.38);
+  background: rgba(100, 116, 139, 0.55);
 }
 
 @media (prefers-reduced-motion: reduce) {
