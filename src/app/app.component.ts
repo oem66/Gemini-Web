@@ -1,48 +1,23 @@
-import { Component, computed, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  afterNextRender,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
+import {
+  LANGUAGES,
+  LanguageCode,
+  LanguageOption,
+  SiteContent,
+  TRANSLATIONS,
+  TerminalLine
+} from './i18n';
 
-interface NavItem {
-  label: string;
-  href: string;
-}
-
-interface Capability {
-  title: string;
-  description: string;
-  value: string;
-  bullets: string[];
-}
-
-interface UseCase {
-  name: string;
-  problem: string;
-  solution: string;
-  outcome: string;
-}
-
-interface Technology {
-  name: string;
-  summary: string;
-}
-
-interface ImpactMetric {
-  value: string;
-  label: string;
-  detail: string;
-}
-
-interface ProjectHighlight {
-  company: string;
-  project: string;
-  challenge: string;
-  result: string;
-}
-
-interface ClientReferral {
-  client: string;
-  role: string;
-  feedback: string;
-  impact: string;
-}
+const LANGUAGE_STORAGE_KEY = 'gemini-lang';
 
 @Component({
   selector: 'app-root',
@@ -51,246 +26,49 @@ interface ClientReferral {
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly timeouts: ReturnType<typeof setTimeout>[] = [];
+
   readonly year = new Date().getFullYear();
 
-  readonly navItems: NavItem[] = [
-    { label: 'Funktionen', href: '#capabilities' },
-    { label: 'Wirkung', href: '#impact' },
-    { label: 'Ergebnisse', href: '#projects' },
-    { label: 'Stimmen', href: '#referrals' },
-    { label: 'AI Lab', href: '#ai-lab' },
-    { label: 'Stack', href: '#technology' },
-    { label: 'Kontakt', href: '#contact' }
-  ];
+  readonly languages: LanguageOption[] = LANGUAGES;
+  readonly lang = signal<LanguageCode>(this.detectInitialLanguage());
+  readonly t = computed<SiteContent>(() => TRANSLATIONS[this.lang()]);
+
+  readonly navItems = computed(() => this.t().navItems);
+  readonly capabilities = computed(() => this.t().capabilities);
+  readonly impactMetrics = computed(() => this.t().impactMetrics);
+  readonly projectHighlights = computed(() => this.t().projectHighlights);
+  readonly clientReferrals = computed(() => this.t().clientReferrals);
+  readonly useCases = computed(() => this.t().useCases);
+  readonly technologyStack = computed(() => this.t().technologyStack);
 
   readonly technologies: string[] = [
-    'Backend APIs',
-    'Frontend Apps',
-    'iOS Swift',
-    'Android Kotlin',
-    'Mobile Solutions',
+    'Swift',
+    'Kotlin',
+    'TypeScript',
+    'Angular',
+    'Node.js',
+    'SwiftUI',
+    'Jetpack Compose',
+    'PostgreSQL',
     'Cloud DevOps',
     'AI Automation',
-    'Dashboards'
+    'CI/CD',
+    'GraphQL'
   ];
 
-  readonly capabilities: Capability[] = [
-    {
-      title: 'Mobile Solutions',
-      description:
-        'Gemini entwickelt mobile Produkte fuer kleine und grosse Unternehmen, von der ersten App-Idee bis zum stabilen Betrieb.',
-      value: 'Spezialisierte mobile Loesungen mit klarer Produktlogik.',
-      bullets: ['Discovery, UX flows and product architecture', 'MVP, scale-up and enterprise app delivery', 'Analytics, release planning and maintenance']
-    },
-    {
-      title: 'Native iOS Development',
-      description:
-        'Native iOS Apps werden in Swift entwickelt und auf Performance, gute Bedienbarkeit und saubere App-Store-Auslieferung ausgelegt.',
-      value: 'Premium iPhone und iPad Apps fuer reale Geschaeftsprozesse.',
-      bullets: ['Swift, SwiftUI and UIKit implementation', 'Device APIs, push, camera and location flows', 'App Store preparation and release support']
-    },
-    {
-      title: 'Native Android Development',
-      description:
-        'Android Apps entstehen mit Kotlin, modernen UI-Patterns und stabilen Datenfluesse fuer Smartphones, Tablets und Business Devices.',
-      value: 'Verlaessliche Android Produkte fuer Teams, Kunden und Operations.',
-      bullets: ['Kotlin and Jetpack Compose development', 'Offline sync, notifications and secure storage', 'Google Play release and device testing']
-    },
-    {
-      title: 'Backend Engineering',
-      description:
-        'Robuste Backends verbinden mobile Apps, Web-Frontends, Datenbanken und externe Systeme zu belastbaren digitalen Produkten.',
-      value: 'APIs, Authentifizierung und Datenmodelle, die Wachstum aushalten.',
-      bullets: ['REST and event-driven API development', 'Cloud services, databases and integrations', 'Security, permissions and audit-ready workflows']
-    },
-    {
-      title: 'Frontend Platforms',
-      description:
-        'Wir bauen schnelle Web-Frontends und interne Plattformen mit klarer Nutzerfuehrung, responsivem Layout und sauberer Komponentenstruktur.',
-      value: 'Moderne Frontends fuer Kundenportale, Dashboards und SaaS-Produkte.',
-      bullets: ['Angular, TypeScript and responsive UI systems', 'Design systems and reusable components', 'Performance, accessibility and conversion quality']
-    },
-    {
-      title: 'AI Workflow Automation',
-      description:
-        'AI wird dort eingesetzt, wo sie Softwareprodukte messbar verbessert: Automatisierung, Priorisierung, Support und operative Entscheidungen.',
-      value: 'Weniger manuelle Reibung, schnellere Entscheidungen.',
-      bullets: ['Workflow discovery and redesign', 'AI-assisted task orchestration', 'Dashboards, governance and human review']
-    }
-  ];
+  readonly heroChips: string[] = ['iOS · Swift', 'Android · Kotlin', 'Web · Angular', 'Backend · Node', 'AI · Automation'];
 
-  readonly impactMetrics: ImpactMetric[] = [
-    {
-      value: '41%',
-      label: 'Shorter process time',
-      detail: 'After structured automation in recurring operational workflows.'
-    },
-    {
-      value: '29%',
-      label: 'Revenue lift',
-      detail: 'Through funnel optimization, intelligent routing, and AI decision support.'
-    },
-    {
-      value: '82%',
-      label: 'Automation coverage',
-      detail: 'Across recurring tasks in sales, service, and internal operations.'
-    },
-    {
-      value: '<90d',
-      label: 'Typical launch',
-      detail: 'From discovery to live AI-enabled business outcomes.'
-    }
-  ];
+  readonly terminalLines = signal<TerminalLine[]>([]);
+  readonly typingLine = signal('');
+  readonly isTyping = signal(false);
 
-  readonly projectHighlights: ProjectHighlight[] = [
-    {
-      company: 'Siemens',
-      project: 'Industrial Work Management Hub',
-      challenge:
-        'Complex operational telemetry and process controls were spread across disconnected systems, consoles, and teams.',
-      result:
-        'Unified AI-driven monitoring and workflow automation improved incident response speed and operational reliability.'
-    },
-    {
-      company: 'Bosch',
-      project: 'Connected Product Delivery Platform',
-      challenge: 'Product and service data pipelines required stronger automation, visibility, and delivery consistency.',
-      result:
-        'Built an integrated digital platform with ML-enabled insight flows that reduced manual process overhead.'
-    },
-    {
-      company: 'Deutsche Telekom',
-      project: 'Telecom Workflow Automation Program',
-      challenge: 'High-volume service workflows created delays in activation, support, and quality assurance processes.',
-      result:
-        'Implemented AI-assisted orchestration and verification to accelerate service cycles and improve customer outcomes.'
-    },
-    {
-      company: 'Department of Justice',
-      project: 'Secure Workflow Modernization',
-      challenge: 'Mission-critical workflows required secure modernization with strict control, traceability, and uptime.',
-      result:
-        'Delivered a resilient digital operations layer with automation controls and auditable process intelligence.'
-    },
-    {
-      company: 'ICA Banken',
-      project: 'Smart Banking Operations Engine',
-      challenge: 'Financial operations needed faster decision loops for risk handling, service workflows, and reporting.',
-      result:
-        'Deployed ML-enhanced automation and analytics that improved processing speed and operational decision quality.'
-    }
-  ];
-
-  readonly clientReferrals: ClientReferral[] = [
-    {
-      client: 'Siemens',
-      role: 'Head of Digital Operations',
-      feedback:
-        'Gemini translated a complex modernization roadmap into a clear launch sequence and delivered quickly.',
-      impact: 'Automation coverage increased and process lead times dropped across multiple operations teams.'
-    },
-    {
-      client: 'Bosch',
-      role: 'Program Director, Connected Systems',
-      feedback:
-        'The team combined strong engineering quality with practical AI use cases that our business units could adopt fast.',
-      impact: 'Manual coordination overhead decreased while product and service delivery consistency improved.'
-    },
-    {
-      client: 'Deutsche Telekom',
-      role: 'Senior Transformation Manager',
-      feedback:
-        'Gemini delivered a scalable automation layer that aligned well with telecom workflow complexity and speed requirements.',
-      impact: 'Service activation cycles accelerated and operational issue resolution became significantly faster.'
-    },
-    {
-      client: 'Department of Justice',
-      role: 'Technology Modernization Lead',
-      feedback:
-        'Execution was disciplined, secure, and outcome-driven from discovery through deployment.',
-      impact: 'Critical workflows gained stronger traceability, resilience, and measurable efficiency improvements.'
-    },
-    {
-      client: 'ICA Banken',
-      role: 'Digital Banking Operations Manager',
-      feedback:
-        'Gemini helped us turn AI from concept into practical value within our core operational and reporting flows.',
-      impact: 'Decision turnaround improved and process bottlenecks were reduced across banking operations.'
-    },
-    {
-      client: 'Global Retail Platform',
-      role: 'VP of Technology',
-      feedback:
-        'Their team integrated engineering, DevOps, and AI in one stream, which removed delivery friction immediately.',
-      impact: 'Release velocity improved while conversion and retention metrics trended upward in the first quarter.'
-    }
-  ];
-
-  readonly useCases: UseCase[] = [
-    {
-      name: 'Mobile Product Launch',
-      problem: 'A new business idea needs a clear mobile product, native app delivery, backend services, and a realistic release path.',
-      solution:
-        'Gemini designs the app experience, builds iOS with Swift, Android with Kotlin, and connects both platforms to secure backend APIs.',
-      outcome: 'A launch-ready mobile solution with product analytics, release support, and room to scale.'
-    },
-    {
-      name: 'Business App Modernization',
-      problem: 'Existing tools are slow, fragmented, or no longer fit the way teams and customers actually work.',
-      solution:
-        'We rebuild critical workflows as modern mobile, web, and backend systems with cleaner UX and stronger integration points.',
-      outcome: 'Less operational friction, better adoption, and software that supports current business processes.'
-    },
-    {
-      name: 'Customer Platforms',
-      problem: 'Customers expect fast digital access across mobile and web, but internal systems often slow the experience down.',
-      solution:
-        'Gemini creates customer portals, account areas, mobile self-service flows, and connected dashboards on top of reliable APIs.',
-      outcome: 'A smoother customer journey across iOS, Android, and browser-based touchpoints.'
-    },
-    {
-      name: 'Executive Intelligence',
-      problem: 'Leadership lacks real-time clarity on what is driving growth, margin, and operational friction.',
-      solution:
-        'Gemini builds unified intelligence layers combining product, sales, and operational data into decision-ready signals.',
-      outcome: 'Sharper strategic decisions with continuous visibility into business performance.'
-    }
-  ];
-
-  readonly technologyStack: Technology[] = [
-    {
-      name: 'Backend Development',
-      summary: 'Secure APIs, cloud services, databases, auth, integrations, and data models for reliable product foundations.'
-    },
-    {
-      name: 'Frontend Development',
-      summary: 'Angular and TypeScript frontends with responsive layouts, reusable components, clear UX, and fast interactions.'
-    },
-    {
-      name: 'iOS Development',
-      summary: 'Native Swift apps for iPhone and iPad, including SwiftUI, UIKit, device APIs, testing, and App Store release.'
-    },
-    {
-      name: 'Android Development',
-      summary: 'Native Kotlin apps with Jetpack Compose, offline-ready flows, push notifications, and Google Play delivery.'
-    },
-    {
-      name: 'Mobile Product Strategy',
-      summary: 'Specialized mobile solution design for small businesses, growing teams, and large enterprise environments.'
-    },
-    {
-      name: 'AI Automation',
-      summary: 'Applied AI systems for workflow automation, decision support, support operations, and business dashboards.'
-    },
-    {
-      name: 'DevOps and Cloud',
-      summary: 'CI/CD, infrastructure automation, monitoring, observability, and release pipelines for stable growth.'
-    },
-    {
-      name: 'Quality and Release',
-      summary: 'Automated checks, manual QA, App Store and Google Play preparation, staged rollouts, and post-launch support.'
-    }
-  ];
+  readonly menuOpen = signal(false);
+  readonly scrolled = signal(false);
+  readonly scrollProgress = signal(0);
+  readonly activeSection = signal('');
 
   readonly activeUseCase = signal(0);
 
@@ -298,6 +76,16 @@ export class AppComponent {
   readonly cursorY = signal(50);
   readonly tiltX = signal(0);
   readonly tiltY = signal(0);
+
+  private readonly metricProgress = signal(0);
+  readonly metricDisplays = computed(() =>
+    this.impactMetrics().map((metric) =>
+      metric.numeric === null
+        ? metric.value
+        : `${metric.prefix}${Math.round(metric.numeric * this.metricProgress())}${metric.suffix}`
+    )
+  );
+  private metricsAnimated = false;
 
   readonly monthlyRevenue = signal(120000);
   readonly automationLift = signal(22);
@@ -327,8 +115,60 @@ export class AppComponent {
   readonly monthlyTotalLabel = computed(() => this.toCurrency(this.monthlyTotalValue()));
   readonly annualTotalLabel = computed(() => this.toCurrency(this.annualTotalValue()));
 
+  constructor() {
+    afterNextRender(() => {
+      document.documentElement.lang = this.lang();
+      this.startTerminal();
+      this.observeReveals();
+      this.observeSections();
+      this.onWindowScroll();
+    });
+
+    this.destroyRef.onDestroy(() => this.timeouts.forEach(clearTimeout));
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    const y = window.scrollY;
+    this.scrolled.set(y > 24);
+
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    this.scrollProgress.set(max > 0 ? Math.min(100, (y / max) * 100) : 0);
+  }
+
+  setLanguage(code: string): void {
+    if (!this.isLanguageCode(code) || code === this.lang()) {
+      return;
+    }
+
+    this.lang.set(code);
+    document.documentElement.lang = code;
+
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, code);
+    } catch {
+      // Private mode / storage unavailable — selection still applies for this visit.
+    }
+  }
+
+  toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(false);
+  }
+
   setUseCase(index: number): void {
     this.activeUseCase.set(index);
+  }
+
+  onCardMove(event: MouseEvent): void {
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    target.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+    target.style.setProperty('--my', `${event.clientY - rect.top}px`);
   }
 
   onHeroMove(event: MouseEvent, element: HTMLElement): void {
@@ -341,8 +181,8 @@ export class AppComponent {
 
     this.cursorX.set(this.clampPercentage(x));
     this.cursorY.set(this.clampPercentage(y));
-    this.tiltY.set(this.clampRange(normalizedX * 10, -7, 7));
-    this.tiltX.set(this.clampRange(normalizedY * -9, -6, 6));
+    this.tiltY.set(this.clampRange(normalizedX * 8, -6, 6));
+    this.tiltX.set(this.clampRange(normalizedY * -7, -5, 5));
   }
 
   resetHeroFocus(): void {
@@ -368,6 +208,158 @@ export class AppComponent {
     this.efficiencyRecovery.set(Number(value));
   }
 
+  private detectInitialLanguage(): LanguageCode {
+    if (typeof window === 'undefined') {
+      return 'en';
+    }
+
+    try {
+      const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (stored && this.isLanguageCode(stored)) {
+        return stored;
+      }
+    } catch {
+      // Storage unavailable — fall through to browser language.
+    }
+
+    const browser = (navigator.language || '').toLowerCase();
+    if (browser.startsWith('nb') || browser.startsWith('nn')) {
+      return 'no';
+    }
+
+    const prefix = browser.slice(0, 2);
+    return this.isLanguageCode(prefix) ? prefix : 'en';
+  }
+
+  private isLanguageCode(value: string): value is LanguageCode {
+    return LANGUAGES.some((language) => language.code === value);
+  }
+
+  private startTerminal(): void {
+    let index = 0;
+
+    const playNext = () => {
+      const script = this.t().terminalScript;
+
+      if (index >= script.length) {
+        this.schedule(() => {
+          this.terminalLines.set([]);
+          index = 0;
+          playNext();
+        }, 4600);
+        return;
+      }
+
+      const line = script[index];
+
+      if (line.kind === 'cmd') {
+        this.isTyping.set(true);
+        this.typingLine.set('');
+        let char = 0;
+
+        const typeChar = () => {
+          if (char <= line.text.length) {
+            this.typingLine.set(line.text.slice(0, char));
+            char++;
+            this.schedule(typeChar, 22 + Math.random() * 38);
+          } else {
+            this.isTyping.set(false);
+            this.typingLine.set('');
+            this.terminalLines.update((lines) => [...lines, line]);
+            index++;
+            this.schedule(playNext, 300);
+          }
+        };
+
+        typeChar();
+      } else {
+        this.terminalLines.update((lines) => [...lines, line]);
+        index++;
+        this.schedule(playNext, 420);
+      }
+    };
+
+    playNext();
+  }
+
+  private observeReveals(): void {
+    const elements: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('.reveal'));
+
+    if (!('IntersectionObserver' in window)) {
+      elements.forEach((el) => el.classList.add('in'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    this.destroyRef.onDestroy(() => observer.disconnect());
+  }
+
+  private observeSections(): void {
+    const sections: HTMLElement[] = Array.from(this.host.nativeElement.querySelectorAll('section[id]'));
+
+    if (!('IntersectionObserver' in window)) {
+      this.animateMetrics();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) {
+            continue;
+          }
+          this.activeSection.set(entry.target.id);
+          if (entry.target.id === 'impact') {
+            this.animateMetrics();
+          }
+        }
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    this.destroyRef.onDestroy(() => observer.disconnect());
+  }
+
+  private animateMetrics(): void {
+    if (this.metricsAnimated) {
+      return;
+    }
+    this.metricsAnimated = true;
+
+    const duration = 1500;
+    const start = performance.now();
+
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      this.metricProgress.set(eased);
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
+  }
+
+  private schedule(fn: () => void, delay: number): void {
+    this.timeouts.push(setTimeout(fn, delay));
+  }
+
   private clampPercentage(value: number): number {
     return Math.max(0, Math.min(100, value));
   }
@@ -377,7 +369,8 @@ export class AppComponent {
   }
 
   private toCurrency(value: number): string {
-    return new Intl.NumberFormat('en-US', {
+    const locale = LANGUAGES.find((language) => language.code === this.lang())?.locale ?? 'en-US';
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: 'USD',
       maximumFractionDigits: 0
