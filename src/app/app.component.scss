@@ -5,6 +5,7 @@
 
 .mono {
   font-family: var(--font-mono);
+  letter-spacing: var(--tracking-micro);
 }
 
 .container {
@@ -20,11 +21,15 @@
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
   height: 2px;
   z-index: 120;
-  background: var(--gradient);
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.65);
+  background: var(--accent);
   pointer-events: none;
+  /* Scaled, not resized — the bar never leaves the compositor (§11). */
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
 }
 
 /* ---------------------------------- */
@@ -48,44 +53,30 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(100, 116, 139, 0.08) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(100, 116, 139, 0.08) 1px, transparent 1px);
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(180deg, var(--grid-line) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 78%);
 }
 
-.orb {
+/* One wash, not a field of coloured orbs. It is a child of .site rather than
+   of the fixed .backdrop, so it scrolls away with the hero instead of tinting
+   every section on the way down — ambient light has a source, and this one is
+   above the fold. */
+.wash {
   position: absolute;
+  top: -26rem;
+  left: 50%;
+  z-index: 0;
+  width: min(78rem, 130%);
+  height: 46rem;
+  translate: -50% 0;
   border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.4;
-}
-
-.orb-a {
-  width: 34rem;
-  height: 34rem;
-  top: -12rem;
-  right: -8rem;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.34), transparent 68%);
-  animation: orbDrift 16s ease-in-out infinite;
-}
-
-.orb-b {
-  width: 26rem;
-  height: 26rem;
-  top: 28rem;
-  left: -12rem;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.22), transparent 68%);
-  animation: orbDrift 20s ease-in-out infinite reverse;
-}
-
-.orb-c {
-  width: 22rem;
-  height: 22rem;
-  bottom: -8rem;
-  right: 18%;
-  background: radial-gradient(circle, rgba(34, 211, 238, 0.16), transparent 68%);
-  animation: orbDrift 24s ease-in-out infinite;
+  background: radial-gradient(ellipse at center, rgba(var(--accent-rgb), 0.3), transparent 70%);
+  filter: blur(80px);
+  opacity: var(--wash-opacity);
+  pointer-events: none;
 }
 
 main,
@@ -98,19 +89,53 @@ main,
 /* Header                             */
 /* ---------------------------------- */
 
+/* The bar is a floating material layer that content scrolls underneath,
+   rather than an opaque strip that consumes the top of the page (§12).
+   `--chrome` is written per frame from the scroll position, so the material
+   arrives continuously instead of snapping at a threshold (§1). */
 .site-header {
+  --chrome: 0;
+  --chrome-floor: 0;
+
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid transparent;
-  transition: background 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease;
 
-  &.scrolled {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(18px) saturate(1.4);
-    -webkit-backdrop-filter: blur(18px) saturate(1.4);
-    border-bottom-color: var(--border);
+  &.is-locked {
+    --chrome-floor: 1;
   }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--material-regular);
+    /* Blur radius and opacity ramp together, so the bar reads as a material
+       arriving rather than a colour fading in (§12). */
+    opacity: max(var(--chrome), var(--chrome-floor));
+    backdrop-filter: blur(calc(var(--blur-regular) * max(var(--chrome), var(--chrome-floor))))
+      saturate(var(--material-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--blur-regular) * max(var(--chrome), var(--chrome-floor))))
+      saturate(var(--material-saturate));
+    box-shadow: inset 0 1px 0 var(--edge-highlight);
+  }
+}
+
+/* A soft edge where content meets the floating chrome, instead of a 1px rule
+   that is there whether or not anything is underneath it (§12). */
+.chrome-edge {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 2rem;
+  pointer-events: none;
+  opacity: max(var(--chrome), var(--chrome-floor));
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
 }
 
 .header-inner {
@@ -125,6 +150,11 @@ main,
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
+  transition: transform var(--motion-press);
+
+  &:active {
+    transform: scale(0.97);
+  }
 }
 
 .brand-mark {
@@ -136,23 +166,19 @@ main,
   font-family: var(--font-mono);
   font-weight: 600;
   font-size: 1.05rem;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--indigo), var(--violet));
-  box-shadow: 0 6px 22px -6px rgba(99, 102, 241, 0.6);
+  color: var(--on-accent);
+  background: var(--accent);
 }
 
 .brand-name {
   font-family: var(--font-mono);
   font-weight: 600;
   font-size: 1.02rem;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-heading);
 }
 
 .brand-accent {
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--accent);
 }
 
 .main-nav {
@@ -165,13 +191,24 @@ main,
     padding: 0.45rem 0.85rem;
     border-radius: 99px;
     font-size: 0.9rem;
-    font-weight: 500;
+    /* Slightly heavier and tighter over a translucent surface, where flat
+       grey text loses legibility against a changing backdrop (§12). */
+    font-weight: 550;
+    letter-spacing: var(--tracking-caption);
     color: var(--text-muted);
-    transition: color 0.25s ease, background 0.25s ease;
+    transition:
+      color var(--motion-fast),
+      background-color var(--motion-fast),
+      transform var(--motion-press);
 
     &:hover {
       color: var(--text);
       background: var(--surface-strong);
+    }
+
+    /* Feedback lives on the press, and it is instant (§1). */
+    &:active {
+      transform: scale(0.96);
     }
 
     &.active {
@@ -206,19 +243,20 @@ main,
     font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 500;
-    letter-spacing: 0.04em;
+    letter-spacing: var(--tracking-micro);
     cursor: pointer;
-    transition: border-color 0.25s ease, background-color 0.25s ease;
+    transition:
+      border-color var(--motion-fast),
+      background-color var(--motion-fast);
 
     &:hover,
     &:focus-visible {
-      border-color: rgba(99, 102, 241, 0.55);
+      border-color: var(--border-strong);
       background-color: var(--surface-strong);
-      outline: none;
     }
 
     option {
-      background: #ffffff;
+      background: var(--bg-raised);
       color: var(--text);
     }
   }
@@ -236,13 +274,18 @@ main,
     background: var(--surface);
     color: var(--text-muted);
     font-size: 0.75rem;
-    letter-spacing: 0.04em;
+    letter-spacing: var(--tracking-micro);
     cursor: pointer;
+    transition: transform var(--motion-press);
+
+    &:active {
+      transform: scale(0.94);
+    }
 
     &.active {
-      color: var(--text);
-      border-color: rgba(99, 102, 241, 0.55);
-      background: var(--surface-strong);
+      color: var(--accent);
+      border-color: rgba(var(--accent-rgb), 0.45);
+      background: rgba(var(--accent-rgb), 0.08);
     }
   }
 }
@@ -258,6 +301,11 @@ main,
   border: 1px solid var(--border);
   background: var(--surface);
   align-items: center;
+  transition: transform var(--motion-press);
+
+  &:active {
+    transform: scale(0.94);
+  }
 
   span {
     display: block;
@@ -265,7 +313,7 @@ main,
     height: 2px;
     border-radius: 2px;
     background: var(--text);
-    transition: transform 0.3s ease;
+    transition: transform var(--motion-fast);
   }
 
   &.open span:first-child {
@@ -277,32 +325,92 @@ main,
   }
 }
 
+/* The sheet is anchored to the bar that spawned it and leaves along the path
+   it arrived on, using the mirrored easing pair (§7). Blur and scale animate
+   together so it materialises rather than fading (§12). */
 .mobile-nav {
   display: none;
   flex-direction: column;
   gap: 0.35rem;
+  /* Floats over the content instead of pushing it down, so opening the menu
+     never reflows the page underneath it (§11, §12). */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   padding: 1rem 1.5rem 1.4rem;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: var(--material-thick);
+  backdrop-filter: blur(var(--blur-thick)) saturate(var(--material-saturate));
+  -webkit-backdrop-filter: blur(var(--blur-thick)) saturate(var(--material-saturate));
+  box-shadow: var(--shadow-surface), inset 0 1px 0 var(--edge-highlight);
+  transform-origin: top center;
+  transform: translate3d(0, -0.5rem, 0) scale(0.97);
+  opacity: 0;
+  filter: blur(6px);
+  visibility: hidden;
+  transition:
+    opacity var(--motion-sheet-out),
+    transform var(--motion-sheet-out),
+    filter var(--motion-sheet-out),
+    visibility 0s linear var(--duration-sheet);
+
+  &.open {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    visibility: visible;
+    /* A sheet arrives with momentum, so it gets the under-damped curve (§4). */
+    transition:
+      opacity var(--motion-sheet-in),
+      transform var(--motion-sheet-in),
+      filter var(--motion-sheet-in),
+      visibility 0s;
+  }
 
   a {
     padding: 0.7rem 0.85rem;
     border-radius: var(--radius-sm);
-    font-weight: 500;
+    font-weight: 550;
     color: var(--text-muted);
+    transition:
+      color var(--motion-fast),
+      background-color var(--motion-fast),
+      transform var(--motion-press);
 
     &:hover {
       color: var(--text);
       background: var(--surface-strong);
+    }
+
+    &:active {
+      transform: scale(0.98);
     }
   }
 
   .btn {
     margin-top: 0.6rem;
     justify-content: center;
-    color: #ffffff;
+    color: var(--on-accent);
+  }
+}
+
+/* A modal task dims what it covers and gives you a way out of it that is not
+   the button you came in through (§12, §16). */
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: var(--scrim);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-sheet-out);
+
+  &.on {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity var(--duration-sheet) var(--ease-out-standard);
   }
 }
 
@@ -318,22 +426,30 @@ main,
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.95rem;
-  letter-spacing: 0.01em;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  letter-spacing: var(--tracking-caption);
+  transition:
+    transform var(--motion-press),
+    box-shadow var(--motion-fast),
+    background-color var(--motion-fast),
+    border-color var(--motion-fast);
 }
 
+/* A solid fill and a neutral shadow. A coloured glow under a button is the
+   single fastest way to date a page — depth comes from the light being
+   blocked, which is grey, not from the button emitting its own colour. */
 .btn-primary {
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--indigo), var(--violet));
-  box-shadow: 0 10px 32px -10px rgba(99, 102, 241, 0.65);
+  color: var(--on-accent);
+  background: var(--accent);
+  box-shadow: var(--shadow-chip);
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 40px -10px rgba(99, 102, 241, 0.8);
+    transform: translateY(-1px);
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-card);
   }
 
   &:active {
-    transform: translateY(0);
+    transform: scale(0.97);
   }
 }
 
@@ -343,9 +459,13 @@ main,
   background: var(--surface);
 
   &:hover {
-    transform: translateY(-2px);
-    border-color: rgba(99, 102, 241, 0.55);
+    transform: translateY(-1px);
+    border-color: var(--text-faint);
     background: var(--surface-strong);
+  }
+
+  &:active {
+    transform: scale(0.97);
   }
 }
 
@@ -355,7 +475,7 @@ main,
 }
 
 .btn-arrow {
-  transition: transform 0.25s ease;
+  transition: transform var(--motion-fast);
 }
 
 .btn:hover .btn-arrow {
@@ -386,6 +506,7 @@ main,
   background: var(--surface);
   font-family: var(--font-mono);
   font-size: 0.8rem;
+  letter-spacing: var(--tracking-micro);
   color: var(--text-muted);
 }
 
@@ -394,33 +515,33 @@ main,
   height: 0.5rem;
   border-radius: 50%;
   background: var(--green);
-  box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.45);
+  box-shadow: 0 0 0 0 rgba(var(--green-rgb), 0.45);
   animation: pulseDot 2.2s ease-out infinite;
 }
 
+/* Display sizes tighten; leading tightens with them (§15). */
 .hero-copy h1 {
   margin: 0 0 1.3rem;
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 5.4vw, 4.1rem);
   font-weight: 700;
-  line-height: 1.06;
-  letter-spacing: -0.035em;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
 }
 
-.gradient-text {
-  background: var(--gradient);
-  background-size: 180% 180%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradientShift 7s ease-in-out infinite;
+/* The one accent word in the headline. A solid colour states which word
+   matters; an animated three-stop gradient only states that a gradient is
+   available. */
+.accent-word {
+  color: var(--accent);
 }
 
 .lead {
   margin: 0 0 2rem;
   max-width: 44rem;
   font-size: 1.1rem;
-  line-height: 1.7;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
   color: var(--text-muted);
 }
 
@@ -444,11 +565,15 @@ main,
   background: var(--surface);
   font-family: var(--font-mono);
   font-size: 0.76rem;
+  /* Small text opens up rather than tightening (§15). */
+  letter-spacing: var(--tracking-micro);
   color: var(--text-muted);
-  transition: border-color 0.25s ease, color 0.25s ease;
+  transition:
+    border-color var(--motion-fast),
+    color var(--motion-fast);
 
   &:hover {
-    border-color: rgba(99, 102, 241, 0.5);
+    border-color: var(--border-strong);
     color: var(--text);
   }
 }
@@ -460,28 +585,29 @@ main,
   perspective: 1400px;
 }
 
+/* The largest surface on the page, so it gets the thickest material and the
+   deepest shadow (§12). No transition on the transform — the spring in the
+   component owns it, and a CSS transition could not be grabbed mid-flight (§3). */
 .terminal {
   position: relative;
   border-radius: var(--radius);
   border: 1px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow:
-    0 40px 90px -30px rgba(15, 23, 42, 0.2),
-    0 0 60px -24px rgba(99, 102, 241, 0.3);
+  background: var(--material-thick);
+  backdrop-filter: blur(var(--blur-thick)) saturate(var(--material-saturate));
+  -webkit-backdrop-filter: blur(var(--blur-thick)) saturate(var(--material-saturate));
+  box-shadow: var(--shadow-surface), inset 0 1px 0 var(--edge-highlight);
   overflow: hidden;
   transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-  transition: transform 0.2s ease-out;
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
+    opacity: var(--focus, 0);
     background: radial-gradient(
       480px circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
-      rgba(99, 102, 241, 0.08),
+      rgba(var(--accent-rgb), 0.07),
       transparent 65%
     );
   }
@@ -493,7 +619,7 @@ main,
   gap: 0.5rem;
   padding: 0.8rem 1.1rem;
   border-bottom: 1px solid var(--border);
-  background: rgba(100, 116, 139, 0.06);
+  background: var(--surface);
 }
 
 .dot {
@@ -520,6 +646,7 @@ main,
   text-align: center;
   font-family: var(--font-mono);
   font-size: 0.78rem;
+  letter-spacing: var(--tracking-micro);
   color: var(--text-faint);
 }
 
@@ -529,12 +656,12 @@ main,
   gap: 0.4rem;
   padding: 0.2rem 0.65rem;
   border-radius: 99px;
-  border: 1px solid rgba(5, 150, 105, 0.35);
-  background: rgba(5, 150, 105, 0.08);
+  border: 1px solid rgba(var(--green-rgb), 0.35);
+  background: rgba(var(--green-rgb), 0.08);
   font-family: var(--font-mono);
   font-size: 0.68rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   color: var(--green);
 }
 
@@ -551,12 +678,12 @@ main,
   align-items: baseline;
   gap: 0.55rem;
   margin: 0;
-  animation: termIn 0.25s ease both;
+  animation: termIn var(--motion-fast) both;
 }
 
 .prompt {
   flex-shrink: 0;
-  color: var(--cyan);
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -584,17 +711,14 @@ main,
 
 .kind-accent .term-text {
   font-weight: 600;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--accent);
 }
 
 .caret {
   width: 0.55rem;
   height: 1.05rem;
   align-self: center;
-  background: var(--indigo-bright);
+  background: var(--accent);
   animation: blink 1.05s steps(1) infinite;
 }
 
@@ -605,7 +729,7 @@ main,
   gap: 1rem;
   padding: 0.6rem 1.15rem;
   border-top: 1px solid var(--border);
-  background: rgba(100, 116, 139, 0.06);
+  background: var(--surface);
   font-size: 0.72rem;
   color: var(--text-faint);
 }
@@ -614,6 +738,10 @@ main,
   color: var(--green);
 }
 
+/* These sit on top of the terminal, which is already a translucent material —
+   stacking a second one would collapse legibility, so they stay solid (§12).
+   They drift with the pointer springs instead of oscillating on their own,
+   which also removes a ~0.17 Hz loop (§14). */
 .float-chip {
   position: absolute;
   display: flex;
@@ -622,22 +750,21 @@ main,
   padding: 0.75rem 1.05rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 20px 50px -20px rgba(15, 23, 42, 0.25);
+  background: var(--material-opaque);
+  box-shadow: var(--shadow-chip);
+  transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 8px), 0);
 
   strong {
     font-family: var(--font-mono);
     font-size: 1.05rem;
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-weight: 600;
+    letter-spacing: var(--tracking-heading);
+    color: var(--text);
   }
 
   span {
     font-size: 0.72rem;
+    letter-spacing: var(--tracking-caption);
     color: var(--text-muted);
   }
 }
@@ -645,13 +772,11 @@ main,
 .chip-a {
   top: -1.4rem;
   right: -0.9rem;
-  animation: floaty 6s ease-in-out infinite;
 }
 
 .chip-b {
   bottom: -1.3rem;
   left: -1rem;
-  animation: floaty 7s ease-in-out 0.8s infinite;
 }
 
 /* Hero stats */
@@ -675,19 +800,21 @@ main,
     border-right: 0;
   }
 
+  /* Numbers now carry themselves on weight and size rather than on a fill.
+     A figure this large does not need colour to be the thing you look at. */
   p {
     margin: 0 0 0.25rem;
     font-family: var(--font-mono);
-    font-size: 1.7rem;
-    font-weight: 600;
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-size: 1.75rem;
+    font-weight: 620;
+    line-height: var(--leading-title);
+    letter-spacing: var(--tracking-title);
+    color: var(--text);
   }
 
   span {
     font-size: 0.85rem;
+    letter-spacing: var(--tracking-caption);
     color: var(--text-muted);
   }
 }
@@ -704,35 +831,42 @@ main,
   -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
 }
 
+/* Position is owned by the component: it drifts, but it can also be grabbed,
+   flicked and thrown, and the momentum decays into the drift with no seam
+   (§2, §5, §6). */
 .marquee-track {
   display: flex;
   align-items: center;
   gap: 2.4rem;
   width: max-content;
-  animation: marquee 32s linear infinite;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Vertical scrolling still belongs to the page; horizontal is ours (§10). */
+  touch-action: pan-y;
 
-  &:hover {
-    animation-play-state: paused;
+  &.dragging {
+    cursor: grabbing;
   }
 }
 
 .marquee-item {
   font-family: var(--font-mono);
   font-size: 0.86rem;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text-faint);
   white-space: nowrap;
-  transition: color 0.25s ease;
+  transition: color var(--motion-fast);
 
   &:hover {
-    color: var(--indigo-bright);
+    color: var(--text);
   }
 }
 
 .marquee-sep {
   font-size: 0.5rem;
-  color: rgba(99, 102, 241, 0.45);
+  color: rgba(var(--line-rgb), 0.5);
 }
 
 /* ---------------------------------- */
@@ -752,8 +886,8 @@ main,
     font-family: var(--font-display);
     font-size: clamp(1.7rem, 3.2vw, 2.5rem);
     font-weight: 700;
-    line-height: 1.18;
-    letter-spacing: -0.025em;
+    line-height: var(--leading-title);
+    letter-spacing: var(--tracking-title);
   }
 }
 
@@ -764,19 +898,22 @@ main,
   margin: 0 0 1.15rem;
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--indigo-bright);
+  color: var(--text-faint);
 }
 
+/* The index chip is the accent moment in a section header — the label beside
+   it stays quiet, so the eye lands on the number and then reads the words. */
 .eyebrow-index {
   display: inline-grid;
   place-items: center;
   padding: 0.18rem 0.5rem;
   border-radius: 6px;
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  background: rgba(var(--accent-rgb), 0.1);
   font-size: 0.72rem;
+  color: var(--accent);
 }
 
 .eyebrow-center {
@@ -786,7 +923,8 @@ main,
 .section-copy {
   margin: 0;
   font-size: 1.02rem;
-  line-height: 1.75;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
   color: var(--text-muted);
 }
 
@@ -798,9 +936,12 @@ main,
   position: relative;
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.65));
+  background: var(--material-regular);
   overflow: hidden;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform var(--motion-fast),
+    border-color var(--motion-fast),
+    box-shadow var(--motion-fast);
 
   &::before {
     content: '';
@@ -808,18 +949,18 @@ main,
     inset: 0;
     background: radial-gradient(
       260px circle at var(--mx, 50%) var(--my, 50%),
-      rgba(99, 102, 241, 0.12),
+      rgba(var(--accent-rgb), 0.06),
       transparent 65%
     );
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: opacity var(--motion-base);
     pointer-events: none;
   }
 
   &:hover {
-    transform: translateY(-4px);
-    border-color: rgba(99, 102, 241, 0.42);
-    box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.22);
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card);
 
     &::before {
       opacity: 1;
@@ -852,7 +993,8 @@ main,
     font-family: var(--font-display);
     font-size: 1.22rem;
     font-weight: 600;
-    letter-spacing: -0.015em;
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
   }
 }
 
@@ -871,18 +1013,18 @@ main,
 .card-tag {
   padding: 0.22rem 0.65rem;
   border-radius: 99px;
-  border: 1px solid rgba(8, 145, 178, 0.35);
-  background: rgba(8, 145, 178, 0.08);
+  border: 1px solid var(--border);
+  background: var(--surface);
   font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--cyan);
+  color: var(--text-muted);
 }
 
 .card-desc {
   margin: 0 0 0.8rem;
   font-size: 0.93rem;
-  line-height: 1.65;
+  line-height: var(--leading-body);
   color: var(--text-muted);
 }
 
@@ -890,7 +1032,7 @@ main,
   margin: 0 0 1rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--indigo-bright);
+  color: var(--text);
 }
 
 .card-bullets {
@@ -905,7 +1047,7 @@ main,
     position: relative;
     padding-left: 1.25rem;
     font-size: 0.86rem;
-    line-height: 1.5;
+    line-height: var(--leading-caption);
     color: var(--text-muted);
 
     &::before {
@@ -913,7 +1055,7 @@ main,
       position: absolute;
       left: 0;
       font-family: var(--font-mono);
-      color: var(--cyan);
+      color: var(--text-faint);
     }
   }
 }
@@ -935,8 +1077,8 @@ main,
     font-family: var(--font-display);
     font-size: clamp(1.7rem, 3vw, 2.4rem);
     font-weight: 700;
-    line-height: 1.18;
-    letter-spacing: -0.025em;
+    line-height: var(--leading-title);
+    letter-spacing: var(--tracking-title);
   }
 
   .section-copy {
@@ -957,25 +1099,24 @@ main,
     margin: 0 0 0.45rem;
     font-size: 1rem;
     font-weight: 600;
+    letter-spacing: var(--tracking-heading);
   }
 }
 
 .metric-value {
   margin: 0 0 0.7rem;
   font-family: var(--font-mono);
-  font-size: 2.3rem;
-  font-weight: 600;
+  font-size: 2.35rem;
+  font-weight: 620;
   line-height: 1;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  letter-spacing: var(--tracking-title);
+  color: var(--text);
 }
 
 .metric-detail {
   margin: 0;
   font-size: 0.85rem;
-  line-height: 1.6;
+  line-height: var(--leading-caption);
   color: var(--text-muted);
 }
 
@@ -1004,7 +1145,8 @@ main,
     font-family: var(--font-display);
     font-size: 1.12rem;
     font-weight: 600;
-    letter-spacing: -0.01em;
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
   }
 }
 
@@ -1020,9 +1162,9 @@ main,
   margin: 0;
   font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--indigo-bright);
+  color: var(--text-faint);
 }
 
 .project-tags {
@@ -1037,7 +1179,7 @@ main,
     border: 1px solid var(--border);
     background: var(--surface);
     font-size: 0.64rem;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--tracking-micro);
     color: var(--text-faint);
   }
 }
@@ -1045,7 +1187,7 @@ main,
 .project-challenge {
   margin: 0 0 1rem;
   font-size: 0.88rem;
-  line-height: 1.65;
+  line-height: var(--leading-body);
   color: var(--text-muted);
 }
 
@@ -1056,7 +1198,7 @@ main,
   padding-top: 1rem;
   border-top: 1px dashed var(--border);
   font-size: 0.88rem;
-  line-height: 1.6;
+  line-height: var(--leading-caption);
   color: var(--text);
 
   .mark {
@@ -1085,14 +1227,14 @@ main,
 .referral-quote {
   margin: 0 0 1rem;
   font-size: 0.95rem;
-  line-height: 1.7;
+  line-height: var(--leading-body);
   color: var(--text);
 }
 
 .referral-impact {
   margin: 0 0 1.4rem;
   font-size: 0.84rem;
-  line-height: 1.6;
+  line-height: var(--leading-caption);
   color: var(--text-muted);
 }
 
@@ -1113,20 +1255,21 @@ main,
   border-radius: 50%;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--indigo), var(--violet));
-  box-shadow: 0 6px 18px -6px rgba(99, 102, 241, 0.55);
+  color: var(--on-accent);
+  background: var(--accent);
 }
 
 .referral-client {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
+  letter-spacing: var(--tracking-heading);
 }
 
 .referral-role {
   margin: 0.1rem 0 0;
   font-size: 0.76rem;
+  letter-spacing: var(--tracking-caption);
   color: var(--text-faint);
 }
 
@@ -1159,12 +1302,16 @@ main,
   font-weight: 500;
   font-size: 0.95rem;
   color: var(--text-muted);
-  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  transition:
+    border-color var(--motion-fast),
+    background-color var(--motion-fast),
+    color var(--motion-fast),
+    transform var(--motion-press);
 
   .tab-index {
     font-size: 0.76rem;
     color: var(--text-faint);
-    transition: color 0.25s ease;
+    transition: color var(--motion-fast);
   }
 
   &:hover {
@@ -1173,28 +1320,47 @@ main,
     transform: translateX(4px);
   }
 
+  &:active {
+    transform: scale(0.985);
+  }
+
   &.active {
     color: var(--text);
-    border-color: rgba(99, 102, 241, 0.55);
-    background: rgba(99, 102, 241, 0.1);
-    box-shadow: inset 3px 0 0 var(--indigo-bright);
+    border-color: rgba(var(--accent-rgb), 0.4);
+    background: rgba(var(--accent-rgb), 0.07);
+    box-shadow: inset 2px 0 0 var(--accent);
 
     .tab-index {
-      color: var(--indigo-bright);
+      color: var(--accent);
     }
   }
 }
 
+/* Transform is owned by the swipe spring in the component; `--travel` is how
+   far from settled the panel is, which drives the arrival fade (§12). */
 .case-panel {
   padding: 1.9rem;
+  touch-action: pan-y;
+  opacity: calc(1 - var(--travel, 0) * 0.8);
+
+  &.dragging {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* A tabpanel is not a button, so it should not lift as if it were —
+     things that look the same must behave the same (§16). */
+  &:hover {
+    transform: none;
+  }
 
   h3 {
     margin: 0 0 0.9rem;
     font-family: var(--font-display);
     font-size: 1.22rem;
     font-weight: 600;
-    line-height: 1.4;
-    letter-spacing: -0.01em;
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
   }
 }
 
@@ -1207,7 +1373,7 @@ main,
 .case-solution {
   margin: 0 0 1.2rem;
   font-size: 0.95rem;
-  line-height: 1.7;
+  line-height: var(--leading-body);
   color: var(--text-muted);
 }
 
@@ -1219,12 +1385,42 @@ main,
   border-top: 1px dashed var(--border);
   font-size: 0.92rem;
   font-weight: 500;
-  line-height: 1.6;
+  line-height: var(--leading-caption);
 
   .mark {
     color: var(--green);
     font-family: var(--font-mono);
     font-weight: 600;
+  }
+}
+
+/* Shown only where the swipe exists, so it never promises a gesture the
+   pointer cannot perform (§16). */
+.case-dots {
+  display: none;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 1.3rem;
+
+  span {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--border-strong);
+    transition:
+      background-color var(--motion-fast),
+      transform var(--motion-fast);
+
+    &.on {
+      background: var(--accent);
+      transform: scale(1.3);
+    }
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .case-dots {
+    display: flex;
   }
 }
 
@@ -1268,7 +1464,9 @@ main,
 
   strong {
     font-size: 0.95rem;
-    color: var(--indigo-bright);
+    font-weight: 600;
+    letter-spacing: var(--tracking-heading);
+    color: var(--text);
   }
 }
 
@@ -1278,9 +1476,12 @@ input[type='range'] {
   width: 100%;
   height: 5px;
   border-radius: 99px;
-  background: linear-gradient(90deg, rgba(99, 102, 241, 0.65), rgba(34, 211, 238, 0.45));
+  /* The track is a neutral groove and the thumb is the only accent — the
+     control you can grab is the one that gets the colour. */
+  background: rgba(var(--line-rgb), 0.28);
   outline: none;
   cursor: pointer;
+  touch-action: pan-y;
 
   &::-webkit-slider-thumb {
     appearance: none;
@@ -1288,29 +1489,47 @@ input[type='range'] {
     width: 1.15rem;
     height: 1.15rem;
     border-radius: 50%;
-    border: 2px solid var(--indigo-bright);
+    border: 2px solid var(--accent);
     background: var(--bg-raised);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18), 0 4px 14px -2px rgba(15, 23, 42, 0.25);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:
+      0 0 0 4px rgba(var(--accent-rgb), 0.18),
+      0 4px 14px -2px rgba(var(--shadow-rgb), 0.25);
+    transition:
+      transform var(--motion-press),
+      box-shadow var(--motion-fast);
 
     &:hover {
       transform: scale(1.15);
-      box-shadow: 0 0 0 7px rgba(99, 102, 241, 0.22), 0 4px 14px -2px rgba(15, 23, 42, 0.25);
+      box-shadow:
+        0 0 0 7px rgba(var(--accent-rgb), 0.22),
+        0 4px 14px -2px rgba(var(--shadow-rgb), 0.25);
     }
+  }
+
+  /* The grab itself is acknowledged, not just the resulting value (§1). */
+  &:active::-webkit-slider-thumb {
+    transform: scale(1.25);
+    box-shadow:
+      0 0 0 9px rgba(var(--accent-rgb), 0.26),
+      0 4px 14px -2px rgba(var(--shadow-rgb), 0.25);
   }
 
   &::-moz-range-thumb {
     width: 1.15rem;
     height: 1.15rem;
     border-radius: 50%;
-    border: 2px solid var(--indigo-bright);
+    border: 2px solid var(--accent);
     background: var(--bg-raised);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
-    transition: transform 0.2s ease;
+    box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.18);
+    transition: transform var(--motion-press);
 
     &:hover {
       transform: scale(1.15);
     }
+  }
+
+  &:active::-moz-range-thumb {
+    transform: scale(1.25);
   }
 }
 
@@ -1326,10 +1545,22 @@ input[type='range'] {
   justify-content: center;
   padding: 1.4rem;
 
+  /* A readout, not a control. It inherits .card for its surface, but nothing
+     here can be pressed, so it must not lift or light up as if it could (§16). */
+  &::before {
+    display: none;
+  }
+
+  &:hover {
+    transform: none;
+    border-color: var(--border);
+    box-shadow: none;
+  }
+
   p {
     margin: 0 0 0.5rem;
     font-size: 0.8rem;
-    letter-spacing: 0.04em;
+    letter-spacing: var(--tracking-label);
     text-transform: uppercase;
     color: var(--text-faint);
   }
@@ -1338,29 +1569,30 @@ input[type='range'] {
     margin: 0;
     font-size: 1.45rem;
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--tracking-title);
   }
 }
 
+/* The total is the answer the whole panel exists to produce, so it is the one
+   card that gets an accent border and an accent figure. */
 .sim-total {
   grid-column: 1 / -1;
-  border-color: rgba(99, 102, 241, 0.5);
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
-    var(--gradient) border-box;
-  border: 1px solid transparent;
+
+  &,
+  &:hover {
+    border-color: rgba(var(--accent-rgb), 0.4);
+  }
 
   h3 {
-    font-size: 1.9rem;
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-size: 1.95rem;
+    font-weight: 620;
+    color: var(--accent);
   }
 
   small {
     margin-top: 0.45rem;
     font-size: 0.78rem;
+    letter-spacing: var(--tracking-micro);
     color: var(--text-muted);
   }
 }
@@ -1383,13 +1615,13 @@ input[type='range'] {
     font-family: var(--font-display);
     font-size: 1.02rem;
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--tracking-heading);
   }
 
   p {
     margin: 0;
     font-size: 0.83rem;
-    line-height: 1.6;
+    line-height: var(--leading-caption);
     color: var(--text-muted);
   }
 }
@@ -1398,7 +1630,7 @@ input[type='range'] {
   display: block;
   margin-bottom: 0.9rem;
   font-size: 0.76rem;
-  color: var(--indigo-bright);
+  color: var(--text-faint);
 }
 
 /* ---------------------------------- */
@@ -1408,11 +1640,9 @@ input[type='range'] {
 .contact-panel {
   position: relative;
   padding: 4rem 2rem 3.4rem;
-  border-radius: calc(var(--radius) + 6px);
-  border: 1px solid transparent;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)) padding-box,
-    linear-gradient(135deg, rgba(99, 102, 241, 0.55), rgba(147, 51, 234, 0.35), rgba(8, 145, 178, 0.45)) border-box;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  background: var(--material-thick);
   text-align: center;
   overflow: hidden;
 
@@ -1422,8 +1652,8 @@ input[type='range'] {
     font-family: var(--font-display);
     font-size: clamp(1.8rem, 3.4vw, 2.6rem);
     font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
+    letter-spacing: var(--tracking-title);
+    line-height: var(--leading-title);
   }
 }
 
@@ -1434,7 +1664,7 @@ input[type='range'] {
   transform: translateX(-50%);
   width: 32rem;
   height: 16rem;
-  background: radial-gradient(ellipse, rgba(99, 102, 241, 0.18), transparent 70%);
+  background: radial-gradient(ellipse, rgba(var(--accent-rgb), 0.12), transparent 70%);
   pointer-events: none;
 }
 
@@ -1442,27 +1672,30 @@ input[type='range'] {
   margin: 0 auto 2.2rem;
   max-width: 32rem;
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: var(--leading-body);
   color: var(--text-muted);
 }
 
 .email-capture {
   display: flex;
+  align-items: flex-start;
   gap: 0.7rem;
   justify-content: center;
   max-width: 32rem;
   margin: 0 auto 1.6rem;
 
   input {
-    flex: 1;
+    width: 100%;
     min-width: 0;
     padding: 0.78rem 1.15rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-strong);
-    background: #ffffff;
+    background: var(--bg-raised);
     color: var(--text);
     font-size: 0.95rem;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    transition:
+      border-color var(--motion-fast),
+      box-shadow var(--motion-fast);
 
     &::placeholder {
       color: var(--text-faint);
@@ -1470,9 +1703,95 @@ input[type='range'] {
 
     &:focus {
       outline: none;
-      border-color: var(--indigo-bright);
-      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.18);
     }
+
+    &.invalid {
+      border-color: var(--red);
+
+      &:focus {
+        box-shadow: 0 0 0 4px rgba(var(--red-rgb), 0.18);
+      }
+    }
+  }
+}
+
+.email-field {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.field-error {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  line-height: var(--leading-caption);
+  letter-spacing: var(--tracking-caption);
+  color: var(--red);
+  animation: fieldIn var(--motion-fast) both;
+}
+
+.contact-sent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 32rem;
+  margin: 0 auto 1.6rem;
+  padding: 1.5rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(var(--green-rgb), 0.35);
+  background: rgba(var(--green-rgb), 0.08);
+  animation: sentIn var(--motion-sheet-in) both;
+}
+
+.sent-mark {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  margin-bottom: 0.35rem;
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--on-accent);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.sent-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-heading);
+}
+
+.sent-copy {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: var(--leading-caption);
+  color: var(--text-muted);
+}
+
+.sent-undo {
+  margin-top: 0.6rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 99px;
+  border: 1px solid var(--border-strong);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  transition:
+    color var(--motion-fast),
+    border-color var(--motion-fast),
+    transform var(--motion-press);
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--text-faint);
+  }
+
+  &:active {
+    transform: scale(0.96);
   }
 }
 
@@ -1486,10 +1805,16 @@ input[type='range'] {
 
   a {
     color: var(--text-muted);
-    transition: color 0.25s ease;
+    transition:
+      color var(--motion-fast),
+      transform var(--motion-press);
 
     &:hover {
-      color: var(--indigo-bright);
+      color: var(--accent);
+    }
+
+    &:active {
+      transform: scale(0.97);
     }
   }
 
@@ -1510,7 +1835,7 @@ input[type='range'] {
 
 .site-footer {
   border-top: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--material-thin);
 }
 
 .footer-grid {
@@ -1525,7 +1850,7 @@ input[type='range'] {
     margin: 1.1rem 0 0;
     max-width: 20rem;
     font-size: 0.88rem;
-    line-height: 1.7;
+    line-height: var(--leading-body);
     color: var(--text-muted);
   }
 }
@@ -1538,12 +1863,19 @@ input[type='range'] {
   a {
     font-size: 0.88rem;
     color: var(--text-muted);
-    transition: color 0.25s ease, transform 0.25s ease;
+    transition:
+      color var(--motion-fast),
+      transform var(--motion-fast);
     width: fit-content;
 
     &:hover {
       color: var(--text);
       transform: translateX(3px);
+    }
+
+    &:active {
+      transform: translateX(3px) scale(0.98);
+      transition: transform var(--motion-press);
     }
   }
 }
@@ -1577,15 +1909,17 @@ input[type='range'] {
 }
 
 /* ---------------------------------- */
-/* Reveal animation                   */
+/* Reveal                             */
 /* ---------------------------------- */
 
+/* Short travel and a critically damped curve: no overshoot, because nothing
+   the user did carried any momentum into this (§4). */
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translate3d(0, 14px, 0);
   transition:
-    opacity 0.7s ease var(--d, 0s),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+    opacity var(--motion-base) var(--d, 0s),
+    transform var(--motion-base) var(--d, 0s);
 
   &.in {
     opacity: 1;
@@ -1599,15 +1933,15 @@ input[type='range'] {
 
 @keyframes pulseDot {
   0% {
-    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.45);
+    box-shadow: 0 0 0 0 rgba(var(--green-rgb), 0.45);
   }
 
   70% {
-    box-shadow: 0 0 0 7px rgba(5, 150, 105, 0);
+    box-shadow: 0 0 0 7px rgba(var(--green-rgb), 0);
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0);
+    box-shadow: 0 0 0 0 rgba(var(--green-rgb), 0);
   }
 }
 
@@ -1629,42 +1963,76 @@ input[type='range'] {
   }
 }
 
-@keyframes marquee {
+@keyframes fieldIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
   to {
-    transform: translateX(-50%);
+    opacity: 1;
+    transform: none;
   }
 }
 
-@keyframes floaty {
-  0%,
-  100% {
-    transform: translateY(0);
+/* Blur and scale arrive together, so the panel reads as a surface
+   materialising rather than a box fading in (§12). */
+@keyframes sentIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+    filter: blur(8px);
   }
 
-  50% {
-    transform: translateY(-0.7rem);
-  }
-}
-
-@keyframes gradientShift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }
 
-@keyframes orbDrift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
+/* ---------------------------------- */
+/* Reduced motion (§14)               */
+/* ---------------------------------- */
+
+/* Not "no feedback" — a gentler, non-vestibular version of it. Slides and
+   springs collapse into cross-fades, decorative loops stop, and the small
+   opacity signals that carry meaning stay. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transform: none;
   }
 
-  50% {
-    transform: translate3d(2.5rem, -2rem, 0);
+  .term-line,
+  .field-error,
+  .contact-sent {
+    animation-name: none;
+  }
+
+  .card:hover,
+  .btn-primary:hover,
+  .btn-ghost:hover,
+  .case-tab:hover,
+  .footer-col a:hover {
+    transform: none;
+  }
+
+  .mobile-nav {
+    transform: none;
+    filter: none;
+
+    &.open {
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .float-chip {
+    transform: none;
+  }
+
+  .terminal {
+    transform: none;
   }
 }
 
@@ -1778,6 +2146,7 @@ input[type='range'] {
 
   .email-capture {
     flex-direction: column;
+    align-items: stretch;
 
     .btn {
       justify-content: center;

@@ -1,29 +1,246 @@
+/* ==========================================================================
+   Design tokens
+   Foundations follow apple-design.md: size-specific type metrics (§15),
+   springs expressed as real spring curves (§4), translucent materials with
+   weight-encoded hierarchy (§12), and first-class accessibility signals (§14).
+   ========================================================================== */
+
 :root {
-  --bg: #f6f8fc;
+  color-scheme: light dark;
+
+  /* ---------------------------------------------------------------- */
+  /* Typography (§15)                                                 */
+  /* System font first — it ships optical sizing, tracking tables and  */
+  /* legibility tuning we would otherwise have to fake.                */
+  /* ---------------------------------------------------------------- */
+
+  --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto,
+    'Helvetica Neue', sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', Roboto,
+    'Helvetica Neue', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Tracking is size-specific: large text tightens, small text opens up. */
+  --tracking-display: -0.032em;
+  --tracking-title: -0.022em;
+  --tracking-heading: -0.014em;
+  --tracking-body: 0em;
+  --tracking-caption: 0.006em;
+  --tracking-micro: 0.018em;
+  --tracking-label: 0.12em;
+
+  /* Leading moves inversely to size. */
+  --leading-display: 1.05;
+  --leading-title: 1.14;
+  --leading-heading: 1.32;
+  --leading-body: 1.58;
+  --leading-caption: 1.5;
+
+  /* ---------------------------------------------------------------- */
+  /* Motion (§4)                                                      */
+  /* Curves are sampled from real springs parameterised the way Apple  */
+  /* parameterises them — damping ratio + response, not mass/k/c. The  */
+  /* paired duration is the spring's emergent settle time, not a       */
+  /* chosen one.                                                       */
+  /* ---------------------------------------------------------------- */
+
+  /* damping 1.0, response 0.4s — the house default: graceful, no overshoot */
+  --duration-spring: 0.588s;
+  --ease-spring: linear(
+    0 0%, 0.0669 4.5%, 0.2055 9.1%, 0.3588 13.6%, 0.5003 18.2%, 0.6202 22.7%, 0.7166 27.3%,
+    0.7915 31.8%, 0.8484 36.4%, 0.8908 40.9%, 0.9219 45.5%, 0.9445 50%, 0.9608 54.5%, 0.9725 59.1%,
+    0.9807 63.6%, 0.9866 68.2%, 0.9907 72.7%, 0.9935 77.3%, 0.9955 81.8%, 0.9969 86.4%,
+    0.9979 90.9%, 0.9985 95.5%, 1 100%
+  );
+
+  /* damping 1.0, response 0.3s — snappier, for small state changes */
+  --duration-spring-fast: 0.441s;
+  --ease-spring-fast: linear(
+    0 0%, 0.0942 5.6%, 0.2739 11.1%, 0.4553 16.7%, 0.608 22.2%, 0.7259 27.8%, 0.8123 33.3%,
+    0.8735 38.9%, 0.9158 44.4%, 0.9445 50%, 0.9638 55.6%, 0.9765 61.1%, 0.9848 66.7%, 0.9903 72.2%,
+    0.9938 77.8%, 0.996 83.3%, 0.9975 88.9%, 0.9984 94.4%, 1 100%
+  );
+
+  /* damping 0.8, response 0.3s — sheets and drawers, which arrive with momentum */
+  --duration-sheet: 0.405s;
+  --ease-sheet: linear(
+    0 0%, 0.0517 4.2%, 0.1705 8.3%, 0.3164 12.5%, 0.4638 16.7%, 0.5982 20.8%, 0.7125 25%,
+    0.8045 29.2%, 0.8753 33.3%, 0.9273 37.5%, 0.9637 41.7%, 0.9878 45.8%, 1.0026 50%, 1.0108 54.2%,
+    1.0144 58.3%, 1.0151 62.5%, 1.0141 66.7%, 1.0122 70.8%, 1.0099 75%, 1.0077 79.2%, 1.0057 83.3%,
+    1.0041 87.5%, 1.0027 91.7%, 1.0017 95.8%, 1 100%
+  );
+
+  /* Mirrored pair for reversible transitions, so the return path retraces
+     the outbound path (§7). The second is the first's inverse. */
+  --ease-out-standard: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-in-standard: cubic-bezier(1, 0, 0.68, 0.28);
+
+  /* Press feedback has to feel instant (§1) — this is the one place a short
+     fixed duration beats a spring. */
+  --duration-press: 100ms;
+  --ease-press: ease-out;
+
+  /* Duration + easing travel together, so a transition reads as "what moves"
+     plus "which feel" rather than repeating both halves everywhere. */
+  --motion-base: var(--duration-spring) var(--ease-spring);
+  --motion-fast: var(--duration-spring-fast) var(--ease-spring-fast);
+  --motion-press: var(--duration-press) var(--ease-press);
+  --motion-sheet-in: var(--duration-sheet) var(--ease-sheet);
+  --motion-sheet-out: var(--duration-sheet) var(--ease-in-standard);
+
+  /* ---------------------------------------------------------------- */
+  /* Colour                                                           */
+  /* ---------------------------------------------------------------- */
+
+  /* The neutrals are warm, not blue-grey. Everything structural — borders,
+     surfaces, page texture, shadows — is mixed from these two channel-form
+     hues, so the greys agree with the accent instead of fighting it. Channels
+     rather than colours means the alpha is chosen where it is used. */
+  --line-rgb: 120, 113, 108;
+  --shadow-rgb: 28, 25, 23;
+
+  --bg: #faf9f7;
   --bg-raised: #ffffff;
-  --surface: rgba(100, 116, 139, 0.06);
-  --surface-strong: rgba(100, 116, 139, 0.12);
-  --border: rgba(100, 116, 139, 0.18);
-  --border-strong: rgba(100, 116, 139, 0.32);
-  --text: #0f172a;
-  --text-muted: #475569;
-  --text-faint: #64748b;
-  --indigo: #4f46e5;
-  --indigo-bright: #6366f1;
-  --violet: #9333ea;
-  --cyan: #0891b2;
-  --green: #059669;
-  --amber: #d97706;
-  --red: #dc2626;
-  --gradient: linear-gradient(120deg, #6366f1, #a855f7 45%, #0891b2);
-  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --surface: rgba(var(--line-rgb), 0.06);
+  --surface-strong: rgba(var(--line-rgb), 0.12);
+  --border: rgba(var(--line-rgb), 0.2);
+  --border-strong: rgba(var(--line-rgb), 0.34);
+  --text: #12100e;
+  --text-muted: #57534e;
+  --text-faint: #756e68;
+
+  /* One accent, and one only. Restraint is the whole point: an accent that
+     appears on five things per screen means something, an accent on fifty
+     means nothing. Ember carries the brand; the neutrals carry the design.
+     --accent is text-safe on --bg *and* fill-safe under --on-accent, which is
+     what keeps it usable everywhere rather than needing a second value.
+     --accent-hover is only ever a hover state, and it moves *away* from the
+     page: deeper on a light background, brighter on a dark one. Moving it the
+     other way here would drop white ink on the button to 3.8:1. */
+  --accent: #c2490a;
+  --accent-hover: #a63c05;
+  --accent-rgb: 194, 73, 10;
+
+  /* Ink for text sitting on an accent fill. White is an assumption, not a
+     constant — a light-on-dark scheme inverts it (§16). */
+  --on-accent: #ffffff;
+
+  /* Status only. These never decorate — a green here always means "this is
+     live", a red always means "you need to fix this". */
+  --green: #1f7a4d;
+  --green-rgb: 31, 122, 77;
+  /* Rose-shifted rather than a true red, so an error is never mistaken for
+     the brand orange at a glance. */
+  --red: #c81d3f;
+  --red-rgb: 200, 29, 63;
+
+  /* Decorative, so it stays fixed rather than tracking --border — a contrast
+     preference should not promote background texture to foreground. */
+  --grid-line: rgba(var(--line-rgb), 0.08);
+  /* A single ambient wash behind the page, not a field of coloured orbs. */
+  --wash-opacity: 0.5;
+  --scrim: rgba(28, 25, 23, 0.32);
+
+  /* ---------------------------------------------------------------- */
+  /* Materials (§12)                                                  */
+  /* Weight encodes hierarchy: heavier materials separate structural   */
+  /* regions, lighter ones sit under interactive elements. Surfaces    */
+  /* that land on top of another material use --material-opaque so we  */
+  /* never stack translucency on translucency.                         */
+  /* ---------------------------------------------------------------- */
+
+  --material-tint: 255, 255, 255;
+  --material-thin: rgba(var(--material-tint), 0.55);
+  --material-regular: rgba(var(--material-tint), 0.7);
+  --material-thick: rgba(var(--material-tint), 0.85);
+  --material-opaque: #ffffff;
+  --material-saturate: 180%;
+
+  /* Bigger surfaces read as thicker glass. */
+  --blur-thin: 10px;
+  --blur-regular: 20px;
+  --blur-thick: 32px;
+
+  /* The bright top edge is light catching the leading edge of the material. */
+  --edge-highlight: rgba(255, 255, 255, 0.65);
+
+  /* Elevation scales with surface size, not with importance. */
+  --shadow-chip: 0 1px 2px rgba(var(--shadow-rgb), 0.06),
+    0 4px 12px -6px rgba(var(--shadow-rgb), 0.16);
+  --shadow-card: 0 2px 6px -2px rgba(var(--shadow-rgb), 0.06),
+    0 18px 44px -22px rgba(var(--shadow-rgb), 0.2);
+  --shadow-surface: 0 4px 14px -4px rgba(var(--shadow-rgb), 0.08),
+    0 44px 90px -34px rgba(var(--shadow-rgb), 0.3);
+
   --radius: 14px;
   --radius-sm: 9px;
-
-  color-scheme: light;
+  --radius-lg: 22px;
 }
+
+/* ---------------------------------------------------------------- */
+/* Dark scheme (§16 — colour adapts, it is not a separate design)   */
+/* ---------------------------------------------------------------- */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Warm greys, not blue ones. A blue-grey neutral under an orange accent
+       reads as two palettes stacked; a warm one reads as a single room. */
+    --line-rgb: 176, 166, 154;
+    /* Even the shadow is warm — a shadow cooler than the surface it falls on
+       looks like grime rather than absence of light. */
+    --shadow-rgb: 10, 6, 3;
+
+    --bg: #0c0b0a;
+    --bg-raised: #161512;
+    --surface: rgba(var(--line-rgb), 0.06);
+    --surface-strong: rgba(var(--line-rgb), 0.12);
+    --border: rgba(var(--line-rgb), 0.16);
+    --border-strong: rgba(var(--line-rgb), 0.3);
+    --text: #f8f6f3;
+    --text-muted: #a8a29a;
+    --text-faint: #8b8379;
+
+    /* Dark is not the light palette dimmed. The accent moves up in lightness
+       and chroma because a dark field absorbs saturation that would shout on
+       white, and the ink on it inverts to near-black — white on a fill this
+       bright is ~2.5:1 (§16). */
+    --accent: #ff7a2f;
+    --accent-hover: #ffa463;
+    --accent-rgb: 255, 122, 47;
+
+    --on-accent: #16120e;
+
+    --green: #4fd07f;
+    --green-rgb: 79, 208, 127;
+    --red: #ff5f7a;
+    --red-rgb: 255, 95, 122;
+
+    --grid-line: rgba(var(--line-rgb), 0.05);
+    --wash-opacity: 0.42;
+    --scrim: rgba(0, 0, 0, 0.6);
+
+    --material-tint: 22, 20, 17;
+    --material-thin: rgba(var(--material-tint), 0.6);
+    --material-regular: rgba(var(--material-tint), 0.72);
+    --material-thick: rgba(var(--material-tint), 0.86);
+    --material-opaque: #171511;
+
+    /* The light catching the leading edge is the room's light, so it carries
+       the room's warmth rather than being neutral white. */
+    --edge-highlight: rgba(255, 238, 222, 0.1);
+
+    --shadow-chip: 0 1px 2px rgba(var(--shadow-rgb), 0.5),
+      0 4px 12px -6px rgba(var(--shadow-rgb), 0.6);
+    --shadow-card: 0 2px 6px -2px rgba(var(--shadow-rgb), 0.5),
+      0 18px 44px -22px rgba(var(--shadow-rgb), 0.7);
+    --shadow-surface: 0 4px 14px -4px rgba(var(--shadow-rgb), 0.55),
+      0 44px 90px -34px rgba(var(--shadow-rgb), 0.8);
+  }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
 
 * {
   box-sizing: border-box;
@@ -39,19 +256,25 @@ body {
   margin: 0;
   min-height: 100%;
   background: var(--bg);
+  /* Theme flips are eased rather than snapped (§14). */
+  transition: background-color var(--duration-spring) var(--ease-spring);
 }
 
 body {
   font-family: var(--font-body);
+  font-size: 100%;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
   color: var(--text);
+  font-optical-sizing: auto;
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: rgba(99, 102, 241, 0.25);
-  color: #0f172a;
+  background: rgba(var(--accent-rgb), 0.25);
+  color: var(--text);
 }
 
 a {
@@ -79,6 +302,26 @@ input,
 textarea,
 select {
   font: inherit;
+  letter-spacing: inherit;
+}
+
+/* Anything tappable opts out of the legacy ~300ms tap delay and the grey
+   flash, both of which read as latency (§1). */
+a,
+button,
+select,
+label,
+[role='tab'],
+input[type='range'],
+input[type='submit'] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* A visible, consistent focus path — wayfinding for keyboard users (§16). */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 ::-webkit-scrollbar {
@@ -90,25 +333,78 @@ select {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.35);
+  background: rgba(var(--line-rgb), 0.35);
   border-radius: 99px;
   border: 2px solid var(--bg);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.55);
+  background: rgba(var(--line-rgb), 0.55);
 }
 
+/* ==========================================================================
+   Accessibility signals (§14)
+   Each preference is answered independently, and none of them mean
+   "remove the feedback" — they mean "deliver it a gentler way".
+   ========================================================================== */
+
+/* Reduced motion: springs and slides collapse into short cross-fades, and
+   overshoot is dropped everywhere. Opacity and colour changes survive
+   because they carry meaning. */
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-spring: 200ms;
+    --duration-spring-fast: 160ms;
+    --duration-sheet: 160ms;
+    --ease-spring: ease;
+    --ease-spring-fast: ease;
+    --ease-sheet: ease;
+    --ease-out-standard: ease;
+    --ease-in-standard: ease;
+  }
+
   html {
     scroll-behavior: auto;
   }
+}
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+/* Reduced transparency: materials frost over into solids and the blur is
+   dropped, rather than the layout changing. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --material-thin: var(--material-opaque);
+    --material-regular: var(--material-opaque);
+    --material-thick: var(--material-opaque);
+    --blur-thin: 0px;
+    --blur-regular: 0px;
+    --blur-thick: 0px;
+    --material-saturate: 100%;
+  }
+}
+
+/* Increased contrast: near-solid backgrounds behind defined borders. */
+@media (prefers-contrast: more) {
+  :root {
+    --text-muted: var(--text);
+    --text-faint: var(--text);
+    --border: rgba(var(--line-rgb), 0.55);
+    --border-strong: rgba(var(--line-rgb), 0.8);
+    --material-thin: var(--material-opaque);
+    --material-regular: var(--material-opaque);
+    --material-thick: var(--material-opaque);
+    --blur-thin: 0px;
+    --blur-regular: 0px;
+    --blur-thick: 0px;
+  }
+
+  :focus-visible {
+    outline-width: 3px;
+  }
+}
+
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root {
+    --border: rgba(var(--line-rgb), 0.6);
+    --border-strong: rgba(var(--line-rgb), 0.85);
   }
 }

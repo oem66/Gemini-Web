@@ -104,8 +104,12 @@ export interface SiteContent {
       copy: string;
       emailPlaceholder: string;
       emailAria: string;
+      emailInvalid: string;
       submit: string;
       note: string;
+      sentTitle: string;
+      sentCopy: string;
+      sentAction: string;
     };
   };
   lab: {
@@ -197,8 +201,12 @@ const en: SiteContent = {
       copy: 'Mobile apps, web frontends, backend systems and AI workflows — easy to understand, pleasant to use and measurably effective.',
       emailPlaceholder: 'you@company.com',
       emailAria: 'Business email address',
+      emailInvalid: 'Enter a valid email address so we can reply.',
       submit: 'Free intro call',
-      note: '// Reply within two business days · NDA on request'
+      note: '// Reply within two business days · NDA on request',
+      sentTitle: 'Request received',
+      sentCopy: 'A real engineer replies within two business days.',
+      sentAction: 'Use a different address'
     }
   },
   lab: {
@@ -566,8 +574,12 @@ const de: SiteContent = {
       copy: 'Mobile Apps, Web-Frontends, Backend-Systeme und AI-Workflows — einfach zu verstehen, angenehm zu bedienen und messbar wirksam.',
       emailPlaceholder: 'deine@firma.de',
       emailAria: 'Business E-Mail-Adresse',
+      emailInvalid: 'Bitte eine gültige E-Mail-Adresse angeben, damit wir antworten können.',
       submit: 'Kostenloses Erstgespräch',
-      note: '// Antwort innerhalb von zwei Werktagen · NDA auf Wunsch'
+      note: '// Antwort innerhalb von zwei Werktagen · NDA auf Wunsch',
+      sentTitle: 'Anfrage erhalten',
+      sentCopy: 'Ein echter Entwickler antwortet innerhalb von zwei Werktagen.',
+      sentAction: 'Andere Adresse verwenden'
     }
   },
   lab: {
@@ -935,8 +947,12 @@ const no: SiteContent = {
       copy: 'Mobilapper, web-frontends, backend-systemer og AI-arbeidsflyter — enkle å forstå, behagelige å bruke og målbart effektive.',
       emailPlaceholder: 'deg@firma.no',
       emailAria: 'Jobb-e-postadresse',
+      emailInvalid: 'Skriv inn en gyldig e-postadresse så vi kan svare.',
       submit: 'Gratis intromøte',
-      note: '// Svar innen to virkedager · NDA på forespørsel'
+      note: '// Svar innen to virkedager · NDA på forespørsel',
+      sentTitle: 'Forespørsel mottatt',
+      sentCopy: 'En ekte utvikler svarer innen to virkedager.',
+      sentAction: 'Bruk en annen adresse'
     }
   },
   lab: {
@@ -1304,8 +1320,12 @@ const sv: SiteContent = {
       copy: 'Mobilappar, webb-frontends, backend-system och AI-arbetsflöden — lätta att förstå, behagliga att använda och mätbart effektiva.',
       emailPlaceholder: 'du@foretag.se',
       emailAria: 'Jobb-e-postadress',
+      emailInvalid: 'Ange en giltig e-postadress så att vi kan svara.',
       submit: 'Kostnadsfritt intromöte',
-      note: '// Svar inom två arbetsdagar · NDA på begäran'
+      note: '// Svar inom två arbetsdagar · NDA på begäran',
+      sentTitle: 'Förfrågan mottagen',
+      sentCopy: 'En riktig utvecklare svarar inom två arbetsdagar.',
+      sentAction: 'Använd en annan adress'
     }
   },
   lab: {
@@ -1673,8 +1693,12 @@ const fr: SiteContent = {
       copy: 'Apps mobiles, frontends web, systèmes backend et workflows IA — faciles à comprendre, agréables à utiliser et d’une efficacité mesurable.',
       emailPlaceholder: 'vous@entreprise.fr',
       emailAria: 'Adresse e-mail professionnelle',
+      emailInvalid: 'Saisissez une adresse e-mail valide pour que nous puissions répondre.',
       submit: 'Premier échange gratuit',
-      note: '// Réponse sous deux jours ouvrés · NDA sur demande'
+      note: '// Réponse sous deux jours ouvrés · NDA sur demande',
+      sentTitle: 'Demande reçue',
+      sentCopy: 'Un vrai ingénieur répond sous deux jours ouvrés.',
+      sentAction: 'Utiliser une autre adresse'
     }
   },
   lab: {
@@ -2042,8 +2066,12 @@ const it: SiteContent = {
       copy: 'App mobili, frontend web, sistemi backend e workflow AI — facili da capire, piacevoli da usare e di efficacia misurabile.',
       emailPlaceholder: 'tu@azienda.it',
       emailAria: 'Indirizzo e-mail aziendale',
+      emailInvalid: 'Inserisci un indirizzo e-mail valido così possiamo risponderti.',
       submit: 'Prima call gratuita',
-      note: '// Risposta entro due giorni lavorativi · NDA su richiesta'
+      note: '// Risposta entro due giorni lavorativi · NDA su richiesta',
+      sentTitle: 'Richiesta ricevuta',
+      sentCopy: 'Un vero sviluppatore risponde entro due giorni lavorativi.',
+      sentAction: 'Usa un altro indirizzo'
     }
   },
   lab: {
