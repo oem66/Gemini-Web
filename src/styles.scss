@@ -33,7 +33,7 @@
   --leading-display: 1.05;
   --leading-title: 1.14;
   --leading-heading: 1.32;
-  --leading-body: 1.65;
+  --leading-body: 1.58;
   --leading-caption: 1.5;
 
   /* ---------------------------------------------------------------- */
@@ -92,54 +92,54 @@
   /* Colour                                                           */
   /* ---------------------------------------------------------------- */
 
-  /* Two channel-form neutrals every scheme retunes: --line-rgb is the hue the
-     borders, surfaces and page texture are mixed from, --shadow-rgb the hue
-     light is missing from. Keeping them as channels means an alpha can be
-     chosen at the point of use without restating the colour. */
-  --line-rgb: 100, 116, 139;
-  --shadow-rgb: 15, 23, 42;
+  /* The neutrals are warm, not blue-grey. Everything structural — borders,
+     surfaces, page texture, shadows — is mixed from these two channel-form
+     hues, so the greys agree with the accent instead of fighting it. Channels
+     rather than colours means the alpha is chosen where it is used. */
+  --line-rgb: 120, 113, 108;
+  --shadow-rgb: 28, 25, 23;
 
-  --bg: #f6f8fc;
+  --bg: #faf9f7;
   --bg-raised: #ffffff;
   --surface: rgba(var(--line-rgb), 0.06);
   --surface-strong: rgba(var(--line-rgb), 0.12);
-  --border: rgba(var(--line-rgb), 0.18);
-  --border-strong: rgba(var(--line-rgb), 0.32);
-  --text: #0f172a;
-  --text-muted: #475569;
-  --text-faint: #64748b;
+  --border: rgba(var(--line-rgb), 0.2);
+  --border-strong: rgba(var(--line-rgb), 0.34);
+  --text: #12100e;
+  --text-muted: #57534e;
+  --text-faint: #756e68;
 
-  /* Three accent hues carry the identity: --accent fills, --accent-bright is
-     the text-safe lift of it, and -2/-3 are the harmony either side. Each one
-     that gets tinted or glowed anywhere also ships a channel form, so a
-     translucent version is mixed from the same value as the solid rather than
-     being a second colour that has to be kept in sync by hand. */
-  --accent: #4f46e5;
-  --accent-bright: #6366f1;
-  --accent-bright-rgb: 99, 102, 241;
-  --accent-2: #9333ea;
-  --accent-2-rgb: 147, 51, 234;
-  --accent-3: #0891b2;
-  --accent-3-rgb: 8, 145, 178;
+  /* One accent, and one only. Restraint is the whole point: an accent that
+     appears on five things per screen means something, an accent on fifty
+     means nothing. Ember carries the brand; the neutrals carry the design.
+     --accent is text-safe on --bg *and* fill-safe under --on-accent, which is
+     what keeps it usable everywhere rather than needing a second value.
+     --accent-hover is only ever a hover state, and it moves *away* from the
+     page: deeper on a light background, brighter on a dark one. Moving it the
+     other way here would drop white ink on the button to 3.8:1. */
+  --accent: #c2490a;
+  --accent-hover: #a63c05;
+  --accent-rgb: 194, 73, 10;
 
   /* Ink for text sitting on an accent fill. White is an assumption, not a
      constant — a light-on-dark scheme inverts it (§16). */
   --on-accent: #ffffff;
 
-  --green: #059669;
-  --green-rgb: 5, 150, 105;
-  --amber: #d97706;
-  --red: #dc2626;
-  --red-rgb: 220, 38, 38;
+  /* Status only. These never decorate — a green here always means "this is
+     live", a red always means "you need to fix this". */
+  --green: #1f7a4d;
+  --green-rgb: 31, 122, 77;
+  /* Rose-shifted rather than a true red, so an error is never mistaken for
+     the brand orange at a glance. */
+  --red: #c81d3f;
+  --red-rgb: 200, 29, 63;
 
-  --gradient: linear-gradient(120deg, #6366f1, #a855f7 45%, #0891b2);
   /* Decorative, so it stays fixed rather than tracking --border — a contrast
      preference should not promote background texture to foreground. */
   --grid-line: rgba(var(--line-rgb), 0.08);
-  /* Ambient colour behind the page. A dark room takes more of it before the
-     glow reads as haze. */
-  --orb-opacity: 0.4;
-  --scrim: rgba(2, 6, 23, 0.32);
+  /* A single ambient wash behind the page, not a field of coloured orbs. */
+  --wash-opacity: 0.5;
+  --scrim: rgba(28, 25, 23, 0.32);
 
   /* ---------------------------------------------------------------- */
   /* Materials (§12)                                                  */
@@ -183,71 +183,58 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* The neutrals carry the same green cast as the accents, so the palette
-       reads as one room lit green rather than as green stickers stuck on a
-       blue-grey page. Every border, surface and grid line inherits it. */
-    --line-rgb: 125, 226, 190;
-    /* Shadows are a green-black, not a neutral one — a shadow that is more
-       neutral than the surface it falls on reads as dirt. */
-    --shadow-rgb: 0, 18, 13;
+    /* Warm greys, not blue ones. A blue-grey neutral under an orange accent
+       reads as two palettes stacked; a warm one reads as a single room. */
+    --line-rgb: 176, 166, 154;
+    /* Even the shadow is warm — a shadow cooler than the surface it falls on
+       looks like grime rather than absence of light. */
+    --shadow-rgb: 10, 6, 3;
 
-    --bg: #050f0d;
-    --bg-raised: #0a1a17;
-    --surface: rgba(var(--line-rgb), 0.07);
-    --surface-strong: rgba(var(--line-rgb), 0.14);
-    --border: rgba(var(--line-rgb), 0.18);
-    --border-strong: rgba(var(--line-rgb), 0.34);
-    --text: #e9fbf4;
-    --text-muted: #a9cec0;
-    --text-faint: #82a99b;
+    --bg: #0c0b0a;
+    --bg-raised: #161512;
+    --surface: rgba(var(--line-rgb), 0.06);
+    --surface-strong: rgba(var(--line-rgb), 0.12);
+    --border: rgba(var(--line-rgb), 0.16);
+    --border-strong: rgba(var(--line-rgb), 0.3);
+    --text: #f8f6f3;
+    --text-muted: #a8a29a;
+    --text-faint: #8b8379;
 
-    /* Dark is not the light palette dimmed: the hues move to the green half of
-       the wheel and chroma goes *up*, because a dark field absorbs saturation
-       that would shout on white. Spring green leads, lime and turquoise sit
-       either side of it so the three accents stay separable at a glance
-       instead of collapsing into one green. Each clears 10:1 on --bg, so the
-       colour is doing legible work rather than decoration (§16). */
-    --accent: #00e08c;
-    --accent-bright: #45f2ad;
-    --accent-bright-rgb: 69, 242, 173;
-    --accent-2: #b8f45e;
-    --accent-2-rgb: 184, 244, 94;
-    --accent-3: #22e5d6;
-    --accent-3-rgb: 34, 229, 214;
+    /* Dark is not the light palette dimmed. The accent moves up in lightness
+       and chroma because a dark field absorbs saturation that would shout on
+       white, and the ink on it inverts to near-black — white on a fill this
+       bright is ~2.5:1 (§16). */
+    --accent: #ff7a2f;
+    --accent-hover: #ffa463;
+    --accent-rgb: 255, 122, 47;
 
-    /* White on a fill this bright is ~2:1, so the ink inverts with the
-       scheme instead of staying white out of habit. */
-    --on-accent: #04140f;
+    --on-accent: #16120e;
 
-    /* Success keeps a hue of its own — yellower than the brand green — so a
-       status light still reads as status and not as branding. */
-    --green: #6ef58f;
-    --green-rgb: 110, 245, 143;
-    --amber: #ffc94a;
-    --red: #ff6b81;
-    --red-rgb: 255, 107, 129;
+    --green: #4fd07f;
+    --green-rgb: 79, 208, 127;
+    --red: #ff5f7a;
+    --red-rgb: 255, 95, 122;
 
-    --gradient: linear-gradient(120deg, #00e08c, #b8f45e 45%, #22e5d6);
-    --grid-line: rgba(var(--line-rgb), 0.08);
-    --orb-opacity: 0.5;
-    --scrim: rgba(0, 12, 9, 0.55);
+    --grid-line: rgba(var(--line-rgb), 0.05);
+    --wash-opacity: 0.42;
+    --scrim: rgba(0, 0, 0, 0.6);
 
-    --material-tint: 10, 26, 22;
+    --material-tint: 22, 20, 17;
     --material-thin: rgba(var(--material-tint), 0.6);
     --material-regular: rgba(var(--material-tint), 0.72);
     --material-thick: rgba(var(--material-tint), 0.86);
-    --material-opaque: #0c1f1a;
+    --material-opaque: #171511;
 
-    /* The light catching the leading edge is the room's light, so it is tinted
-       with it rather than being neutral white. */
-    --edge-highlight: rgba(168, 255, 222, 0.14);
+    /* The light catching the leading edge is the room's light, so it carries
+       the room's warmth rather than being neutral white. */
+    --edge-highlight: rgba(255, 238, 222, 0.1);
 
-    --shadow-chip: 0 1px 2px rgba(var(--shadow-rgb), 0.4),
-      0 4px 12px -6px rgba(var(--shadow-rgb), 0.55);
-    --shadow-card: 0 2px 6px -2px rgba(var(--shadow-rgb), 0.4),
-      0 18px 44px -22px rgba(var(--shadow-rgb), 0.6);
-    --shadow-surface: 0 4px 14px -4px rgba(var(--shadow-rgb), 0.45),
-      0 44px 90px -34px rgba(var(--shadow-rgb), 0.7);
+    --shadow-chip: 0 1px 2px rgba(var(--shadow-rgb), 0.5),
+      0 4px 12px -6px rgba(var(--shadow-rgb), 0.6);
+    --shadow-card: 0 2px 6px -2px rgba(var(--shadow-rgb), 0.5),
+      0 18px 44px -22px rgba(var(--shadow-rgb), 0.7);
+    --shadow-surface: 0 4px 14px -4px rgba(var(--shadow-rgb), 0.55),
+      0 44px 90px -34px rgba(var(--shadow-rgb), 0.8);
   }
 }
 
@@ -286,7 +273,7 @@ body {
 }
 
 ::selection {
-  background: rgba(var(--accent-bright-rgb), 0.25);
+  background: rgba(var(--accent-rgb), 0.25);
   color: var(--text);
 }
 
@@ -333,7 +320,7 @@ input[type='submit'] {
 
 /* A visible, consistent focus path — wayfinding for keyboard users (§16). */
 :focus-visible {
-  outline: 2px solid var(--accent-bright);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 

@@ -3,10 +3,9 @@
 <div class="site" id="top">
   <div class="backdrop" aria-hidden="true">
     <div class="grid-overlay"></div>
-    <div class="orb orb-a"></div>
-    <div class="orb orb-b"></div>
-    <div class="orb orb-c"></div>
   </div>
+
+  <div class="wash" aria-hidden="true"></div>
 
   <header class="site-header" [class.is-locked]="menuOpen()">
     <div class="chrome-edge" aria-hidden="true"></div>
@@ -87,7 +86,7 @@
 
         <h1 class="reveal" style="--d: 60ms">
           {{ t().hero.titleLead }}
-          <span class="gradient-text">{{ t().hero.titleAccent }}</span>
+          <span class="accent-word">{{ t().hero.titleAccent }}</span>
         </h1>
 
         <p class="lead reveal" style="--d: 120ms">
