@@ -1,4 +1,4 @@
-<div class="progress-bar" [style.width.%]="scrollProgress()" aria-hidden="true"></div>
+<div class="progress-bar" aria-hidden="true"></div>
 
 <div class="site" id="top">
   <div class="backdrop" aria-hidden="true">
@@ -8,7 +8,8 @@
     <div class="orb orb-c"></div>
   </div>
 
-  <header class="site-header" [class.scrolled]="scrolled() || menuOpen()">
+  <header class="site-header" [class.is-locked]="menuOpen()">
+    <div class="chrome-edge" aria-hidden="true"></div>
     <div class="container header-inner">
       <a class="brand" href="#top" aria-label="Gemini Home" (click)="closeMenu()">
         <span class="brand-mark">G</span>
@@ -48,8 +49,13 @@
       </div>
     </div>
 
-    @if (menuOpen()) {
-    <nav class="mobile-nav" aria-label="Mobile">
+    <!-- Kept mounted so the sheet leaves along the path it arrived on (§7). -->
+    <nav
+      class="mobile-nav"
+      aria-label="Mobile"
+      [class.open]="menuOpen()"
+      [attr.inert]="menuOpen() ? null : ''"
+    >
       @for (item of navItems(); track item.id) {
       <a [href]="item.href" (click)="closeMenu()">{{ item.label }}</a>
       }
@@ -67,8 +73,9 @@
       </div>
       <a class="btn btn-primary" href="#contact" (click)="closeMenu()">{{ t().header.cta }}</a>
     </nav>
-    }
   </header>
+
+  <div class="nav-scrim" [class.on]="menuOpen()" (click)="closeMenu()" aria-hidden="true"></div>
 
   <main>
     <section class="hero container">
@@ -102,17 +109,9 @@
         </div>
       </div>
 
-      <div
-        #heroLab
-        class="hero-visual reveal"
-        style="--d: 160ms"
-        (mousemove)="onHeroMove($event, heroLab)"
-        (mouseleave)="resetHeroFocus()"
-        [style.--cursor-x]="cursorX() + '%'"
-        [style.--cursor-y]="cursorY() + '%'"
-        [style.--tilt-x]="tiltX() + 'deg'"
-        [style.--tilt-y]="tiltY() + 'deg'"
-      >
+      <!-- Tilt and focus are driven by springs in the component, straight from
+           Pointer Events, so the motion can be interrupted mid-flight (§2, §3). -->
+      <div class="hero-visual reveal" style="--d: 160ms">
         <div class="terminal" aria-label="Gemini Delivery Terminal Demo">
           <div class="terminal-bar">
             <span class="dot dot-red"></span>
@@ -201,7 +200,7 @@
 
       <div class="bento-grid">
         @for (capability of capabilities(); track capability.title; let i = $index) {
-        <article class="card capability-card reveal" [style.--d]="(i % 3) * 90 + 'ms'" (mousemove)="onCardMove($event)">
+        <article class="card capability-card reveal" [style.--d]="(i % 3) * 90 + 'ms'">
           <div class="card-top">
             <span class="card-index mono">0{{ i + 1 }}</span>
             <span class="card-tag mono">{{ capability.tag }}</span>
@@ -253,7 +252,7 @@
 
       <div class="project-grid">
         @for (project of projectHighlights(); track project.company; let i = $index) {
-        <article class="card project-card reveal" [style.--d]="(i % 3) * 90 + 'ms'" (mousemove)="onCardMove($event)">
+        <article class="card project-card reveal" [style.--d]="(i % 3) * 90 + 'ms'">
           <div class="project-head">
             <p class="project-company mono">{{ project.company }}</p>
             <div class="project-tags">
@@ -309,15 +308,19 @@
       </div>
 
       <div class="lab-layout reveal">
-        <div class="tab-list" role="tablist" aria-label="AI Use Cases">
+        <div class="tab-list" role="tablist" aria-orientation="vertical" aria-label="AI Use Cases">
           @for (useCase of useCases(); track useCase.name; let i = $index) {
           <button
             type="button"
             role="tab"
             class="case-tab"
+            [id]="'case-tab-' + i"
             [class.active]="activeUseCase() === i"
             [attr.aria-selected]="activeUseCase() === i"
+            [attr.aria-controls]="'case-panel'"
+            [attr.tabindex]="activeUseCase() === i ? 0 : -1"
             (click)="setUseCase(i)"
+            (keydown)="onTabKeydown($event, i)"
           >
             <span class="mono tab-index">0{{ i + 1 }}</span>
             {{ useCase.name }}
@@ -325,7 +328,15 @@
           }
         </div>
 
-        <article class="card case-panel" aria-live="polite">
+        <!-- Swipeable on touch: 1:1 tracking, rubber-banded ends, and a
+             landing point chosen from projected momentum (§2, §6, §9). -->
+        <article
+          class="card case-panel"
+          id="case-panel"
+          role="tabpanel"
+          [attr.aria-labelledby]="'case-tab-' + activeUseCase()"
+          aria-live="polite"
+        >
           <p class="case-label mono">{{ t().lab.challengeLabel }}</p>
           <h3>{{ useCases()[activeUseCase()].problem }}</h3>
           <p class="case-solution">{{ useCases()[activeUseCase()].solution }}</p>
@@ -333,6 +344,11 @@
             <span class="mark" aria-hidden="true">✓</span>
             {{ useCases()[activeUseCase()].outcome }}
           </p>
+          <div class="case-dots" aria-hidden="true">
+            @for (useCase of useCases(); track useCase.name; let i = $index) {
+            <span [class.on]="activeUseCase() === i"></span>
+            }
+          </div>
         </article>
       </div>
 
@@ -434,7 +450,7 @@
 
       <div class="stack-grid">
         @for (item of technologyStack(); track item.name; let i = $index) {
-        <article class="card stack-card reveal" [style.--d]="(i % 4) * 70 + 'ms'" (mousemove)="onCardMove($event)">
+        <article class="card stack-card reveal" [style.--d]="(i % 4) * 70 + 'ms'">
           <span class="stack-index mono">0{{ i + 1 }}</span>
           <h3>{{ item.name }}</h3>
           <p>{{ item.summary }}</p>
@@ -452,15 +468,42 @@
           {{ t().sections.contact.copy }}
         </p>
 
-        <form class="email-capture" (submit)="$event.preventDefault()">
-          <input
-            type="email"
-            [placeholder]="t().sections.contact.emailPlaceholder"
-            [attr.aria-label]="t().sections.contact.emailAria"
-            required
-          />
+        @if (contactSent()) {
+        <!-- Completion feedback, and a way back out of it (§16). -->
+        <div class="contact-sent" role="status">
+          <span class="sent-mark" aria-hidden="true">✓</span>
+          <p class="sent-title">{{ t().sections.contact.sentTitle }}</p>
+          <p class="sent-copy">{{ t().sections.contact.sentCopy }}</p>
+          <button type="button" class="sent-undo" (click)="resetContact()">
+            {{ t().sections.contact.sentAction }}
+          </button>
+        </div>
+        } @else {
+        <form class="email-capture" novalidate (submit)="$event.preventDefault(); submitContact()">
+          <div class="email-field">
+            <input
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              [value]="email()"
+              [class.invalid]="emailError()"
+              [placeholder]="t().sections.contact.emailPlaceholder"
+              [attr.aria-label]="t().sections.contact.emailAria"
+              [attr.aria-invalid]="emailError()"
+              [attr.aria-describedby]="emailError() ? 'email-error' : null"
+              (input)="setEmail($any($event.target).value)"
+              (blur)="emailTouched.set(true)"
+              required
+            />
+            <!-- Validated as you type once you have engaged with the field,
+                 never held back until submit (§16). -->
+            @if (emailError()) {
+            <p class="field-error" id="email-error">{{ t().sections.contact.emailInvalid }}</p>
+            }
+          </div>
           <button class="btn btn-primary" type="submit">{{ t().sections.contact.submit }}</button>
         </form>
+        }
 
         <div class="contact-alt">
           <a href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
