@@ -14,8 +14,7 @@ import {
   LanguageCode,
   LanguageOption,
   SiteContent,
-  TRANSLATIONS,
-  TerminalLine
+  TRANSLATIONS
 } from './i18n';
 import { Spring, VelocityTracker, isCoarsePointer, project, reducedMotionQuery, rubberband } from './motion';
 
@@ -76,9 +75,141 @@ export class AppComponent {
 
   readonly heroChips: string[] = ['iOS · Swift', 'Android · Kotlin', 'Web · Angular', 'Backend · Node', 'AI · Automation'];
 
-  readonly terminalLines = signal<TerminalLine[]>([]);
-  readonly typingLine = signal('');
-  readonly isTyping = signal(false);
+  readonly swiftCode = [
+    { indent: 0, tokens: [{ kind: 'keyword', text: 'import' }, { kind: 'plain', text: ' Foundation' }] },
+    { indent: 0, tokens: [] },
+    {
+      indent: 0,
+      tokens: [
+        { kind: 'keyword', text: 'actor' },
+        { kind: 'type', text: ' RealtimeStore' },
+        { kind: 'plain', text: '<State: ' },
+        { kind: 'type', text: 'Sendable' },
+        { kind: 'plain', text: '> {' }
+      ]
+    },
+    {
+      indent: 1,
+      tokens: [
+        { kind: 'keyword', text: 'typealias' },
+        { kind: 'type', text: ' Stream' },
+        { kind: 'plain', text: ' = ' },
+        { kind: 'type', text: 'AsyncStream' },
+        { kind: 'plain', text: '<State>' }
+      ]
+    },
+    {
+      indent: 1,
+      tokens: [
+        { kind: 'keyword', text: 'private var' },
+        { kind: 'plain', text: ' state: State' }
+      ]
+    },
+    {
+      indent: 1,
+      tokens: [
+        { kind: 'keyword', text: 'private var' },
+        { kind: 'plain', text: ' sinks: [' },
+        { kind: 'type', text: 'UUID' },
+        { kind: 'plain', text: ': Stream.Continuation] = [:]' }
+      ]
+    },
+    { indent: 0, tokens: [] },
+    {
+      indent: 1,
+      tokens: [
+        { kind: 'keyword', text: 'init' },
+        { kind: 'plain', text: '(_ initial: State) { state = initial }' }
+      ]
+    },
+    { indent: 0, tokens: [] },
+    {
+      indent: 1,
+      tokens: [
+        { kind: 'keyword', text: 'func' },
+        { kind: 'function', text: ' updates' },
+        { kind: 'plain', text: '() -> Stream {' }
+      ]
+    },
+    {
+      indent: 2,
+      tokens: [
+        { kind: 'keyword', text: 'let' },
+        { kind: 'plain', text: ' pair = Stream.' },
+        { kind: 'function', text: 'makeStream' },
+        { kind: 'plain', text: '(bufferingPolicy: .' },
+        { kind: 'function', text: 'bufferingNewest' },
+        { kind: 'number', text: '(1)' },
+        { kind: 'plain', text: ')' }
+      ]
+    },
+    {
+      indent: 2,
+      tokens: [
+        { kind: 'keyword', text: 'let' },
+        { kind: 'plain', text: ' id = ' },
+        { kind: 'type', text: 'UUID' },
+        { kind: 'plain', text: '(); sinks[id] = pair.continuation' }
+      ]
+    },
+    { indent: 2, tokens: [{ kind: 'plain', text: 'pair.continuation.yield(state)' }] },
+    {
+      indent: 2,
+      tokens: [
+        { kind: 'plain', text: 'pair.continuation.onTermination = { [' },
+        { kind: 'keyword', text: 'weak' },
+        { kind: 'plain', text: ' self] _ ' },
+        { kind: 'keyword', text: 'in' }
+      ]
+    },
+    {
+      indent: 3,
+      tokens: [
+        { kind: 'type', text: 'Task' },
+        { kind: 'plain', text: ' { ' },
+        { kind: 'keyword', text: 'await' },
+        { kind: 'plain', text: ' self?.detach(id) }' }
+      ]
+    },
+    { indent: 2, tokens: [{ kind: 'plain', text: '}' }] },
+    { indent: 2, tokens: [{ kind: 'keyword', text: 'return' }, { kind: 'plain', text: ' pair.stream' }] },
+    { indent: 1, tokens: [{ kind: 'plain', text: '}' }] },
+    { indent: 0, tokens: [] },
+    {
+      indent: 1,
+      tokens: [
+        { kind: 'keyword', text: 'func' },
+        { kind: 'function', text: ' mutate' },
+        { kind: 'plain', text: '(_ body: @' },
+        { kind: 'type', text: 'Sendable' },
+        { kind: 'plain', text: ' (inout State) throws -> Void) ' },
+        { kind: 'keyword', text: 'rethrows' },
+        { kind: 'plain', text: ' {' }
+      ]
+    },
+    {
+      indent: 2,
+      tokens: [
+        { kind: 'keyword', text: 'try' },
+        { kind: 'plain', text: ' body(&state); sinks.values.forEach { $0.yield(state) }' }
+      ]
+    },
+    { indent: 1, tokens: [{ kind: 'plain', text: '}' }] },
+    { indent: 0, tokens: [] },
+    {
+      indent: 1,
+      tokens: [
+        { kind: 'keyword', text: 'private func' },
+        { kind: 'function', text: ' detach' },
+        { kind: 'plain', text: '(_ id: ' },
+        { kind: 'type', text: 'UUID' },
+        { kind: 'plain', text: ') { sinks[id] = ' },
+        { kind: 'keyword', text: 'nil' },
+        { kind: 'plain', text: ' }' }
+      ]
+    },
+    { indent: 0, tokens: [{ kind: 'plain', text: '}' }] }
+  ] as const;
 
   readonly menuOpen = signal(false);
   readonly activeSection = signal('');
@@ -147,7 +278,6 @@ export class AppComponent {
         this.destroyRef.onDestroy(() => query.removeEventListener('change', onChange));
       }
 
-      this.startTerminal();
       this.observeReveals();
       this.observeSections();
       this.setupScroll();
@@ -847,60 +977,6 @@ export class AppComponent {
 
   private isLanguageCode(value: string): value is LanguageCode {
     return LANGUAGES.some((language) => language.code === value);
-  }
-
-  private startTerminal(): void {
-    // A looping type-out is a moving background by another name; reduced
-    // motion gets the finished transcript instead (§14).
-    if (this.reduceMotion) {
-      this.terminalLines.set([...this.t().terminalScript]);
-      return;
-    }
-
-    let index = 0;
-
-    const playNext = () => {
-      const script = this.t().terminalScript;
-
-      if (index >= script.length) {
-        this.schedule(() => {
-          this.terminalLines.set([]);
-          index = 0;
-          playNext();
-        }, 4600);
-        return;
-      }
-
-      const line = script[index];
-
-      if (line.kind === 'cmd') {
-        this.isTyping.set(true);
-        this.typingLine.set('');
-        let char = 0;
-
-        const typeChar = () => {
-          if (char <= line.text.length) {
-            this.typingLine.set(line.text.slice(0, char));
-            char++;
-            this.schedule(typeChar, 22 + Math.random() * 38);
-          } else {
-            this.isTyping.set(false);
-            this.typingLine.set('');
-            this.terminalLines.update((lines) => [...lines, line]);
-            index++;
-            this.schedule(playNext, 300);
-          }
-        };
-
-        typeChar();
-      } else {
-        this.terminalLines.update((lines) => [...lines, line]);
-        index++;
-        this.schedule(playNext, 420);
-      }
-    };
-
-    playNext();
   }
 
   private observeReveals(): void {

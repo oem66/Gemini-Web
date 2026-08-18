@@ -666,58 +666,77 @@ main,
 }
 
 .terminal-body {
-  min-height: 15.5rem;
-  padding: 1.15rem 1.25rem;
+  min-height: 20rem;
+  padding: 0.85rem 0;
   font-family: var(--font-mono);
-  font-size: 0.84rem;
-  line-height: 1.9;
+  font-size: 0.76rem;
+  line-height: 1.42;
 }
 
-.term-line {
+.code-editor {
+  overflow-x: auto;
+  overflow-y: hidden;
+  counter-reset: line;
+  background:
+    linear-gradient(90deg, rgba(var(--accent-rgb), 0.035), transparent 16%),
+    rgba(6, 10, 18, 0.16);
+}
+
+.code-line {
   display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  margin: 0;
+  width: max-content;
+  min-width: 100%;
+  min-height: 1.08rem;
+  padding-inline: 0.85rem 1rem;
   animation: termIn var(--motion-fast) both;
-}
 
-.prompt {
-  flex-shrink: 0;
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.mark {
-  flex-shrink: 0;
-  color: var(--green);
-  font-weight: 600;
-}
-
-.kind-cmd .term-text {
-  color: var(--text);
-}
-
-.kind-ok .term-text {
-  color: var(--text-muted);
-}
-
-.kind-out {
-  padding-left: 1.6rem;
-
-  .term-text {
-    color: var(--text-faint);
+  &:hover {
+    background: rgba(var(--accent-rgb), 0.055);
   }
 }
 
-.kind-accent .term-text {
-  font-weight: 600;
-  color: var(--accent);
+.line-number {
+  width: 2.2rem;
+  flex: 0 0 2.2rem;
+  padding-right: 0.8rem;
+  text-align: right;
+  color: rgba(148, 163, 184, 0.42);
+  user-select: none;
 }
 
-.caret {
-  width: 0.55rem;
-  height: 1.05rem;
-  align-self: center;
+.code-line code {
+  display: block;
+  white-space: pre;
+  color: #cbd5e1;
+}
+
+.syntax-keyword {
+  color: #f472b6;
+}
+
+.syntax-type {
+  color: #67e8f9;
+}
+
+.syntax-function {
+  color: #a78bfa;
+}
+
+.syntax-number {
+  color: #fbbf24;
+}
+
+.syntax-plain {
+  color: #cbd5e1;
+}
+
+.code-line:last-child code::after {
+  content: '';
+  display: inline-block;
+  width: 0.42rem;
+  height: 0.8rem;
+  margin-left: 0.25rem;
+  vertical-align: -0.08rem;
   background: var(--accent);
   animation: blink 1.05s steps(1) infinite;
 }
@@ -2003,7 +2022,7 @@ input[type='range'] {
     transform: none;
   }
 
-  .term-line,
+  .code-line,
   .field-error,
   .contact-sent {
     animation-name: none;
@@ -2140,8 +2159,8 @@ input[type='range'] {
   }
 
   .terminal-body {
-    font-size: 0.76rem;
-    min-height: 14rem;
+    font-size: 0.7rem;
+    min-height: 18.5rem;
   }
 
   .email-capture {

@@ -111,41 +111,35 @@
       <!-- Tilt and focus are driven by springs in the component, straight from
            Pointer Events, so the motion can be interrupted mid-flight (§2, §3). -->
       <div class="hero-visual reveal" style="--d: 160ms">
-        <div class="terminal" aria-label="Gemini Delivery Terminal Demo">
+        <div class="terminal" aria-label="Advanced Swift concurrency code example">
           <div class="terminal-bar">
             <span class="dot dot-red"></span>
             <span class="dot dot-yellow"></span>
             <span class="dot dot-green"></span>
-            <p class="terminal-title">gemini — deploy · zsh</p>
+            <p class="terminal-title">RealtimeStore.swift — gemini</p>
             <span class="terminal-badge">
               <span class="pulse-dot"></span>
-              live
+              Swift 6
             </span>
           </div>
 
-          <div class="terminal-body" aria-live="off">
-            @for (line of terminalLines(); track $index) {
-            <p class="term-line" [class]="'kind-' + line.kind">
-              @if (line.kind === 'cmd') {
-              <span class="prompt">➜&nbsp;~</span>
-              } @else if (line.kind === 'ok') {
-              <span class="mark">✓</span>
-              }
-              <span class="term-text">{{ line.text }}</span>
-            </p>
+          <div class="terminal-body code-editor" aria-label="Swift source code">
+            @for (line of swiftCode; track line; let lineIndex = $index) {
+            <div class="code-line">
+              <span class="line-number" aria-hidden="true">{{ lineIndex + 1 }}</span>
+              <code [style.padding-left.ch]="line.indent * 2">
+                @for (token of line.tokens; track $index) {
+                <span [class]="'syntax-' + token.kind">{{ token.text }}</span>
+                }
+              </code>
+            </div>
             }
-
-            <p class="term-line kind-cmd">
-              <span class="prompt">➜&nbsp;~</span>
-              <span class="term-text">{{ typingLine() }}</span>
-              <span class="caret" aria-hidden="true"></span>
-            </p>
           </div>
 
           <div class="terminal-status">
             <span class="mono">main*</span>
-            <span class="mono">swift · kotlin · ts</span>
-            <span class="mono status-ok">● 99.9% uptime</span>
+            <span class="mono">actor · async/await</span>
+            <span class="mono status-ok">✓ concurrency-safe</span>
           </div>
         </div>
 
