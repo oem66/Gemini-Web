@@ -6,6 +6,7 @@ import {
   NgZone,
   afterNextRender,
   computed,
+  effect,
   inject,
   signal
 } from '@angular/core';
@@ -16,20 +17,31 @@ import {
   SiteContent,
   TRANSLATIONS
 } from './i18n';
-import { Spring, VelocityTracker, isCoarsePointer, project, reducedMotionQuery, rubberband } from './motion';
+import { Spring, VelocityTracker, project, reducedMotionQuery, rubberband } from './motion';
 
 const LANGUAGE_STORAGE_KEY = 'gemini-lang';
+const THEME_STORAGE_KEY = 'gemini-theme';
 
-/** Scroll distance over which the header chrome materialises, in px. */
-const CHROME_RAMP = 72;
+/** Follows the light, or is pinned by the reader. */
+export type ThemePreference = 'auto' | 'light' | 'dark';
+export type ResolvedTheme = 'light' | 'dark';
 
-/** Ambient ticker speed, px/s. Resolution-independent, unlike a fixed duration. */
-const MARQUEE_DRIFT = -55;
+/* Local hours the page reads as daylight. Outside them `auto` turns the page
+   dark, so an evening reader is not handed a lit sheet of paper. The window is
+   deliberately generous at both ends — this is about comfort, not astronomy. */
+const DAY_STARTS_AT = 7;
+const DAY_ENDS_AT = 19;
 
-/** Apple's scroll deceleration rate (§6). */
+/** How long the colours cross-fade for when the scheme changes. */
+const THEME_FADE_MS = 420;
+
+/** Scroll distance after which the header grows its dividing rule, in px. */
+const HEADER_RULE_AT = 24;
+
+/** Apple's scroll deceleration rate, reused for gesture projection. */
 const DECELERATION = 0.998;
 
-/** Movement needed before a drag commits to an axis (§10). */
+/** Movement needed before a drag commits to an axis. */
 const AXIS_THRESHOLD = 10;
 
 @Component({
@@ -42,7 +54,6 @@ export class AppComponent {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly destroyRef = inject(DestroyRef);
   private readonly zone = inject(NgZone);
-  private readonly timeouts: ReturnType<typeof setTimeout>[] = [];
 
   readonly year = new Date().getFullYear();
 
@@ -57,6 +68,49 @@ export class AppComponent {
   readonly clientReferrals = computed(() => this.t().clientReferrals);
   readonly useCases = computed(() => this.t().useCases);
   readonly technologyStack = computed(() => this.t().technologyStack);
+
+  /* ================================================================== */
+  /* Appearance                                                         */
+  /* ================================================================== */
+
+  readonly themePreference = signal<ThemePreference>(this.detectInitialTheme());
+
+  /** Whether the local clock is currently outside daylight hours. */
+  private readonly night = signal(this.isNight());
+  private readonly systemDark = signal(this.detectSystemDark());
+
+  readonly theme = computed<ResolvedTheme>(() => {
+    const preference = this.themePreference();
+    if (preference !== 'auto') {
+      return preference;
+    }
+
+    // Either signal on its own is enough to dim the page: a reader on a dark
+    // desktop at noon meant it, and so did the clock at midnight.
+    return this.night() || this.systemDark() ? 'dark' : 'light';
+  });
+
+  readonly themeChoices = computed(() => {
+    const labels = this.t().header.theme;
+    return [
+      { value: 'auto' as const, label: labels.auto },
+      { value: 'light' as const, label: labels.light },
+      { value: 'dark' as const, label: labels.dark }
+    ];
+  });
+
+  /* The icon alone cannot say which of the three states is in force, so the
+     control carries the state in its name — read out on focus, shown on hover. */
+  readonly themeStatus = computed(() => {
+    const labels = this.t().header.theme;
+    const current = this.themeChoices().find((choice) => choice.value === this.themePreference());
+    return `${labels.label}: ${current?.label ?? ''}`;
+  });
+
+  private themeFadeTimer = 0;
+
+  /** Which impact metrics surface in the hero data strip. */
+  readonly heroStatIndexes: readonly number[] = [0, 2, 3];
 
   readonly technologies: string[] = [
     'Swift',
@@ -73,7 +127,13 @@ export class AppComponent {
     'GraphQL'
   ];
 
-  readonly heroChips: string[] = ['iOS · Swift', 'Android · Kotlin', 'Web · Angular', 'Backend · Node', 'AI · Automation'];
+  readonly heroChips: string[] = [
+    'iOS · Swift',
+    'Android · Kotlin',
+    'Web · Angular',
+    'Backend · Node',
+    'AI · Automation'
+  ];
 
   readonly swiftCode = [
     { indent: 0, tokens: [{ kind: 'keyword', text: 'import' }, { kind: 'plain', text: ' Foundation' }] },
@@ -213,6 +273,7 @@ export class AppComponent {
 
   readonly menuOpen = signal(false);
   readonly activeSection = signal('');
+  readonly scrolled = signal(false);
 
   readonly activeUseCase = signal(0);
 
@@ -226,40 +287,14 @@ export class AppComponent {
   );
   private metricsAnimated = false;
 
-  readonly monthlyRevenue = signal(120000);
-  readonly automationLift = signal(22);
-  readonly aiUpside = signal(15);
-  readonly efficiencyRecovery = signal(18);
-
-  readonly monthlyAutomationValue = computed(() =>
-    Math.round((this.monthlyRevenue() * this.automationLift()) / 100)
-  );
-
-  readonly monthlyAiValue = computed(() => Math.round((this.monthlyRevenue() * this.aiUpside()) / 100));
-
-  readonly monthlyRecoveryValue = computed(() =>
-    Math.round((this.monthlyRevenue() * this.efficiencyRecovery()) / 100)
-  );
-
-  readonly monthlyTotalValue = computed(
-    () => this.monthlyAutomationValue() + this.monthlyAiValue() + this.monthlyRecoveryValue()
-  );
-
-  readonly annualTotalValue = computed(() => this.monthlyTotalValue() * 12);
-
-  readonly monthlyRevenueLabel = computed(() => this.toCurrency(this.monthlyRevenue()));
-  readonly monthlyAutomationLabel = computed(() => this.toCurrency(this.monthlyAutomationValue()));
-  readonly monthlyAiLabel = computed(() => this.toCurrency(this.monthlyAiValue()));
-  readonly monthlyRecoveryLabel = computed(() => this.toCurrency(this.monthlyRecoveryValue()));
-  readonly monthlyTotalLabel = computed(() => this.toCurrency(this.monthlyTotalValue()));
-  readonly annualTotalLabel = computed(() => this.toCurrency(this.annualTotalValue()));
-
-  /* Contact — validated inline as you type, never only on submit (§16). */
+  /* Contact — validated inline as you type, never only on submit. */
   readonly email = signal('');
   readonly emailTouched = signal(false);
   readonly contactSent = signal(false);
   readonly emailValid = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(this.email().trim()));
-  readonly emailError = computed(() => this.emailTouched() && this.email().trim().length > 0 && !this.emailValid());
+  readonly emailError = computed(
+    () => this.emailTouched() && this.email().trim().length > 0 && !this.emailValid()
+  );
 
   private reduceMotion = false;
 
@@ -267,8 +302,11 @@ export class AppComponent {
   private slideCase: ((direction: number) => void) | null = null;
 
   constructor() {
+    effect(() => this.applyTheme(this.theme()));
+
     afterNextRender(() => {
       document.documentElement.lang = this.lang();
+      this.watchDaylight();
 
       const query = reducedMotionQuery();
       this.reduceMotion = query?.matches ?? false;
@@ -281,16 +319,10 @@ export class AppComponent {
       this.observeReveals();
       this.observeSections();
       this.setupScroll();
-      this.setupHeroPointer();
-      this.setupSpotlight();
-      this.setupMarquee();
       this.setupCaseSwipe();
     });
 
-    this.destroyRef.onDestroy(() => {
-      this.timeouts.forEach(clearTimeout);
-      document.body.classList.remove('nav-open');
-    });
+    this.destroyRef.onDestroy(() => document.body.classList.remove('nav-open'));
   }
 
   setLanguage(code: string): void {
@@ -308,6 +340,34 @@ export class AppComponent {
     }
   }
 
+  setThemePreference(preference: ThemePreference): void {
+    if (preference === this.themePreference()) {
+      return;
+    }
+
+    this.themePreference.set(preference);
+    // The clock may have crossed a boundary while a manual choice was in force.
+    this.night.set(this.isNight());
+
+    try {
+      if (preference === 'auto') {
+        localStorage.removeItem(THEME_STORAGE_KEY);
+      } else {
+        localStorage.setItem(THEME_STORAGE_KEY, preference);
+      }
+    } catch {
+      // Private mode / storage unavailable — the choice still holds for this visit.
+    }
+  }
+
+  /* The header control walks all three states rather than hiding `auto` behind
+     a menu: whoever pins the scheme has to be able to hand it back to the day. */
+  cycleTheme(): void {
+    const order = this.themeChoices();
+    const index = order.findIndex((choice) => choice.value === this.themePreference());
+    this.setThemePreference(order[(index + 1) % order.length].value);
+  }
+
   toggleMenu(): void {
     const next = !this.menuOpen();
     this.menuOpen.set(next);
@@ -321,13 +381,13 @@ export class AppComponent {
 
   @HostListener('window:resize')
   onViewportResize(): void {
-    if (window.innerWidth >= 861 && this.menuOpen()) {
+    if (window.innerWidth >= 992 && this.menuOpen()) {
       this.closeMenu();
     }
   }
 
   /* Every surface needs a way out that is not the control you came in
-     through — never trap the user (§16). */
+     through — never trap the user. */
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.menuOpen()) {
@@ -343,11 +403,11 @@ export class AppComponent {
 
     this.activeUseCase.set(index);
     // Hint in the direction of travel so the change telegraphs where it came
-    // from, exactly as the swipe gesture does (§7, §8).
+    // from, exactly as the swipe gesture does.
     this.slideCase?.(index > current ? 1 : -1);
   }
 
-  /** Roving focus through the tab list, the way a real tablist behaves (§16). */
+  /** Roving focus through the tab list, the way a real tablist behaves. */
   onTabKeydown(event: KeyboardEvent, index: number): void {
     const count = this.useCases().length;
     let next = index;
@@ -377,22 +437,6 @@ export class AppComponent {
     tabs[next]?.focus();
   }
 
-  setMonthlyRevenue(value: string): void {
-    this.monthlyRevenue.set(Number(value));
-  }
-
-  setAutomationLift(value: string): void {
-    this.automationLift.set(Number(value));
-  }
-
-  setAiUpside(value: string): void {
-    this.aiUpside.set(Number(value));
-  }
-
-  setEfficiencyRecovery(value: string): void {
-    this.efficiencyRecovery.set(Number(value));
-  }
-
   setEmail(value: string): void {
     this.email.set(value);
   }
@@ -407,7 +451,7 @@ export class AppComponent {
     this.contactSent.set(true);
   }
 
-  /** Undo, rather than a dead end, after the form is sent (§16 agency). */
+  /** Undo, rather than a dead end, after the form is sent. */
   resetContact(): void {
     this.contactSent.set(false);
     this.email.set('');
@@ -415,352 +459,168 @@ export class AppComponent {
   }
 
   /* ================================================================== */
+  /* Appearance                                                         */
+  /* ================================================================== */
+
+  private detectInitialTheme(): ThemePreference {
+    if (typeof window === 'undefined') {
+      return 'auto';
+    }
+
+    try {
+      const stored = localStorage.getItem(THEME_STORAGE_KEY);
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+    } catch {
+      // Storage unavailable — fall through and follow the light.
+    }
+
+    return 'auto';
+  }
+
+  private detectSystemDark(): boolean {
+    return (
+      typeof window !== 'undefined' &&
+      !!window.matchMedia?.('(prefers-color-scheme: dark)').matches
+    );
+  }
+
+  private isNight(now = new Date()): boolean {
+    const hour = now.getHours();
+    return hour < DAY_STARTS_AT || hour >= DAY_ENDS_AT;
+  }
+
+  private applyTheme(theme: ResolvedTheme): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const root = document.documentElement;
+
+    // The boot script in index.html already resolved the same rule before the
+    // first paint, so the opening pass is a no-op and nothing fades on arrival.
+    if (root.dataset['theme'] === theme) {
+      return;
+    }
+
+    root.dataset['theme'] = theme;
+
+    // The browser chrome is part of the page as far as the reader is concerned.
+    // Reading the token back keeps the two colours in the stylesheet only.
+    const paper = getComputedStyle(root).getPropertyValue('--paper').trim();
+    if (paper) {
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', paper);
+    }
+
+    this.crossfadeTheme(root);
+  }
+
+  private crossfadeTheme(root: HTMLElement): void {
+    root.classList.add('theme-fade');
+
+    this.zone.runOutsideAngular(() => {
+      clearTimeout(this.themeFadeTimer);
+      this.themeFadeTimer = window.setTimeout(
+        () => root.classList.remove('theme-fade'),
+        THEME_FADE_MS
+      );
+    });
+  }
+
+  /* In `auto` the page has to keep following the light while it is open — a tab
+     left up through sunset should dim with the room. The timer lands on the next
+     boundary rather than polling, and the visibility check covers a machine that
+     was asleep across one. */
+  private watchDaylight(): void {
+    let timer = 0;
+
+    const schedule = () => {
+      timer = window.setTimeout(() => {
+        this.zone.run(() => this.night.set(this.isNight()));
+        schedule();
+      }, this.msUntilDaylightChange());
+    };
+
+    const onVisibility = () => {
+      if (document.visibilityState !== 'visible') {
+        return;
+      }
+      clearTimeout(timer);
+      this.zone.run(() => this.night.set(this.isNight()));
+      schedule();
+    };
+
+    const query = window.matchMedia?.('(prefers-color-scheme: dark)');
+    const onSystemChange = () => this.zone.run(() => this.systemDark.set(!!query?.matches));
+
+    this.zone.runOutsideAngular(() => {
+      schedule();
+      document.addEventListener('visibilitychange', onVisibility);
+      query?.addEventListener('change', onSystemChange);
+    });
+
+    this.destroyRef.onDestroy(() => {
+      clearTimeout(timer);
+      clearTimeout(this.themeFadeTimer);
+      document.removeEventListener('visibilitychange', onVisibility);
+      query?.removeEventListener('change', onSystemChange);
+    });
+  }
+
+  private msUntilDaylightChange(now = new Date()): number {
+    const next = new Date(now);
+    next.setMinutes(0, 0, 0);
+
+    const hour = now.getHours();
+    if (hour < DAY_STARTS_AT) {
+      next.setHours(DAY_STARTS_AT);
+    } else if (hour < DAY_ENDS_AT) {
+      next.setHours(DAY_ENDS_AT);
+    } else {
+      // Past sunset, so the next change is sunrise tomorrow.
+      next.setDate(next.getDate() + 1);
+      next.setHours(DAY_STARTS_AT);
+    }
+
+    // A minute of slack so the timer cannot land a hair early and reschedule
+    // itself for the same instant.
+    return Math.max(next.getTime() - now.getTime(), 0) + 60_000;
+  }
+
+  /* ================================================================== */
   /* Scroll                                                             */
   /* ================================================================== */
 
+  /* The header only gains a dividing rule once the page has moved under it,
+     so at rest the bar and the page are one surface. The boolean flips at most
+     twice per scroll pass, so re-entering the zone here costs nothing. */
   private setupScroll(): void {
-    const root = this.host.nativeElement as HTMLElement;
-    const progressBar = root.querySelector<HTMLElement>('.progress-bar');
-    const header = root.querySelector<HTMLElement>('.site-header');
-
-    let maxScroll = 0;
     let queued = false;
-
-    const measure = () => {
-      maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    };
+    let last = false;
 
     const update = () => {
       queued = false;
-      const y = window.scrollY;
-
-      // scaleX rather than width keeps the progress bar on the compositor (§11).
-      progressBar?.style.setProperty('transform', `scaleX(${maxScroll > 0 ? Math.min(1, y / maxScroll) : 0})`);
-
-      // The chrome materialises continuously with the scroll instead of
-      // snapping at a threshold (§1, §12).
-      header?.style.setProperty('--chrome', Math.min(1, y / CHROME_RAMP).toFixed(4));
+      const next = window.scrollY > HEADER_RULE_AT;
+      if (next !== last) {
+        last = next;
+        this.zone.run(() => this.scrolled.set(next));
+      }
     };
 
     const onScroll = () => {
-      this.rectsDirty = true;
       if (!queued) {
         queued = true;
         requestAnimationFrame(update);
       }
     };
 
-    const onResize = () => {
-      this.rectsDirty = true;
-      measure();
-      update();
-    };
-
     this.zone.runOutsideAngular(() => {
-      measure();
       update();
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onResize, { passive: true });
     });
 
-    this.destroyRef.onDestroy(() => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-    });
-  }
-
-  /* ================================================================== */
-  /* Hero — 1:1 pointer tracking, spring-smoothed                       */
-  /* ================================================================== */
-
-  private rectsDirty = true;
-
-  private setupHeroPointer(): void {
-    const lab = this.host.nativeElement.querySelector<HTMLElement>('.hero-visual');
-    const terminal = lab?.querySelector<HTMLElement>('.terminal');
-    if (!lab || !terminal) {
-      return;
-    }
-
-    // Values straight from the table in §4: rotation is 0.8/0.4, a reposition
-    // is 1.0/0.4.
-    const tiltX = new Spring(0, { damping: 0.8, response: 0.4, epsilon: 0.01 });
-    const tiltY = new Spring(0, { damping: 0.8, response: 0.4, epsilon: 0.01 });
-    const glowX = new Spring(50, { damping: 1, response: 0.4, epsilon: 0.02, restVelocity: 0.2 });
-    const glowY = new Spring(50, { damping: 1, response: 0.4, epsilon: 0.02, restVelocity: 0.2 });
-    const presence = new Spring(0, { damping: 1, response: 0.3, epsilon: 0.002 });
-    const springs = [tiltX, tiltY, glowX, glowY, presence];
-
-    let rect: DOMRect | null = null;
-    let frame = 0;
-    let last = 0;
-
-    const tick = (now: number) => {
-      const dt = last ? (now - last) / 1000 : 1 / 60;
-      last = now;
-
-      springs.forEach((spring) => spring.step(dt));
-
-      lab.style.setProperty('--tilt-x', `${tiltX.value.toFixed(3)}deg`);
-      lab.style.setProperty('--tilt-y', `${tiltY.value.toFixed(3)}deg`);
-      lab.style.setProperty('--cursor-x', `${glowX.value.toFixed(2)}%`);
-      lab.style.setProperty('--cursor-y', `${glowY.value.toFixed(2)}%`);
-      lab.style.setProperty('--px', ((glowX.value - 50) / 50).toFixed(4));
-      lab.style.setProperty('--py', ((glowY.value - 50) / 50).toFixed(4));
-      lab.style.setProperty('--focus', presence.value.toFixed(4));
-
-      if (springs.some((spring) => !spring.settled)) {
-        frame = requestAnimationFrame(tick);
-      } else {
-        frame = 0;
-        last = 0;
-        terminal.style.removeProperty('will-change');
-      }
-    };
-
-    // Only run the loop while something is actually in motion (§11).
-    const wake = () => {
-      if (!frame) {
-        last = 0;
-        terminal.style.setProperty('will-change', 'transform');
-        frame = requestAnimationFrame(tick);
-      }
-    };
-
-    const onEnter = (event: PointerEvent) => {
-      if (event.pointerType === 'touch' || this.reduceMotion) {
-        return;
-      }
-      rect = lab.getBoundingClientRect();
-      this.rectsDirty = false;
-      presence.target = 1;
-      wake();
-    };
-
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerType === 'touch' || this.reduceMotion) {
-        return;
-      }
-
-      const bounds = !rect || this.rectsDirty ? lab.getBoundingClientRect() : rect;
-      rect = bounds;
-      this.rectsDirty = false;
-
-      const x = ((event.clientX - bounds.left) / bounds.width) * 100;
-      const y = ((event.clientY - bounds.top) / bounds.height) * 100;
-      const normalizedX = x / 100 - 0.5;
-      const normalizedY = y / 100 - 0.5;
-
-      glowX.target = clamp(x, 0, 100);
-      glowY.target = clamp(y, 0, 100);
-      tiltY.target = clamp(normalizedX * 8, -6, 6);
-      tiltX.target = clamp(normalizedY * -7, -5, 5);
-      presence.target = 1;
-      wake();
-    };
-
-    // Re-targeting to rest keeps whatever velocity the pointer left behind,
-    // so leaving mid-motion never shows a hard cut (§3).
-    const onLeave = () => {
-      tiltX.target = 0;
-      tiltY.target = 0;
-      glowX.target = 50;
-      glowY.target = 50;
-      presence.target = 0;
-      wake();
-    };
-
-    this.zone.runOutsideAngular(() => {
-      lab.addEventListener('pointerenter', onEnter);
-      lab.addEventListener('pointermove', onMove);
-      lab.addEventListener('pointerleave', onLeave);
-      lab.addEventListener('pointercancel', onLeave);
-    });
-
-    this.destroyRef.onDestroy(() => {
-      if (frame) {
-        cancelAnimationFrame(frame);
-      }
-      lab.removeEventListener('pointerenter', onEnter);
-      lab.removeEventListener('pointermove', onMove);
-      lab.removeEventListener('pointerleave', onLeave);
-      lab.removeEventListener('pointercancel', onLeave);
-    });
-  }
-
-  /* ================================================================== */
-  /* Card spotlight — delegated, so hovering never triggers a CD pass    */
-  /* ================================================================== */
-
-  private setupSpotlight(): void {
-    const root = this.host.nativeElement as HTMLElement;
-    if (isCoarsePointer()) {
-      return;
-    }
-
-    let active: HTMLElement | null = null;
-    let rect: DOMRect | null = null;
-
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerType === 'touch') {
-        return;
-      }
-
-      const card = (event.target as HTMLElement | null)?.closest<HTMLElement>('.card');
-      if (!card) {
-        active = null;
-        rect = null;
-        return;
-      }
-
-      if (card !== active || !rect || this.rectsDirty) {
-        active = card;
-        rect = card.getBoundingClientRect();
-      }
-
-      card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
-      card.style.setProperty('--my', `${event.clientY - rect.top}px`);
-    };
-
-    this.zone.runOutsideAngular(() => root.addEventListener('pointermove', onMove, { passive: true }));
-    this.destroyRef.onDestroy(() => root.removeEventListener('pointermove', onMove));
-  }
-
-  /* ================================================================== */
-  /* Marquee — draggable, with momentum handed off to the drift          */
-  /* ================================================================== */
-
-  private setupMarquee(): void {
-    const track = this.host.nativeElement.querySelector<HTMLElement>('.marquee-track');
-    if (!track) {
-      return;
-    }
-
-    const tracker = new VelocityTracker();
-
-    let loopWidth = 0;
-    let offset = 0;
-    let drift = this.reduceMotion ? 0 : MARQUEE_DRIFT;
-    let velocity = drift;
-    let dragging = false;
-    let activePointer = -1;
-    let grabOffset = 0;
-    let grabX = 0;
-    let frame = 0;
-    let last = 0;
-
-    // The track holds the list twice, so half of it is one full loop.
-    const measure = () => (loopWidth = track.scrollWidth / 2);
-
-    const tick = (now: number) => {
-      const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
-      last = now;
-
-      if (!dragging) {
-        // Momentum decays the way scrolling does and settles into the ambient
-        // drift, so there is no seam between the flick and the drift (§5, §6).
-        velocity = drift + (velocity - drift) * Math.pow(DECELERATION, dt * 1000);
-        offset += velocity * dt;
-      }
-
-      if (loopWidth > 0) {
-        offset = ((offset % loopWidth) - loopWidth) % loopWidth;
-      }
-
-      track.style.transform = `translate3d(${offset.toFixed(2)}px, 0, 0)`;
-
-      if (dragging || drift !== 0 || Math.abs(velocity) > 0.5) {
-        frame = requestAnimationFrame(tick);
-      } else {
-        frame = 0;
-        last = 0;
-        track.style.removeProperty('will-change');
-      }
-    };
-
-    const wake = () => {
-      if (!frame) {
-        last = 0;
-        track.style.setProperty('will-change', 'transform');
-        frame = requestAnimationFrame(tick);
-      }
-    };
-
-    const onPointerDown = (event: PointerEvent) => {
-      if (event.pointerType === 'mouse' && event.button !== 0) {
-        return;
-      }
-
-      dragging = true;
-      activePointer = event.pointerId;
-      // Capture keeps tracking alive once the pointer leaves the strip (§2).
-      track.setPointerCapture(event.pointerId);
-      grabX = event.clientX;
-      grabOffset = offset;
-      velocity = 0;
-      tracker.reset(event.clientX, event.timeStamp);
-      track.classList.add('dragging');
-      wake();
-    };
-
-    const onPointerMove = (event: PointerEvent) => {
-      if (!dragging || event.pointerId !== activePointer) {
-        return;
-      }
-      // 1:1 with the pointer, from wherever it was grabbed.
-      offset = grabOffset + (event.clientX - grabX);
-      tracker.add(event.clientX, event.timeStamp);
-    };
-
-    const onPointerUp = (event: PointerEvent) => {
-      if (!dragging || event.pointerId !== activePointer) {
-        return;
-      }
-      dragging = false;
-      activePointer = -1;
-      // The exact release velocity, so the drag and the coast are one motion.
-      velocity = tracker.velocity();
-      track.classList.remove('dragging');
-      if (track.hasPointerCapture(event.pointerId)) {
-        track.releasePointerCapture(event.pointerId);
-      }
-      wake();
-    };
-
-    // Coasting to a stop on hover reads as responsive; a hard pause reads as
-    // frozen, which is the same reason boundaries rubber-band (§9).
-    const onEnter = (event: PointerEvent) => {
-      if (event.pointerType !== 'touch') {
-        drift = 0;
-        wake();
-      }
-    };
-
-    const onLeave = (event: PointerEvent) => {
-      if (event.pointerType !== 'touch' && !dragging) {
-        drift = this.reduceMotion ? 0 : MARQUEE_DRIFT;
-        wake();
-      }
-    };
-
-    this.zone.runOutsideAngular(() => {
-      measure();
-      track.addEventListener('pointerdown', onPointerDown);
-      track.addEventListener('pointermove', onPointerMove);
-      track.addEventListener('pointerup', onPointerUp);
-      track.addEventListener('pointercancel', onPointerUp);
-      track.addEventListener('pointerenter', onEnter);
-      track.addEventListener('pointerleave', onLeave);
-      window.addEventListener('resize', measure, { passive: true });
-      wake();
-    });
-
-    this.destroyRef.onDestroy(() => {
-      if (frame) {
-        cancelAnimationFrame(frame);
-      }
-      window.removeEventListener('resize', measure);
-    });
+    this.destroyRef.onDestroy(() => window.removeEventListener('scroll', onScroll));
   }
 
   /* ================================================================== */
@@ -788,9 +648,6 @@ export class AppComponent {
 
     const paint = (value: number) => {
       panel.style.transform = `translate3d(${value.toFixed(2)}px, 0, 0)`;
-      // Content that is further from home is further from settled — the panel
-      // reads as arriving rather than simply sliding.
-      panel.style.setProperty('--travel', Math.min(1, Math.abs(value) / width).toFixed(4));
     };
 
     const tick = (now: number) => {
@@ -825,7 +682,7 @@ export class AppComponent {
       }
 
       width = panel.offsetWidth || width;
-      offset.value = direction * width * 0.28;
+      offset.value = direction * width * 0.12;
       offset.velocity = 0;
       offset.target = 0;
       // Painted synchronously so the new content is never shown at rest for a
@@ -836,7 +693,7 @@ export class AppComponent {
 
     const onPointerDown = (event: PointerEvent) => {
       // Desktop has the tab list and the keyboard; a mouse drag here would
-      // only fight text selection (§16 flexibility).
+      // only fight text selection.
       if (event.pointerType === 'mouse') {
         return;
       }
@@ -847,7 +704,7 @@ export class AppComponent {
       startY = event.clientY;
       width = panel.offsetWidth || width;
       // Grabbing mid-flight continues from the presentation value, never from
-      // the target (§3).
+      // the target.
       grabBase = offset.value;
       offset.velocity = 0;
       tracker.reset(event.clientX, event.timeStamp);
@@ -862,7 +719,7 @@ export class AppComponent {
       const dy = event.clientY - startY;
 
       // Both gestures are tracked from the first move; the loser is cancelled
-      // once intent is clear (§10).
+      // once intent is clear.
       if (!axis) {
         if (Math.max(Math.abs(dx), Math.abs(dy)) < AXIS_THRESHOLD) {
           return;
@@ -887,8 +744,9 @@ export class AppComponent {
       const atEnd = index === this.useCases().length - 1;
 
       // Past the first or last case there is nothing to reach, so resistance
-      // grows instead of the panel stopping dead (§9).
-      const resisted = (travel > 0 && atStart) || (travel < 0 && atEnd) ? rubberband(travel, width) : travel;
+      // grows instead of the panel stopping dead.
+      const resisted =
+        (travel > 0 && atStart) || (travel < 0 && atEnd) ? rubberband(travel, width) : travel;
 
       offset.value = resisted;
       offset.target = resisted;
@@ -918,7 +776,7 @@ export class AppComponent {
       const lastIndex = this.useCases().length - 1;
 
       // Land where the gesture was going, not where the finger happened to
-      // let go (§6).
+      // let go.
       const projected = offset.value + project(velocity, DECELERATION);
       const commit = width * 0.3;
 
@@ -932,7 +790,7 @@ export class AppComponent {
       if (next !== index) {
         this.zone.run(() => this.activeUseCase.set(next));
         // The incoming case picks up exactly where the outgoing one was, so
-        // the swap is invisible and it enters from the side it is heading to (§7).
+        // the swap is invisible and it enters from the side it is heading to.
         const direction = next > index ? 1 : -1;
         offset.value = this.reduceMotion ? 0 : offset.value + direction * width;
       }
@@ -1009,7 +867,7 @@ export class AppComponent {
           }
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -5% 0px' }
     );
 
     elements.forEach((el) => observer.observe(el));
@@ -1054,7 +912,7 @@ export class AppComponent {
       return;
     }
 
-    const duration = 1500;
+    const duration = 1200;
     const start = performance.now();
 
     const step = (now: number) => {
@@ -1070,21 +928,4 @@ export class AppComponent {
 
     requestAnimationFrame(step);
   }
-
-  private schedule(fn: () => void, delay: number): void {
-    this.timeouts.push(setTimeout(fn, delay));
-  }
-
-  private toCurrency(value: number): string {
-    const locale = LANGUAGES.find((language) => language.code === this.lang())?.locale ?? 'en-US';
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(value);
-  }
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
 }
