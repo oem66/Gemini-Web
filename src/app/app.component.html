@@ -1,18 +1,10 @@
-<div class="progress-bar" aria-hidden="true"></div>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <div class="site" id="top">
-  <div class="backdrop" aria-hidden="true">
-    <div class="grid-overlay"></div>
-  </div>
-
-  <div class="wash" aria-hidden="true"></div>
-
-  <header class="site-header" [class.is-locked]="menuOpen()">
-    <div class="chrome-edge" aria-hidden="true"></div>
-    <div class="container header-inner">
-      <a class="brand" href="#top" aria-label="Gemini Home" (click)="closeMenu()">
-        <span class="brand-mark">G</span>
-        <span class="brand-name">gemini<span class="brand-accent">.dev</span></span>
+  <header class="site-header" [class.is-stuck]="scrolled()">
+    <div class="page header-inner">
+      <a class="wordmark" href="#top" aria-label="Gemini — home" (click)="closeMenu()">
+        Gemini<span class="wordmark-dot" aria-hidden="true">.</span>
       </a>
 
       <nav class="main-nav" aria-label="Primary">
@@ -33,7 +25,9 @@
             }
           </select>
         </div>
-        <a class="btn btn-primary btn-sm" href="#contact">{{ t().header.cta }}</a>
+
+        <a class="btn btn-solid btn-sm" href="#contact">{{ t().header.cta }}</a>
+
         <button
           type="button"
           class="menu-toggle"
@@ -48,508 +42,441 @@
       </div>
     </div>
 
-    <!-- Kept mounted so the sheet leaves along the path it arrived on (§7). -->
     <nav
       class="mobile-nav"
       aria-label="Mobile"
       [class.open]="menuOpen()"
       [attr.inert]="menuOpen() ? null : ''"
     >
-      @for (item of navItems(); track item.id) {
-      <a [href]="item.href" (click)="closeMenu()">{{ item.label }}</a>
-      }
-      <div class="mobile-lang" role="group" [attr.aria-label]="t().header.languageAria">
-        @for (language of languages; track language.code) {
-        <button
-          type="button"
-          class="mono"
-          [class.active]="lang() === language.code"
-          (click)="setLanguage(language.code)"
-        >
-          {{ language.code.toUpperCase() }}
-        </button>
+      <div class="page mobile-nav-inner">
+        @for (item of navItems(); track item.id; let i = $index) {
+        <a [href]="item.href" (click)="closeMenu()">
+          <span class="mono num">{{ i + 1 < 10 ? '0' : '' }}{{ i + 1 }}</span>
+          {{ item.label }}
+        </a>
         }
+
+        <div class="mobile-lang" role="group" [attr.aria-label]="t().header.languageAria">
+          @for (language of languages; track language.code) {
+          <button
+            type="button"
+            class="mono"
+            [class.active]="lang() === language.code"
+            (click)="setLanguage(language.code)"
+          >
+            {{ language.code.toUpperCase() }}
+          </button>
+          }
+        </div>
+
+        <a class="btn btn-solid" href="#contact" (click)="closeMenu()">{{ t().header.cta }}</a>
       </div>
-      <a class="btn btn-primary" href="#contact" (click)="closeMenu()">{{ t().header.cta }}</a>
     </nav>
   </header>
 
   <div class="nav-scrim" [class.on]="menuOpen()" (click)="closeMenu()" aria-hidden="true"></div>
 
-  <main>
-    <section class="hero container">
-      <div class="hero-copy">
-        <p class="status-pill reveal">
-          <span class="pulse-dot"></span>
-          {{ t().hero.statusPill }}
-        </p>
+  <main id="main">
+    <!-- ============================================================ -->
+    <!-- Hero                                                         -->
+    <!-- ============================================================ -->
+    <section class="hero">
+      <div class="page">
+        <div class="hero-meta mono">
+          <span>{{ t().hero.statusPill }}</span>
+          <span class="hero-meta-sep" aria-hidden="true"></span>
+          <span>Est. 2012 — Berlin &amp; Oslo</span>
+        </div>
 
-        <h1 class="reveal" style="--d: 60ms">
-          {{ t().hero.titleLead }}
-          <span class="accent-word">{{ t().hero.titleAccent }}</span>
+        <h1 class="hero-title">
+          <span class="reveal">{{ t().hero.titleLead }}</span>
+          <span class="reveal hero-title-accent" style="--d: 70ms">{{ t().hero.titleAccent }}</span>
         </h1>
 
-        <p class="lead reveal" style="--d: 120ms">
-          {{ t().hero.lead }}
-        </p>
+        <div class="hero-foot">
+          <p class="hero-lead reveal" style="--d: 140ms">{{ t().hero.lead }}</p>
 
-        <div class="hero-actions reveal" style="--d: 180ms">
-          <a class="btn btn-primary" href="#contact">
-            {{ t().hero.ctaPrimary }}
-            <span class="btn-arrow" aria-hidden="true">→</span>
-          </a>
-          <a class="btn btn-ghost" href="#capabilities">{{ t().hero.ctaSecondary }}</a>
+          <div class="hero-actions reveal" style="--d: 200ms">
+            <a class="btn btn-solid" href="#contact">
+              {{ t().hero.ctaPrimary }}
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
+            <a class="btn btn-line" href="#capabilities">{{ t().hero.ctaSecondary }}</a>
+          </div>
         </div>
 
-        <div class="hero-chips reveal" style="--d: 240ms" [attr.aria-label]="t().hero.chipsAria">
+        <ul class="discipline-strip" [attr.aria-label]="t().hero.chipsAria">
           @for (chip of heroChips; track chip) {
-          <span class="mono-chip">{{ chip }}</span>
+          <li class="mono">{{ chip }}</li>
           }
-        </div>
-      </div>
+        </ul>
 
-      <!-- Tilt and focus are driven by springs in the component, straight from
-           Pointer Events, so the motion can be interrupted mid-flight (§2, §3). -->
-      <div class="hero-visual reveal" style="--d: 160ms">
-        <div class="terminal" aria-label="Advanced Swift concurrency code example">
-          <div class="terminal-bar">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-            <p class="terminal-title">RealtimeStore.swift — gemini</p>
-            <span class="terminal-badge">
-              <span class="pulse-dot"></span>
-              Swift 6
-            </span>
-          </div>
+        <div class="figure-row reveal">
+          <figure class="specimen">
+            <figcaption class="specimen-caption mono">
+              <span>Fig. 01 — RealtimeStore.swift</span>
+              <span>Swift 6 · actor · async/await</span>
+            </figcaption>
 
-          <div class="terminal-body code-editor" aria-label="Swift source code">
-            @for (line of swiftCode; track line; let lineIndex = $index) {
-            <div class="code-line">
-              <span class="line-number" aria-hidden="true">{{ lineIndex + 1 }}</span>
-              <code [style.padding-left.ch]="line.indent * 2">
-                @for (token of line.tokens; track $index) {
-                <span [class]="'syntax-' + token.kind">{{ token.text }}</span>
-                }
-              </code>
-            </div>
-            }
-          </div>
-
-          <div class="terminal-status">
-            <span class="mono">main*</span>
-            <span class="mono">actor · async/await</span>
-            <span class="mono status-ok">✓ concurrency-safe</span>
-          </div>
-        </div>
-
-        <div class="float-chip chip-a" aria-hidden="true">
-          <strong>{{ impactMetrics()[3].value }}</strong>
-          <span>{{ t().hero.floatLaunch }}</span>
-        </div>
-        <div class="float-chip chip-b" aria-hidden="true">
-          <strong>82%</strong>
-          <span>{{ t().hero.floatAutomation }}</span>
-        </div>
-      </div>
-
-      <div class="hero-stats reveal" style="--d: 260ms" [attr.aria-label]="t().hero.statsAria">
-        <article class="stat-block">
-          <p>{{ impactMetrics()[0].value }}</p>
-          <span>{{ impactMetrics()[0].label }}</span>
-        </article>
-        <article class="stat-block">
-          <p>{{ impactMetrics()[2].value }}</p>
-          <span>{{ impactMetrics()[2].label }}</span>
-        </article>
-        <article class="stat-block">
-          <p>{{ impactMetrics()[3].value }}</p>
-          <span>{{ impactMetrics()[3].label }}</span>
-        </article>
-      </div>
-    </section>
-
-    <section class="marquee" aria-label="Technology ticker">
-      <div class="marquee-track">
-        @for (tech of technologies; track tech) {
-        <span class="marquee-item">{{ tech }}</span>
-        <span class="marquee-sep" aria-hidden="true">◆</span>
-        }
-        @for (tech of technologies; track tech + '-repeat') {
-        <span class="marquee-item" aria-hidden="true">{{ tech }}</span>
-        <span class="marquee-sep" aria-hidden="true">◆</span>
-        }
-      </div>
-    </section>
-
-    <section class="section container" id="capabilities">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">01</span> {{ t().sections.capabilities.eyebrow }}</p>
-        <h2>{{ t().sections.capabilities.title }}</h2>
-        <p class="section-copy">
-          {{ t().sections.capabilities.copy }}
-        </p>
-      </div>
-
-      <div class="bento-grid">
-        @for (capability of capabilities(); track capability.title; let i = $index) {
-        <article class="card capability-card reveal" [style.--d]="(i % 3) * 90 + 'ms'">
-          <div class="card-top">
-            <span class="card-index mono">0{{ i + 1 }}</span>
-            <span class="card-tag mono">{{ capability.tag }}</span>
-          </div>
-          <h3>{{ capability.title }}</h3>
-          <p class="card-desc">{{ capability.description }}</p>
-          <p class="card-value">{{ capability.value }}</p>
-          <ul class="card-bullets">
-            @for (bullet of capability.bullets; track bullet) {
-            <li>{{ bullet }}</li>
-            }
-          </ul>
-        </article>
-        }
-      </div>
-    </section>
-
-    <section class="section container" id="impact">
-      <div class="impact-layout">
-        <div class="impact-copy reveal">
-          <p class="eyebrow"><span class="eyebrow-index">02</span> {{ t().sections.impact.eyebrow }}</p>
-          <h2>{{ t().sections.impact.title }}</h2>
-          <p class="section-copy">
-            {{ t().sections.impact.copy }}
-          </p>
-          <a class="btn btn-ghost" href="#contact">{{ t().sections.impact.cta }} <span class="btn-arrow" aria-hidden="true">→</span></a>
-        </div>
-
-        <div class="impact-grid">
-          @for (metric of impactMetrics(); track metric.label; let i = $index) {
-          <article class="card metric-card reveal" [style.--d]="i * 80 + 'ms'">
-            <p class="metric-value">{{ metricDisplays()[i] }}</p>
-            <h3>{{ metric.label }}</h3>
-            <p class="metric-detail">{{ metric.detail }}</p>
-          </article>
-          }
-        </div>
-      </div>
-    </section>
-
-    <section class="section container" id="projects">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">03</span> {{ t().sections.projects.eyebrow }}</p>
-        <h2>{{ t().sections.projects.title }}</h2>
-        <p class="section-copy">
-          {{ t().sections.projects.copy }}
-        </p>
-      </div>
-
-      <div class="project-grid">
-        @for (project of projectHighlights(); track project.company; let i = $index) {
-        <article class="card project-card reveal" [style.--d]="(i % 3) * 90 + 'ms'">
-          <div class="project-head">
-            <p class="project-company mono">{{ project.company }}</p>
-            <div class="project-tags">
-              @for (tag of project.tags; track tag) {
-              <span class="mono">{{ tag }}</span>
+            <div class="specimen-body" aria-label="Swift source code example">
+              @for (line of swiftCode; track line; let lineIndex = $index) {
+              <div class="code-line">
+                <span class="line-number mono" aria-hidden="true">{{ lineIndex + 1 }}</span>
+                <code [style.padding-left.ch]="line.indent * 2">
+                  @for (token of line.tokens; track $index) {
+                  <span [class]="'syntax-' + token.kind">{{ token.text }}</span>
+                  }
+                </code>
+              </div>
               }
             </div>
+          </figure>
+
+          <aside class="figure-note">
+            <p class="mono figure-note-label">// Note</p>
+            <p>{{ t().hero.figureNote }}</p>
+          </aside>
+        </div>
+
+        <dl class="stat-strip" [attr.aria-label]="t().hero.statsAria">
+          @for (index of heroStatIndexes; track index) {
+          <div class="stat">
+            <dt class="mono">{{ impactMetrics()[index].label }}</dt>
+            <dd class="num">{{ impactMetrics()[index].value }}</dd>
           </div>
-          <h3>{{ project.project }}</h3>
-          <p class="project-challenge">{{ project.challenge }}</p>
-          <p class="project-result">
-            <span class="mark" aria-hidden="true">✓</span>
-            {{ project.result }}
-          </p>
-        </article>
-        }
+          }
+        </dl>
       </div>
     </section>
 
-    <section class="section container" id="referrals">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">04</span> {{ t().sections.referrals.eyebrow }}</p>
-        <h2>{{ t().sections.referrals.title }}</h2>
-        <p class="section-copy">
-          {{ t().sections.referrals.copy }}
-        </p>
-      </div>
+    <!-- ============================================================ -->
+    <!-- 01 Services                                                  -->
+    <!-- ============================================================ -->
+    <section class="section" id="capabilities">
+      <div class="page">
+        <header class="section-head reveal">
+          <p class="rail mono"><span class="rail-index">01</span>{{ t().sections.capabilities.eyebrow }}</p>
+          <div class="section-intro">
+            <h2>{{ t().sections.capabilities.title }}</h2>
+            <p class="section-copy">{{ t().sections.capabilities.copy }}</p>
+          </div>
+        </header>
 
-      <div class="referrals-grid">
-        @for (referral of clientReferrals(); track referral.client; let i = $index) {
-        <article class="card referral-card reveal" [style.--d]="(i % 3) * 90 + 'ms'">
-          <p class="referral-quote">"{{ referral.feedback }}"</p>
-          <p class="referral-impact">{{ referral.impact }}</p>
-          <div class="referral-person">
-            <span class="avatar mono">{{ referral.initials }}</span>
-            <div>
-              <p class="referral-client">{{ referral.client }}</p>
-              <p class="referral-role">{{ referral.role }}</p>
+        <ol class="service-list">
+          @for (capability of capabilities(); track capability.title; let i = $index) {
+          <li class="service-row reveal">
+            <p class="service-index mono">{{ i + 1 < 10 ? '0' : '' }}{{ i + 1 }} / {{ capability.tag }}</p>
+
+            <div class="service-main">
+              <h3>{{ capability.title }}</h3>
+              <p class="service-desc">{{ capability.description }}</p>
+              <p class="service-value">{{ capability.value }}</p>
             </div>
-          </div>
-        </article>
-        }
+
+            <ul class="service-bullets">
+              @for (bullet of capability.bullets; track bullet) {
+              <li>{{ bullet }}</li>
+              }
+            </ul>
+          </li>
+          }
+        </ol>
       </div>
     </section>
 
-    <section class="section container" id="ai-lab">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">05</span> {{ t().sections.aiLab.eyebrow }}</p>
-        <h2>{{ t().sections.aiLab.title }}</h2>
-        <p class="section-copy">
-          {{ t().sections.aiLab.copy }}
-        </p>
-      </div>
+    <!-- ============================================================ -->
+    <!-- 02 Impact                                                    -->
+    <!-- ============================================================ -->
+    <section class="section section-invert" id="impact">
+      <div class="page">
+        <header class="section-head reveal">
+          <p class="rail mono"><span class="rail-index">02</span>{{ t().sections.impact.eyebrow }}</p>
+          <div class="section-intro">
+            <h2>{{ t().sections.impact.title }}</h2>
+            <p class="section-copy">{{ t().sections.impact.copy }}</p>
+            <a class="btn btn-line" href="#contact">
+              {{ t().sections.impact.cta }}
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+        </header>
 
-      <div class="lab-layout reveal">
-        <div class="tab-list" role="tablist" aria-orientation="vertical" aria-label="AI Use Cases">
-          @for (useCase of useCases(); track useCase.name; let i = $index) {
-          <button
-            type="button"
-            role="tab"
-            class="case-tab"
-            [id]="'case-tab-' + i"
-            [class.active]="activeUseCase() === i"
-            [attr.aria-selected]="activeUseCase() === i"
-            [attr.aria-controls]="'case-panel'"
-            [attr.tabindex]="activeUseCase() === i ? 0 : -1"
-            (click)="setUseCase(i)"
-            (keydown)="onTabKeydown($event, i)"
-          >
-            <span class="mono tab-index">0{{ i + 1 }}</span>
-            {{ useCase.name }}
-          </button>
+        <dl class="metric-grid">
+          @for (metric of impactMetrics(); track metric.label; let i = $index) {
+          <div class="metric reveal" [style.--d]="i * 70 + 'ms'">
+            <dd class="metric-value num">{{ metricDisplays()[i] }}</dd>
+            <dt class="metric-label">{{ metric.label }}</dt>
+            <p class="metric-detail">{{ metric.detail }}</p>
+          </div>
+          }
+        </dl>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 03 Selected work                                             -->
+    <!-- ============================================================ -->
+    <section class="section" id="projects">
+      <div class="page">
+        <header class="section-head reveal">
+          <p class="rail mono"><span class="rail-index">03</span>{{ t().sections.projects.eyebrow }}</p>
+          <div class="section-intro">
+            <h2>{{ t().sections.projects.title }}</h2>
+            <p class="section-copy">{{ t().sections.projects.copy }}</p>
+          </div>
+        </header>
+
+        <ol class="work-index">
+          @for (project of projectHighlights(); track project.company; let i = $index) {
+          <li class="work-row reveal">
+            <p class="work-index-num mono">{{ i + 1 < 10 ? '0' : '' }}{{ i + 1 }}</p>
+
+            <div class="work-title">
+              <h3>{{ project.project }}</h3>
+              <p class="work-client mono">{{ project.company }}</p>
+            </div>
+
+            <div class="work-detail">
+              <p class="work-challenge">{{ project.challenge }}</p>
+              <p class="work-result">{{ project.result }}</p>
+            </div>
+
+            <ul class="work-tags mono">
+              @for (tag of project.tags; track tag) {
+              <li>{{ tag }}</li>
+              }
+            </ul>
+          </li>
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 04 Testimonials                                              -->
+    <!-- ============================================================ -->
+    <section class="section" id="referrals">
+      <div class="page">
+        <header class="section-head reveal">
+          <p class="rail mono"><span class="rail-index">04</span>{{ t().sections.referrals.eyebrow }}</p>
+          <div class="section-intro">
+            <h2>{{ t().sections.referrals.title }}</h2>
+            <p class="section-copy">{{ t().sections.referrals.copy }}</p>
+          </div>
+        </header>
+
+        <div class="quote-grid">
+          @for (referral of clientReferrals(); track referral.client; let i = $index) {
+          <figure class="quote reveal" [style.--d]="(i % 2) * 80 + 'ms'">
+            <blockquote>{{ referral.feedback }}</blockquote>
+            <p class="quote-impact">{{ referral.impact }}</p>
+            <figcaption>
+              <span class="quote-client">{{ referral.client }}</span>
+              <span class="quote-role mono">{{ referral.role }}</span>
+            </figcaption>
+          </figure>
           }
         </div>
+      </div>
+    </section>
 
-        <!-- Swipeable on touch: 1:1 tracking, rubber-banded ends, and a
-             landing point chosen from projected momentum (§2, §6, §9). -->
-        <article
-          class="card case-panel"
-          id="case-panel"
-          role="tabpanel"
-          [attr.aria-labelledby]="'case-tab-' + activeUseCase()"
-          aria-live="polite"
-        >
-          <p class="case-label mono">{{ t().lab.challengeLabel }}</p>
-          <h3>{{ useCases()[activeUseCase()].problem }}</h3>
-          <p class="case-solution">{{ useCases()[activeUseCase()].solution }}</p>
-          <p class="case-outcome">
-            <span class="mark" aria-hidden="true">✓</span>
-            {{ useCases()[activeUseCase()].outcome }}
-          </p>
-          <div class="case-dots" aria-hidden="true">
+    <!-- ============================================================ -->
+    <!-- 05 Engagements                                               -->
+    <!-- ============================================================ -->
+    <section class="section" id="ai-lab">
+      <div class="page">
+        <header class="section-head reveal">
+          <p class="rail mono"><span class="rail-index">05</span>{{ t().sections.aiLab.eyebrow }}</p>
+          <div class="section-intro">
+            <h2>{{ t().sections.aiLab.title }}</h2>
+            <p class="section-copy">{{ t().sections.aiLab.copy }}</p>
+          </div>
+        </header>
+
+        <div class="engagement reveal">
+          <div class="tab-list" role="tablist" aria-orientation="vertical" [attr.aria-label]="t().sections.aiLab.eyebrow">
             @for (useCase of useCases(); track useCase.name; let i = $index) {
-            <span [class.on]="activeUseCase() === i"></span>
+            <button
+              type="button"
+              role="tab"
+              class="case-tab"
+              [id]="'case-tab-' + i"
+              [class.active]="activeUseCase() === i"
+              [attr.aria-selected]="activeUseCase() === i"
+              aria-controls="case-panel"
+              [attr.tabindex]="activeUseCase() === i ? 0 : -1"
+              (click)="setUseCase(i)"
+              (keydown)="onTabKeydown($event, i)"
+            >
+              <span class="mono tab-index">{{ i + 1 < 10 ? '0' : '' }}{{ i + 1 }}</span>
+              <span class="tab-name">{{ useCase.name }}</span>
+            </button>
             }
           </div>
-        </article>
-      </div>
 
-      <div class="sim-layout reveal">
-        <div class="card sim-controls">
-          <p class="sim-title mono">// roi-simulator.config</p>
+          <!-- Swipeable on touch: 1:1 tracking, rubber-banded ends, and a
+               landing point chosen from projected momentum. -->
+          <article
+            class="case-panel"
+            id="case-panel"
+            role="tabpanel"
+            [attr.aria-labelledby]="'case-tab-' + activeUseCase()"
+            aria-live="polite"
+          >
+            <p class="case-label mono">{{ t().lab.challengeLabel }}</p>
+            <h3>{{ useCases()[activeUseCase()].problem }}</h3>
 
-          <label>
-            <span class="slider-head">
-              <span>{{ t().lab.revenueLabel }}</span>
-              <strong class="mono">{{ monthlyRevenueLabel() }}</strong>
-            </span>
-            <input
-              type="range"
-              min="25000"
-              max="500000"
-              step="5000"
-              [value]="monthlyRevenue()"
-              (input)="setMonthlyRevenue($any($event.target).value)"
-            />
-          </label>
+            <div class="case-body">
+              <div class="case-field">
+                <p class="case-field-label mono">{{ t().lab.approachLabel }}</p>
+                <p>{{ useCases()[activeUseCase()].solution }}</p>
+              </div>
+              <div class="case-field">
+                <p class="case-field-label mono">{{ t().lab.outcomeLabel }}</p>
+                <p class="case-outcome">{{ useCases()[activeUseCase()].outcome }}</p>
+              </div>
+            </div>
 
-          <label>
-            <span class="slider-head">
-              <span>{{ t().lab.automationLiftLabel }}</span>
-              <strong class="mono">{{ automationLift() }}%</strong>
-            </span>
-            <input
-              type="range"
-              min="5"
-              max="40"
-              step="1"
-              [value]="automationLift()"
-              (input)="setAutomationLift($any($event.target).value)"
-            />
-          </label>
-
-          <label>
-            <span class="slider-head">
-              <span>{{ t().lab.aiUpsideLabel }}</span>
-              <strong class="mono">{{ aiUpside() }}%</strong>
-            </span>
-            <input
-              type="range"
-              min="3"
-              max="30"
-              step="1"
-              [value]="aiUpside()"
-              (input)="setAiUpside($any($event.target).value)"
-            />
-          </label>
-
-          <label>
-            <span class="slider-head">
-              <span>{{ t().lab.capacityRecoveryLabel }}</span>
-              <strong class="mono">{{ efficiencyRecovery() }}%</strong>
-            </span>
-            <input
-              type="range"
-              min="5"
-              max="35"
-              step="1"
-              [value]="efficiencyRecovery()"
-              (input)="setEfficiencyRecovery($any($event.target).value)"
-            />
-          </label>
-        </div>
-
-        <div class="sim-results">
-          <article class="card sim-card">
-            <p>{{ t().lab.automationValueLabel }}</p>
-            <h3 class="mono">{{ monthlyAutomationLabel() }}</h3>
-          </article>
-          <article class="card sim-card">
-            <p>{{ t().lab.aiValueLabel }}</p>
-            <h3 class="mono">{{ monthlyAiLabel() }}</h3>
-          </article>
-          <article class="card sim-card">
-            <p>{{ t().lab.recoveredCapacityLabel }}</p>
-            <h3 class="mono">{{ monthlyRecoveryLabel() }}</h3>
-          </article>
-          <article class="card sim-card sim-total">
-            <p>{{ t().lab.totalLabel }}</p>
-            <h3 class="mono">{{ monthlyTotalLabel() }}</h3>
-            <small class="mono">{{ t().lab.annualPrefix }} {{ annualTotalLabel() }}</small>
+            <div class="case-dots" aria-hidden="true">
+              @for (useCase of useCases(); track useCase.name; let i = $index) {
+              <span [class.on]="activeUseCase() === i"></span>
+              }
+            </div>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section container" id="technology">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="eyebrow-index">06</span> {{ t().sections.technology.eyebrow }}</p>
-        <h2>{{ t().sections.technology.title }}</h2>
-        <p class="section-copy">
-          {{ t().sections.technology.copy }}
-        </p>
-      </div>
+    <!-- ============================================================ -->
+    <!-- 06 Stack                                                     -->
+    <!-- ============================================================ -->
+    <section class="section" id="technology">
+      <div class="page">
+        <header class="section-head reveal">
+          <p class="rail mono"><span class="rail-index">06</span>{{ t().sections.technology.eyebrow }}</p>
+          <div class="section-intro">
+            <h2>{{ t().sections.technology.title }}</h2>
+            <p class="section-copy">{{ t().sections.technology.copy }}</p>
+          </div>
+        </header>
 
-      <div class="stack-grid">
-        @for (item of technologyStack(); track item.name; let i = $index) {
-        <article class="card stack-card reveal" [style.--d]="(i % 4) * 70 + 'ms'">
-          <span class="stack-index mono">0{{ i + 1 }}</span>
-          <h3>{{ item.name }}</h3>
-          <p>{{ item.summary }}</p>
-        </article>
-        }
+        <dl class="stack-list">
+          @for (item of technologyStack(); track item.name; let i = $index) {
+          <div class="stack-row reveal">
+            <dt>
+              <span class="mono stack-index">{{ i + 1 < 10 ? '0' : '' }}{{ i + 1 }}</span>
+              {{ item.name }}
+            </dt>
+            <dd>{{ item.summary }}</dd>
+          </div>
+          }
+        </dl>
+
+        <ul class="tech-tokens mono" aria-label="Core technologies">
+          @for (tech of technologies; track tech) {
+          <li>{{ tech }}</li>
+          }
+        </ul>
       </div>
     </section>
 
-    <section class="section container" id="contact">
-      <div class="contact-panel reveal">
-        <div class="contact-glow" aria-hidden="true"></div>
-        <p class="eyebrow eyebrow-center"><span class="eyebrow-index">07</span> {{ t().sections.contact.eyebrow }}</p>
-        <h2>{{ t().sections.contact.title }}</h2>
-        <p class="contact-copy">
-          {{ t().sections.contact.copy }}
-        </p>
-
-        @if (contactSent()) {
-        <!-- Completion feedback, and a way back out of it (§16). -->
-        <div class="contact-sent" role="status">
-          <span class="sent-mark" aria-hidden="true">✓</span>
-          <p class="sent-title">{{ t().sections.contact.sentTitle }}</p>
-          <p class="sent-copy">{{ t().sections.contact.sentCopy }}</p>
-          <button type="button" class="sent-undo" (click)="resetContact()">
-            {{ t().sections.contact.sentAction }}
-          </button>
-        </div>
-        } @else {
-        <form class="email-capture" novalidate (submit)="$event.preventDefault(); submitContact()">
-          <div class="email-field">
-            <input
-              type="email"
-              inputmode="email"
-              autocomplete="email"
-              [value]="email()"
-              [class.invalid]="emailError()"
-              [placeholder]="t().sections.contact.emailPlaceholder"
-              [attr.aria-label]="t().sections.contact.emailAria"
-              [attr.aria-invalid]="emailError()"
-              [attr.aria-describedby]="emailError() ? 'email-error' : null"
-              (input)="setEmail($any($event.target).value)"
-              (blur)="emailTouched.set(true)"
-              required
-            />
-            <!-- Validated as you type once you have engaged with the field,
-                 never held back until submit (§16). -->
-            @if (emailError()) {
-            <p class="field-error" id="email-error">{{ t().sections.contact.emailInvalid }}</p>
-            }
+    <!-- ============================================================ -->
+    <!-- 07 Contact                                                   -->
+    <!-- ============================================================ -->
+    <section class="section section-contact" id="contact">
+      <div class="page">
+        <header class="section-head reveal">
+          <p class="rail mono"><span class="rail-index">07</span>{{ t().sections.contact.eyebrow }}</p>
+          <div class="section-intro">
+            <h2 class="contact-title">{{ t().sections.contact.title }}</h2>
+            <p class="section-copy">{{ t().sections.contact.copy }}</p>
           </div>
-          <button class="btn btn-primary" type="submit">{{ t().sections.contact.submit }}</button>
-        </form>
-        }
+        </header>
 
-        <div class="contact-alt">
-          <a href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
-          <span aria-hidden="true">·</span>
-          <a href="tel:+15550123456">+1 (555) 012-3456</a>
+        <div class="contact-body reveal">
+          @if (contactSent()) {
+          <div class="contact-sent" role="status">
+            <p class="sent-title">{{ t().sections.contact.sentTitle }}</p>
+            <p class="sent-copy">{{ t().sections.contact.sentCopy }}</p>
+            <button type="button" class="link-button" (click)="resetContact()">
+              {{ t().sections.contact.sentAction }}
+            </button>
+          </div>
+          } @else {
+          <form class="email-capture" novalidate (submit)="$event.preventDefault(); submitContact()">
+            <div class="email-field">
+              <label class="mono" for="contact-email">{{ t().sections.contact.emailAria }}</label>
+              <input
+                id="contact-email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                [value]="email()"
+                [class.invalid]="emailError()"
+                [placeholder]="t().sections.contact.emailPlaceholder"
+                [attr.aria-invalid]="emailError()"
+                [attr.aria-describedby]="emailError() ? 'email-error' : null"
+                (input)="setEmail($any($event.target).value)"
+                (blur)="emailTouched.set(true)"
+                required
+              />
+              <!-- Validated as you type once you have engaged with the field,
+                   never held back until submit. -->
+              @if (emailError()) {
+              <p class="field-error" id="email-error">{{ t().sections.contact.emailInvalid }}</p>
+              }
+            </div>
+            <button class="btn btn-solid" type="submit">{{ t().sections.contact.submit }}</button>
+          </form>
+          }
+
+          <div class="contact-direct">
+            <p class="mono contact-direct-label">// {{ t().footer.contactTitle }}</p>
+            <a class="contact-link" href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
+            <a class="contact-link" href="tel:+15550123456">+1 (555) 012-3456</a>
+            <p class="contact-note mono">{{ t().sections.contact.note }}</p>
+          </div>
         </div>
-        <p class="contact-note mono">{{ t().sections.contact.note }}</p>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-grid">
-      <div class="footer-brand">
-        <a class="brand" href="#top">
-          <span class="brand-mark">G</span>
-          <span class="brand-name">gemini<span class="brand-accent">.dev</span></span>
-        </a>
-        <p>
-          {{ t().footer.blurb }}
-        </p>
+    <div class="page">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="wordmark" href="#top">Gemini<span class="wordmark-dot" aria-hidden="true">.</span></a>
+          <p>{{ t().footer.blurb }}</p>
+        </div>
+
+        <nav class="footer-col" [attr.aria-label]="t().footer.studioTitle">
+          <p class="footer-title mono">{{ t().footer.studioTitle }}</p>
+          <a href="#capabilities">{{ t().footer.linkCapabilities }}</a>
+          <a href="#projects">{{ t().footer.linkProjects }}</a>
+          <a href="#ai-lab">{{ t().footer.linkAiLab }}</a>
+          <a href="#technology">{{ t().footer.linkStack }}</a>
+        </nav>
+
+        <nav class="footer-col" [attr.aria-label]="t().footer.engineeringTitle">
+          <p class="footer-title mono">{{ t().footer.engineeringTitle }}</p>
+          <a href="#capabilities">iOS · Swift</a>
+          <a href="#capabilities">Android · Kotlin</a>
+          <a href="#capabilities">Backend &amp; Cloud</a>
+          <a href="#capabilities">AI Automation</a>
+        </nav>
+
+        <nav class="footer-col" [attr.aria-label]="t().footer.contactTitle">
+          <p class="footer-title mono">{{ t().footer.contactTitle }}</p>
+          <a href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
+          <a href="tel:+15550123456">+1 (555) 012-3456</a>
+          <a href="#contact">{{ t().footer.bookCall }}</a>
+        </nav>
       </div>
 
-      <div class="footer-col">
-        <p class="footer-title mono">{{ t().footer.studioTitle }}</p>
-        <a href="#capabilities">{{ t().footer.linkCapabilities }}</a>
-        <a href="#projects">{{ t().footer.linkProjects }}</a>
-        <a href="#ai-lab">{{ t().footer.linkAiLab }}</a>
-        <a href="#technology">{{ t().footer.linkStack }}</a>
+      <div class="footer-base mono">
+        <p>© {{ year }} Gemini Software Engineering</p>
+        <p>Berlin · Oslo</p>
       </div>
-
-      <div class="footer-col">
-        <p class="footer-title mono">{{ t().footer.engineeringTitle }}</p>
-        <a href="#capabilities">iOS · Swift</a>
-        <a href="#capabilities">Android · Kotlin</a>
-        <a href="#capabilities">Backend & Cloud</a>
-        <a href="#capabilities">AI Automation</a>
-      </div>
-
-      <div class="footer-col">
-        <p class="footer-title mono">{{ t().footer.contactTitle }}</p>
-        <a href="mailto:hello&#64;gemini-digital.io">hello&#64;gemini-digital.io</a>
-        <a href="tel:+15550123456">+1 (555) 012-3456</a>
-        <a href="#contact">{{ t().footer.bookCall }}</a>
-      </div>
-    </div>
-
-    <div class="container footer-base">
-      <p>© {{ year }} Gemini Software Engineering</p>
-      <p class="footer-status mono">
-        <span class="pulse-dot"></span>
-        all systems operational
-      </p>
     </div>
   </footer>
 </div>

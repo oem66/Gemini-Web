@@ -88,8 +88,7 @@ export interface SiteContent {
     ctaSecondary: string;
     chipsAria: string;
     statsAria: string;
-    floatLaunch: string;
-    floatAutomation: string;
+    figureNote: string;
   };
   sections: {
     capabilities: { eyebrow: string; title: string; copy: string };
@@ -114,15 +113,8 @@ export interface SiteContent {
   };
   lab: {
     challengeLabel: string;
-    revenueLabel: string;
-    automationLiftLabel: string;
-    aiUpsideLabel: string;
-    capacityRecoveryLabel: string;
-    automationValueLabel: string;
-    aiValueLabel: string;
-    recoveredCapacityLabel: string;
-    totalLabel: string;
-    annualPrefix: string;
+    approachLabel: string;
+    outcomeLabel: string;
   };
   footer: {
     blurb: string;
@@ -160,8 +152,7 @@ const en: SiteContent = {
     ctaSecondary: 'View services',
     chipsAria: 'Core technologies',
     statsAria: 'Selected metrics',
-    floatLaunch: 'to launch',
-    floatAutomation: 'Automation'
+    figureNote: 'A concurrency-safe observable store from a production iOS client. Every project ships code we would put our name on in public.'
   },
   sections: {
     capabilities: {
@@ -187,8 +178,8 @@ const en: SiteContent = {
     },
     aiLab: {
       eyebrow: 'AI Lab',
-      title: 'Test business assumptions before you launch your next platform.',
-      copy: 'This interactive model shows how mobile apps, backend automation and AI features can generate economic impact.'
+      title: 'Four ways teams bring us in.',
+      copy: 'Most engagements start as one of these. Each one describes the situation we are handed, how we approach it and what the team ends up with.'
     },
     technology: {
       eyebrow: 'Stack',
@@ -210,16 +201,9 @@ const en: SiteContent = {
     }
   },
   lab: {
-    challengeLabel: '// Challenge',
-    revenueLabel: 'Monthly revenue (baseline)',
-    automationLiftLabel: 'Automation lift',
-    aiUpsideLabel: 'AI upside',
-    capacityRecoveryLabel: 'Capacity recovery',
-    automationValueLabel: 'Automation value / month',
-    aiValueLabel: 'AI value / month',
-    recoveredCapacityLabel: 'Recovered capacity / month',
-    totalLabel: 'Projected total value / month',
-    annualPrefix: 'Annual projection:'
+    challengeLabel: '// Situation',
+    approachLabel: '// Approach',
+    outcomeLabel: '// Outcome'
   },
   footer: {
     blurb: 'Native apps, web platforms, backends and AI automation for ambitious teams — from discovery to production.',
@@ -533,8 +517,7 @@ const de: SiteContent = {
     ctaSecondary: 'Leistungen ansehen',
     chipsAria: 'Kern-Technologien',
     statsAria: 'Ausgewählte Kennzahlen',
-    floatLaunch: 'bis Launch',
-    floatAutomation: 'Automation'
+    figureNote: 'Ein concurrency-sicherer Observable Store aus einem produktiven iOS-Client. Jedes Projekt liefert Code, zu dem wir öffentlich stehen.'
   },
   sections: {
     capabilities: {
@@ -560,8 +543,8 @@ const de: SiteContent = {
     },
     aiLab: {
       eyebrow: 'AI Lab',
-      title: 'Teste wirtschaftliche Annahmen, bevor du die nächste Plattform startest.',
-      copy: 'Die interaktive Modellierung zeigt, wie mobile Apps, Backend-Automation und AI-Funktionen wirtschaftliche Wirkung erzeugen können.'
+      title: 'Vier Wege, wie Teams uns dazu holen.',
+      copy: 'Die meisten Projekte starten als einer dieser Fälle. Jeder beschreibt die Ausgangslage, unser Vorgehen und das Ergebnis für das Team.'
     },
     technology: {
       eyebrow: 'Stack',
@@ -583,16 +566,9 @@ const de: SiteContent = {
     }
   },
   lab: {
-    challengeLabel: '// Herausforderung',
-    revenueLabel: 'Monatlicher Umsatz (Baseline)',
-    automationLiftLabel: 'Automation Lift',
-    aiUpsideLabel: 'AI Upside',
-    capacityRecoveryLabel: 'Capacity Recovery',
-    automationValueLabel: 'Automation Value / Monat',
-    aiValueLabel: 'AI Value / Monat',
-    recoveredCapacityLabel: 'Recovered Capacity / Monat',
-    totalLabel: 'Projizierter Gesamtwert / Monat',
-    annualPrefix: 'Jahresprojektion:'
+    challengeLabel: '// Ausgangslage',
+    approachLabel: '// Vorgehen',
+    outcomeLabel: '// Ergebnis'
   },
   footer: {
     blurb: 'Native Apps, Web-Plattformen, Backends und AI-Automation für ambitionierte Teams — von Discovery bis Production.',
@@ -906,8 +882,7 @@ const no: SiteContent = {
     ctaSecondary: 'Se tjenester',
     chipsAria: 'Kjerneteknologier',
     statsAria: 'Utvalgte nøkkeltall',
-    floatLaunch: 'til lansering',
-    floatAutomation: 'Automatisering'
+    figureNote: 'En concurrency-sikker observable store fra en iOS-klient i produksjon. Hvert prosjekt leverer kode vi stiller oss bak offentlig.'
   },
   sections: {
     capabilities: {
@@ -933,8 +908,8 @@ const no: SiteContent = {
     },
     aiLab: {
       eyebrow: 'AI Lab',
-      title: 'Test forretningsantakelser før du lanserer neste plattform.',
-      copy: 'Den interaktive modellen viser hvordan mobilapper, backend-automatisering og AI-funksjoner kan skape økonomisk effekt.'
+      title: 'Fire måter team henter oss inn på.',
+      copy: 'De fleste oppdrag starter som ett av disse. Hvert punkt beskriver situasjonen vi får, hvordan vi går fram og hva teamet sitter igjen med.'
     },
     technology: {
       eyebrow: 'Stack',
@@ -956,16 +931,9 @@ const no: SiteContent = {
     }
   },
   lab: {
-    challengeLabel: '// Utfordring',
-    revenueLabel: 'Månedlig omsetning (baseline)',
-    automationLiftLabel: 'Automatiseringsløft',
-    aiUpsideLabel: 'AI-oppside',
-    capacityRecoveryLabel: 'Frigjort kapasitet',
-    automationValueLabel: 'Automatiseringsverdi / måned',
-    aiValueLabel: 'AI-verdi / måned',
-    recoveredCapacityLabel: 'Frigjort kapasitet / måned',
-    totalLabel: 'Estimert totalverdi / måned',
-    annualPrefix: 'Årsprognose:'
+    challengeLabel: '// Situasjon',
+    approachLabel: '// Tilnærming',
+    outcomeLabel: '// Resultat'
   },
   footer: {
     blurb: 'Native apper, webplattformer, backends og AI-automatisering for ambisiøse team — fra discovery til produksjon.',
@@ -1279,8 +1247,7 @@ const sv: SiteContent = {
     ctaSecondary: 'Se tjänster',
     chipsAria: 'Kärnteknologier',
     statsAria: 'Utvalda nyckeltal',
-    floatLaunch: 'till lansering',
-    floatAutomation: 'Automation'
+    figureNote: 'En concurrency-säker observable store från en iOS-klient i produktion. Varje projekt levererar kod vi står för offentligt.'
   },
   sections: {
     capabilities: {
@@ -1306,8 +1273,8 @@ const sv: SiteContent = {
     },
     aiLab: {
       eyebrow: 'AI Lab',
-      title: 'Testa affärsantaganden innan du lanserar nästa plattform.',
-      copy: 'Den interaktiva modellen visar hur mobilappar, backend-automation och AI-funktioner kan skapa ekonomisk effekt.'
+      title: 'Fyra sätt team tar in oss på.',
+      copy: 'De flesta uppdrag börjar som något av dessa. Varje punkt beskriver läget vi kommer in i, hur vi angriper det och vad teamet får ut.'
     },
     technology: {
       eyebrow: 'Stack',
@@ -1329,16 +1296,9 @@ const sv: SiteContent = {
     }
   },
   lab: {
-    challengeLabel: '// Utmaning',
-    revenueLabel: 'Månadsomsättning (baslinje)',
-    automationLiftLabel: 'Automationslyft',
-    aiUpsideLabel: 'AI-uppsida',
-    capacityRecoveryLabel: 'Frigjord kapacitet',
-    automationValueLabel: 'Automationsvärde / månad',
-    aiValueLabel: 'AI-värde / månad',
-    recoveredCapacityLabel: 'Frigjord kapacitet / månad',
-    totalLabel: 'Beräknat totalvärde / månad',
-    annualPrefix: 'Årsprognos:'
+    challengeLabel: '// Situation',
+    approachLabel: '// Angreppssätt',
+    outcomeLabel: '// Resultat'
   },
   footer: {
     blurb: 'Nativa appar, webbplattformar, backends och AI-automation för ambitiösa team — från discovery till produktion.',
@@ -1652,8 +1612,7 @@ const fr: SiteContent = {
     ctaSecondary: 'Voir les services',
     chipsAria: 'Technologies clés',
     statsAria: 'Indicateurs sélectionnés',
-    floatLaunch: 'avant lancement',
-    floatAutomation: 'Automatisation'
+    figureNote: 'Un store observable sûr en concurrence, issu d’un client iOS en production. Chaque projet livre du code que nous assumons publiquement.'
   },
   sections: {
     capabilities: {
@@ -1679,8 +1638,8 @@ const fr: SiteContent = {
     },
     aiLab: {
       eyebrow: 'AI Lab',
-      title: 'Testez vos hypothèses business avant de lancer votre prochaine plateforme.',
-      copy: 'Cette modélisation interactive montre comment apps mobiles, automatisation backend et fonctionnalités IA peuvent générer un impact économique.'
+      title: 'Quatre façons dont les équipes font appel à nous.',
+      copy: 'La plupart des missions commencent ainsi. Chacune décrit la situation qui nous est confiée, notre approche et ce que l’équipe en retire.'
     },
     technology: {
       eyebrow: 'Stack',
@@ -1702,16 +1661,9 @@ const fr: SiteContent = {
     }
   },
   lab: {
-    challengeLabel: '// Défi',
-    revenueLabel: 'Chiffre d’affaires mensuel (référence)',
-    automationLiftLabel: 'Gain d’automatisation',
-    aiUpsideLabel: 'Potentiel IA',
-    capacityRecoveryLabel: 'Capacité récupérée',
-    automationValueLabel: 'Valeur automatisation / mois',
-    aiValueLabel: 'Valeur IA / mois',
-    recoveredCapacityLabel: 'Capacité récupérée / mois',
-    totalLabel: 'Valeur totale projetée / mois',
-    annualPrefix: 'Projection annuelle :'
+    challengeLabel: '// Situation',
+    approachLabel: '// Approche',
+    outcomeLabel: '// Résultat'
   },
   footer: {
     blurb: 'Apps natives, plateformes web, backends et automatisation IA pour des équipes ambitieuses — de la discovery à la production.',
@@ -2025,8 +1977,7 @@ const it: SiteContent = {
     ctaSecondary: 'Scopri i servizi',
     chipsAria: 'Tecnologie principali',
     statsAria: 'Metriche selezionate',
-    floatLaunch: 'al lancio',
-    floatAutomation: 'Automazione'
+    figureNote: 'Uno store osservabile e sicuro rispetto alla concorrenza, da un client iOS in produzione. Ogni progetto consegna codice che firmiamo pubblicamente.'
   },
   sections: {
     capabilities: {
@@ -2052,8 +2003,8 @@ const it: SiteContent = {
     },
     aiLab: {
       eyebrow: 'AI Lab',
-      title: 'Metti alla prova le ipotesi di business prima di lanciare la prossima piattaforma.',
-      copy: 'Il modello interattivo mostra come app mobili, automazione backend e funzionalità AI possano generare impatto economico.'
+      title: 'Quattro modi in cui i team ci coinvolgono.',
+      copy: 'La maggior parte dei progetti nasce così. Ognuno descrive la situazione che ci viene affidata, il nostro approccio e il risultato per il team.'
     },
     technology: {
       eyebrow: 'Stack',
@@ -2075,16 +2026,9 @@ const it: SiteContent = {
     }
   },
   lab: {
-    challengeLabel: '// Sfida',
-    revenueLabel: 'Fatturato mensile (baseline)',
-    automationLiftLabel: 'Incremento da automazione',
-    aiUpsideLabel: 'Potenziale AI',
-    capacityRecoveryLabel: 'Capacità recuperata',
-    automationValueLabel: 'Valore automazione / mese',
-    aiValueLabel: 'Valore AI / mese',
-    recoveredCapacityLabel: 'Capacità recuperata / mese',
-    totalLabel: 'Valore totale stimato / mese',
-    annualPrefix: 'Proiezione annua:'
+    challengeLabel: '// Situazione',
+    approachLabel: '// Approccio',
+    outcomeLabel: '// Risultato'
   },
   footer: {
     blurb: 'App native, piattaforme web, backend e automazione AI per team ambiziosi — dalla discovery alla produzione.',

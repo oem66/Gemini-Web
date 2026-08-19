@@ -13,14 +13,20 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Gemini — Software Engineering Studio">
   <meta name="twitter:description" content="Mobile apps, web platforms, robust backends and AI systems — engineered end to end.">
-  <meta name="twitter:image" content="https://gemini.dev/assets/og.png">
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0c0b0a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f2f0ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#100f0d" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <!-- Type comes from the platform (§15): the system face already ships optical
-       sizing and tracking tables, and it costs no network round trip on the
-       input path (§1). -->
+
+  <!-- Archivo is the grotesk the whole page is set in: one variable file covers
+       400-700, so hierarchy comes from weight and size rather than from extra
+       downloads. IBM Plex Mono carries labels, figures and the code specimen. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 </head>
 <body>
   <app-root></app-root>
