@@ -272,6 +272,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body.nav-open {
+  overflow: hidden;
+}
+
 ::selection {
   background: rgba(var(--accent-rgb), 0.25);
   color: var(--text);

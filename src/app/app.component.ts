@@ -287,7 +287,10 @@ export class AppComponent {
       this.setupCaseSwipe();
     });
 
-    this.destroyRef.onDestroy(() => this.timeouts.forEach(clearTimeout));
+    this.destroyRef.onDestroy(() => {
+      this.timeouts.forEach(clearTimeout);
+      document.body.classList.remove('nav-open');
+    });
   }
 
   setLanguage(code: string): void {
@@ -306,11 +309,21 @@ export class AppComponent {
   }
 
   toggleMenu(): void {
-    this.menuOpen.update((open) => !open);
+    const next = !this.menuOpen();
+    this.menuOpen.set(next);
+    document.body.classList.toggle('nav-open', next);
   }
 
   closeMenu(): void {
     this.menuOpen.set(false);
+    document.body.classList.remove('nav-open');
+  }
+
+  @HostListener('window:resize')
+  onViewportResize(): void {
+    if (window.innerWidth >= 861 && this.menuOpen()) {
+      this.closeMenu();
+    }
   }
 
   /* Every surface needs a way out that is not the control you came in

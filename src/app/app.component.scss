@@ -9,7 +9,7 @@
 }
 
 .container {
-  width: 95%;
+  width: min(100% - 2rem, 90rem);
   margin-inline: auto;
 }
 
@@ -142,8 +142,9 @@ main,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  padding-block: 0.9rem;
+  gap: 0.75rem;
+  min-height: 4.25rem;
+  padding-block: 0.7rem;
 }
 
 .brand {
@@ -182,7 +183,7 @@ main,
 }
 
 .main-nav {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 0.35rem;
 
@@ -222,10 +223,16 @@ main,
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.55rem;
+
+  > .btn {
+    display: none;
+  }
 }
 
 .lang-switch {
+  display: none;
+
   select {
     appearance: none;
     -webkit-appearance: none;
@@ -291,7 +298,7 @@ main,
 }
 
 .menu-toggle {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 0.4rem;
@@ -329,7 +336,7 @@ main,
    it arrived on, using the mirrored easing pair (§7). Blur and scale animate
    together so it materialises rather than fading (§12). */
 .mobile-nav {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 0.35rem;
   /* Floats over the content instead of pushing it down, so opening the menu
@@ -338,7 +345,9 @@ main,
   top: 100%;
   left: 0;
   right: 0;
-  padding: 1rem 1.5rem 1.4rem;
+  max-height: calc(100dvh - 4.25rem);
+  padding: 0.75rem 1rem max(1rem, env(safe-area-inset-bottom));
+  overflow-y: auto;
   background: var(--material-thick);
   backdrop-filter: blur(var(--blur-thick)) saturate(var(--material-saturate));
   -webkit-backdrop-filter: blur(var(--blur-thick)) saturate(var(--material-saturate));
@@ -368,7 +377,8 @@ main,
   }
 
   a {
-    padding: 0.7rem 0.85rem;
+    min-height: 2.75rem;
+    padding: 0.65rem 0.85rem;
     border-radius: var(--radius-sm);
     font-weight: 550;
     color: var(--text-muted);
@@ -427,6 +437,8 @@ main,
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: var(--tracking-caption);
+  justify-content: center;
+  min-height: 2.75rem;
   transition:
     transform var(--motion-press),
     box-shadow var(--motion-fast),
@@ -488,11 +500,11 @@ main,
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  gap: 3.5rem;
-  padding-top: 5.5rem;
-  padding-bottom: 4rem;
+  gap: 2.75rem;
+  padding-top: 2.75rem;
+  padding-bottom: 3rem;
 }
 
 .status-pill {
@@ -523,7 +535,7 @@ main,
 .hero-copy h1 {
   margin: 0 0 1.3rem;
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 5.4vw, 4.1rem);
+  font-size: clamp(2.35rem, 12vw, 3.25rem);
   font-weight: 700;
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);
@@ -539,15 +551,15 @@ main,
 .lead {
   margin: 0 0 2rem;
   max-width: 44rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: var(--leading-body);
   letter-spacing: var(--tracking-body);
   color: var(--text-muted);
 }
 
 .hero-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 0.9rem;
   margin-bottom: 1.9rem;
 }
@@ -582,6 +594,8 @@ main,
 
 .hero-visual {
   position: relative;
+  width: 100%;
+  min-width: 0;
   perspective: 1400px;
 }
 
@@ -645,13 +659,13 @@ main,
   margin: 0;
   text-align: center;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   letter-spacing: var(--tracking-micro);
   color: var(--text-faint);
 }
 
 .terminal-badge {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 0.4rem;
   padding: 0.2rem 0.65rem;
@@ -666,10 +680,10 @@ main,
 }
 
 .terminal-body {
-  min-height: 20rem;
+  min-height: 17rem;
   padding: 0.85rem 0;
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.7rem;
   line-height: 1.42;
 }
 
@@ -745,11 +759,11 @@ main,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.6rem 1.15rem;
+  gap: 0.5rem;
+  padding: 0.6rem 0.85rem;
   border-top: 1px solid var(--border);
   background: var(--surface);
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   color: var(--text-faint);
 }
 
@@ -763,7 +777,7 @@ main,
    which also removes a ~0.17 Hz loop (§14). */
 .float-chip {
   position: absolute;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 0.1rem;
   padding: 0.75rem 1.05rem;
@@ -803,7 +817,7 @@ main,
 .hero-stats {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   margin-top: 1.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -812,11 +826,11 @@ main,
 }
 
 .stat-block {
-  padding: 1.4rem 1.75rem;
-  border-right: 1px solid var(--border);
+  padding: 1.15rem 1.25rem;
+  border-bottom: 1px solid var(--border);
 
   &:last-child {
-    border-right: 0;
+    border-bottom: 0;
   }
 
   /* Numbers now carry themselves on weight and size rather than on a fill.
@@ -846,8 +860,8 @@ main,
   border-block: 1px solid var(--border);
   padding-block: 1.05rem;
   overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
 }
 
 /* Position is owned by the component: it drifts, but it can also be grabbed,
@@ -856,7 +870,7 @@ main,
 .marquee-track {
   display: flex;
   align-items: center;
-  gap: 2.4rem;
+  gap: 1.5rem;
   width: max-content;
   cursor: grab;
   user-select: none;
@@ -893,17 +907,17 @@ main,
 /* ---------------------------------- */
 
 .section {
-  padding-block: 5.5rem;
+  padding-block: 3.75rem;
 }
 
 .section-head {
   max-width: 62rem;
-  margin-bottom: 3.2rem;
+  margin-bottom: 2.25rem;
 
   h2 {
     margin: 0 0 1.1rem;
     font-family: var(--font-display);
-    font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+    font-size: clamp(1.65rem, 8vw, 2.1rem);
     font-weight: 700;
     line-height: var(--leading-title);
     letter-spacing: var(--tracking-title);
@@ -941,7 +955,7 @@ main,
 
 .section-copy {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: 0.96rem;
   line-height: var(--leading-body);
   letter-spacing: var(--tracking-body);
   color: var(--text-muted);
@@ -993,18 +1007,18 @@ main,
 
 .bento-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
 }
 
 .capability-card {
   display: flex;
   flex-direction: column;
-  padding: 1.7rem;
+  padding: 1.35rem;
 
   &:first-child,
   &:last-child {
-    grid-column: span 2;
+    grid-column: auto;
   }
 
   h3 {
@@ -1085,8 +1099,8 @@ main,
 
 .impact-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 3.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.25rem;
   align-items: center;
 }
 
@@ -1107,12 +1121,12 @@ main,
 
 .impact-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
 }
 
 .metric-card {
-  padding: 1.6rem;
+  padding: 1.35rem;
 
   h3 {
     margin: 0 0 0.45rem;
@@ -1145,14 +1159,14 @@ main,
 
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
 }
 
 .project-card {
   display: flex;
   flex-direction: column;
-  padding: 1.6rem;
+  padding: 1.35rem;
 
   &:nth-child(4),
   &:nth-child(5) {
@@ -1170,9 +1184,9 @@ main,
 }
 
 .project-head {
-  display: flex;
+  display: grid;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: stretch;
   gap: 0.8rem;
   margin-bottom: 1rem;
 }
@@ -1189,7 +1203,7 @@ main,
 .project-tags {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 0.35rem;
 
   span {
@@ -1233,14 +1247,14 @@ main,
 
 .referrals-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
 }
 
 .referral-card {
   display: flex;
   flex-direction: column;
-  padding: 1.6rem;
+  padding: 1.35rem;
 }
 
 .referral-quote {
@@ -1298,28 +1312,42 @@ main,
 
 .lab-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
   margin-bottom: 3rem;
 }
 
 .tab-list {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5rem;
+  margin-inline: -1rem;
+  padding-inline: 1rem;
+  padding-bottom: 0.35rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .case-tab {
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  padding: 1rem 1.2rem;
+  flex: 0 0 min(78vw, 18rem);
+  min-height: 3.25rem;
+  padding: 0.85rem 1rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--surface);
   text-align: left;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  scroll-snap-align: start;
   color: var(--text-muted);
   transition:
     border-color var(--motion-fast),
@@ -1336,7 +1364,7 @@ main,
   &:hover {
     color: var(--text);
     border-color: var(--border-strong);
-    transform: translateX(4px);
+    transform: none;
   }
 
   &:active {
@@ -1358,7 +1386,7 @@ main,
 /* Transform is owned by the swipe spring in the component; `--travel` is how
    far from settled the panel is, which drives the arrival fade (§12). */
 .case-panel {
-  padding: 1.9rem;
+  padding: 1.35rem;
   touch-action: pan-y;
   opacity: calc(1 - var(--travel, 0) * 0.8);
 
@@ -1447,12 +1475,12 @@ main,
 
 .sim-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
 }
 
 .sim-controls {
-  padding: 1.9rem;
+  padding: 1.35rem;
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
@@ -1493,11 +1521,12 @@ input[type='range'] {
   appearance: none;
   -webkit-appearance: none;
   width: 100%;
-  height: 5px;
+  height: 2.75rem;
   border-radius: 99px;
   /* The track is a neutral groove and the thumb is the only accent — the
      control you can grab is the one that gets the colour. */
-  background: rgba(var(--line-rgb), 0.28);
+  background: linear-gradient(rgba(var(--line-rgb), 0.28), rgba(var(--line-rgb), 0.28))
+    center / 100% 5px no-repeat;
   outline: none;
   cursor: pointer;
   touch-action: pan-y;
@@ -1554,7 +1583,7 @@ input[type='range'] {
 
 .sim-results {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
 }
 
@@ -1622,12 +1651,12 @@ input[type='range'] {
 
 .stack-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
 }
 
 .stack-card {
-  padding: 1.5rem;
+  padding: 1.35rem;
 
   h3 {
     margin: 0 0 0.55rem;
@@ -1658,7 +1687,7 @@ input[type='range'] {
 
 .contact-panel {
   position: relative;
-  padding: 4rem 2rem 3.4rem;
+  padding: 2.75rem 1rem 2.5rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-strong);
   background: var(--material-thick);
@@ -1697,11 +1726,17 @@ input[type='range'] {
 
 .email-capture {
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
   align-items: flex-start;
   gap: 0.7rem;
   justify-content: center;
   max-width: 32rem;
   margin: 0 auto 1.6rem;
+
+  .btn {
+    width: 100%;
+  }
 
   input {
     width: 100%;
@@ -1816,6 +1851,7 @@ input[type='range'] {
 
 .contact-alt {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
@@ -1823,6 +1859,8 @@ input[type='range'] {
   font-size: 0.95rem;
 
   a {
+    max-width: 100%;
+    overflow-wrap: anywhere;
     color: var(--text-muted);
     transition:
       color var(--motion-fast),
@@ -1838,6 +1876,7 @@ input[type='range'] {
   }
 
   span {
+    display: none;
     color: var(--text-faint);
   }
 }
@@ -1859,9 +1898,9 @@ input[type='range'] {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
-  gap: 2.5rem;
-  padding-block: 3.4rem 2.6rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.8rem;
+  padding-block: 2.75rem 2.25rem;
 }
 
 .footer-brand {
@@ -1886,6 +1925,8 @@ input[type='range'] {
       color var(--motion-fast),
       transform var(--motion-fast);
     width: fit-content;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 
     &:hover {
       color: var(--text);
@@ -1907,7 +1948,8 @@ input[type='range'] {
 
 .footer-base {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
   padding-block: 1.4rem;
@@ -2059,21 +2101,108 @@ input[type='range'] {
 /* Responsive                         */
 /* ---------------------------------- */
 
-@media (max-width: 1080px) {
+/* Mobile-first enhancements: the phone layout above is the default. */
+@media (min-width: 30rem) {
+  .terminal-badge {
+    display: inline-flex;
+  }
+
+  .stack-grid,
+  .sim-results {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-alt {
+    flex-direction: row;
+
+    span {
+      display: inline;
+    }
+  }
+}
+
+@media (min-width: 40.0625rem) {
+  .container {
+    width: min(100% - 3rem, 90rem);
+  }
+
+  .header-inner {
+    gap: 1rem;
+  }
+
   .hero {
-    grid-template-columns: 1fr;
     gap: 3rem;
     padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(3rem, 8vw, 4rem);
+  }
+
+  .lead {
+    font-size: 1.08rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    width: auto;
   }
 
   .hero-visual {
     max-width: 40rem;
   }
 
+  .terminal-body {
+    min-height: 20rem;
+    font-size: 0.76rem;
+  }
+
+  .terminal-status {
+    gap: 1rem;
+    padding: 0.6rem 1.15rem;
+    font-size: 0.72rem;
+  }
+
+  .float-chip {
+    display: flex;
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stat-block {
+    padding: 1.4rem 1.5rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 0;
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  .section {
+    padding-block: 4.5rem;
+  }
+
+  .section-head {
+    margin-bottom: 2.75rem;
+
+    h2 {
+      font-size: clamp(1.8rem, 5vw, 2.35rem);
+    }
+  }
+
   .bento-grid,
   .project-grid,
-  .referrals-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .referrals-grid,
+  .impact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .capability-card:first-child,
@@ -2081,104 +2210,137 @@ input[type='range'] {
     grid-column: span 2;
   }
 
-  .stack-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .project-head {
+    display: flex;
+    justify-content: space-between;
   }
 
-  .impact-layout {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+  .project-tags {
+    justify-content: flex-end;
   }
 
-  .lab-layout,
-  .sim-layout {
-    grid-template-columns: 1fr;
+  .capability-card,
+  .metric-card,
+  .project-card,
+  .referral-card,
+  .stack-card,
+  .case-panel,
+  .sim-controls {
+    padding: 1.6rem;
+  }
+
+  .email-capture {
+    flex-direction: row;
+    align-items: flex-start;
+
+    .btn {
+      width: auto;
+    }
+  }
+
+  .contact-panel {
+    padding: 3.5rem 2rem 3rem;
   }
 
   .footer-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem;
+    padding-block: 3.4rem 2.6rem;
+  }
+
+  .footer-base {
+    flex-direction: row;
+    align-items: center;
   }
 }
 
-@media (max-width: 860px) {
+@media (min-width: 53.8125rem) {
   .main-nav {
-    display: none;
-  }
-
-  .menu-toggle {
     display: flex;
   }
 
+  .lang-switch {
+    display: block;
+  }
+
+  .menu-toggle,
   .mobile-nav {
-    display: flex;
+    display: none;
   }
 
   .header-actions .btn {
-    display: none;
-  }
-
-  .mobile-nav .btn {
     display: inline-flex;
   }
 
   .section {
-    padding-block: 4rem;
+    padding-block: 5rem;
+  }
+
+  .tab-list {
+    margin-inline: 0;
+    padding-inline: 0;
   }
 }
 
-@media (max-width: 640px) {
+@media (min-width: 67.5625rem) {
+  .container {
+    width: min(95%, 90rem);
+  }
+
+  .header-inner {
+    gap: 1.5rem;
+    padding-block: 0.9rem;
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    gap: 3.5rem;
+    padding-top: 5.5rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.6rem, 5.4vw, 4.1rem);
+  }
+
   .bento-grid,
   .project-grid,
-  .referrals-grid,
-  .stack-grid,
-  .impact-grid,
-  .sim-results {
-    grid-template-columns: 1fr;
+  .referrals-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .capability-card:first-child,
-  .capability-card:last-child {
-    grid-column: span 1;
+  .impact-layout {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 3.5rem;
   }
 
-  .hero-stats {
-    grid-template-columns: 1fr;
+  .lab-layout {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   }
 
-  .stat-block {
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-
-    &:last-child {
-      border-bottom: 0;
-    }
-  }
-
-  .float-chip {
-    display: none;
-  }
-
-  .terminal-body {
-    font-size: 0.7rem;
-    min-height: 18.5rem;
-  }
-
-  .email-capture {
+  .tab-list {
     flex-direction: column;
-    align-items: stretch;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
 
-    .btn {
-      justify-content: center;
+  .case-tab {
+    flex-basis: auto;
+    scroll-snap-align: none;
+
+    &:hover {
+      transform: translateX(4px);
     }
+  }
+
+  .sim-layout {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+
+  .stack-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 1.8rem;
-  }
-
-  .footer-base {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
   }
 }
