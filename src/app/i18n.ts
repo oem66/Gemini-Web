@@ -78,6 +78,7 @@ export interface SiteContent {
     cta: string;
     menuToggle: string;
     languageAria: string;
+    theme: { label: string; auto: string; light: string; dark: string };
   };
   hero: {
     statusPill: string;
@@ -141,7 +142,8 @@ const en: SiteContent = {
   header: {
     cta: 'Start a project',
     menuToggle: 'Toggle menu',
-    languageAria: 'Select language'
+    languageAria: 'Select language',
+    theme: { label: 'Appearance', auto: 'Auto', light: 'Light', dark: 'Dark' }
   },
   hero: {
     statusPill: 'Available for new projects',
@@ -506,7 +508,8 @@ const de: SiteContent = {
   header: {
     cta: 'Projekt starten',
     menuToggle: 'Menü umschalten',
-    languageAria: 'Sprache wählen'
+    languageAria: 'Sprache wählen',
+    theme: { label: 'Erscheinungsbild', auto: 'Auto', light: 'Hell', dark: 'Dunkel' }
   },
   hero: {
     statusPill: 'Verfügbar für neue Projekte',
@@ -871,7 +874,8 @@ const no: SiteContent = {
   header: {
     cta: 'Start et prosjekt',
     menuToggle: 'Vis/skjul meny',
-    languageAria: 'Velg språk'
+    languageAria: 'Velg språk',
+    theme: { label: 'Utseende', auto: 'Auto', light: 'Lys', dark: 'Mørk' }
   },
   hero: {
     statusPill: 'Tilgjengelig for nye prosjekter',
@@ -1236,7 +1240,8 @@ const sv: SiteContent = {
   header: {
     cta: 'Starta ett projekt',
     menuToggle: 'Växla meny',
-    languageAria: 'Välj språk'
+    languageAria: 'Välj språk',
+    theme: { label: 'Utseende', auto: 'Auto', light: 'Ljust', dark: 'Mörkt' }
   },
   hero: {
     statusPill: 'Tillgänglig för nya projekt',
@@ -1601,7 +1606,8 @@ const fr: SiteContent = {
   header: {
     cta: 'Lancer un projet',
     menuToggle: 'Afficher/masquer le menu',
-    languageAria: 'Choisir la langue'
+    languageAria: 'Choisir la langue',
+    theme: { label: 'Apparence', auto: 'Auto', light: 'Clair', dark: 'Sombre' }
   },
   hero: {
     statusPill: 'Disponible pour de nouveaux projets',
@@ -1966,7 +1972,8 @@ const it: SiteContent = {
   header: {
     cta: 'Avvia un progetto',
     menuToggle: 'Mostra/nascondi menu',
-    languageAria: 'Seleziona la lingua'
+    languageAria: 'Seleziona la lingua',
+    theme: { label: 'Aspetto', auto: 'Auto', light: 'Chiaro', dark: 'Scuro' }
   },
   hero: {
     statusPill: 'Disponibile per nuovi progetti',

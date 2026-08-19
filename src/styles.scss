@@ -102,33 +102,69 @@
 
 /* ---------------------------------------------------------------- */
 /* Dark scheme — the same design, relit                             */
+/*                                                                  */
+/* Which scheme applies is decided for the reader: by default the    */
+/* page follows the hour of the day — light through the working day, */
+/* dark after sunset — and the OS preference, and a header control   */
+/* overrides that for good. The resolved value is written to         */
+/* <html data-theme> before first paint, so the page never flashes   */
+/* the wrong scheme; the media query is the fallback for the moment  */
+/* before that runs.                                                 */
 /* ---------------------------------------------------------------- */
 
+@mixin dark-scheme {
+  --paper: #100f0d;
+  --paper-raised: #1a1916;
+  --paper-invert: #f4f2ed;
+
+  --ink: #f0ede6;
+  --ink-muted: #a29d93;
+  --ink-faint: #6f6b62;
+  --ink-invert: #100f0d;
+
+  --rule: #2e2b26;
+  --rule-strong: #f0ede6;
+
+  /* A dark field absorbs saturation, so the accent moves up in lightness
+     and chroma rather than being the light value dimmed. */
+  --accent: #ff6a33;
+  --accent-hover: #ff8f63;
+  --on-accent: #14120e;
+
+  --positive: #5aa96f;
+  --negative: #ff5d7a;
+
+  --scrim: rgba(0, 0, 0, 0.65);
+}
+
+/* An explicit choice pins the scheme for form controls and scrollbars too. */
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  @include dark-scheme;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #100f0d;
-    --paper-raised: #1a1916;
-    --paper-invert: #f4f2ed;
-
-    --ink: #f0ede6;
-    --ink-muted: #a29d93;
-    --ink-faint: #6f6b62;
-    --ink-invert: #100f0d;
-
-    --rule: #2e2b26;
-    --rule-strong: #f0ede6;
-
-    /* A dark field absorbs saturation, so the accent moves up in lightness
-       and chroma rather than being the light value dimmed. */
-    --accent: #ff6a33;
-    --accent-hover: #ff8f63;
-    --on-accent: #14120e;
-
-    --positive: #5aa96f;
-    --negative: #ff5d7a;
-
-    --scrim: rgba(0, 0, 0, 0.65);
+  :root:not([data-theme]) {
+    @include dark-scheme;
   }
+}
+
+/* Changing scheme is a change of light, not a change of design, so the colours
+   cross-fade instead of cutting. The class is only on the page for the length
+   of that fade — the rest of the time every element keeps its own transitions.
+   Under reduced motion the durations below already resolve to 1ms. */
+:root.theme-fade,
+:root.theme-fade *,
+:root.theme-fade *::before,
+:root.theme-fade *::after {
+  transition: background-color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out),
+    fill var(--duration-base) var(--ease-out) !important;
 }
 
 /* ==========================================================================

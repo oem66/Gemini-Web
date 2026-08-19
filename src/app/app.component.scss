@@ -219,8 +219,14 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.6rem;
   margin-inline-start: auto;
+}
+
+@media (min-width: 48rem) {
+  .header-actions {
+    gap: 1rem;
+  }
 }
 
 @media (min-width: 62rem) {
@@ -230,6 +236,7 @@
 }
 
 .lang-switch select {
+  height: 2.5rem;
   padding: 0.4rem 0.5rem;
   background: transparent;
   border: var(--hairline) solid var(--rule);
@@ -238,6 +245,29 @@
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
   cursor: pointer;
+
+  &:hover {
+    border-color: var(--rule-strong);
+    color: var(--ink);
+  }
+}
+
+/* One square of the same hairline family as the menu toggle. The mark inside
+   states which scheme is in force — a half-lit disc while the page is following
+   the hour of the day, a sun or a moon once a reader has pinned it. */
+.theme-toggle {
+  display: grid;
+  place-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: var(--hairline) solid var(--rule);
+  color: var(--ink-muted);
+  transition: color var(--motion-fast), border-color var(--motion-fast);
+
+  svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
 
   &:hover {
     border-color: var(--rule-strong);
@@ -341,7 +371,10 @@
   }
 }
 
-.mobile-lang {
+/* The two preference rows sit together at the foot of the menu, where the icon
+   in the header has room to say its three states in words. */
+.mobile-lang,
+.mobile-theme {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -358,6 +391,10 @@
       color: var(--paper);
     }
   }
+}
+
+.mobile-theme {
+  margin-top: 0.5rem;
 }
 
 .nav-scrim {

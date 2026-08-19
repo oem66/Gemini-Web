@@ -6,6 +6,7 @@ import {
   NgZone,
   afterNextRender,
   computed,
+  effect,
   inject,
   signal
 } from '@angular/core';
@@ -19,6 +20,20 @@ import {
 import { Spring, VelocityTracker, project, reducedMotionQuery, rubberband } from './motion';
 
 const LANGUAGE_STORAGE_KEY = 'gemini-lang';
+const THEME_STORAGE_KEY = 'gemini-theme';
+
+/** Follows the light, or is pinned by the reader. */
+export type ThemePreference = 'auto' | 'light' | 'dark';
+export type ResolvedTheme = 'light' | 'dark';
+
+/* Local hours the page reads as daylight. Outside them `auto` turns the page
+   dark, so an evening reader is not handed a lit sheet of paper. The window is
+   deliberately generous at both ends — this is about comfort, not astronomy. */
+const DAY_STARTS_AT = 7;
+const DAY_ENDS_AT = 19;
+
+/** How long the colours cross-fade for when the scheme changes. */
+const THEME_FADE_MS = 420;
 
 /** Scroll distance after which the header grows its dividing rule, in px. */
 const HEADER_RULE_AT = 24;
@@ -53,6 +68,46 @@ export class AppComponent {
   readonly clientReferrals = computed(() => this.t().clientReferrals);
   readonly useCases = computed(() => this.t().useCases);
   readonly technologyStack = computed(() => this.t().technologyStack);
+
+  /* ================================================================== */
+  /* Appearance                                                         */
+  /* ================================================================== */
+
+  readonly themePreference = signal<ThemePreference>(this.detectInitialTheme());
+
+  /** Whether the local clock is currently outside daylight hours. */
+  private readonly night = signal(this.isNight());
+  private readonly systemDark = signal(this.detectSystemDark());
+
+  readonly theme = computed<ResolvedTheme>(() => {
+    const preference = this.themePreference();
+    if (preference !== 'auto') {
+      return preference;
+    }
+
+    // Either signal on its own is enough to dim the page: a reader on a dark
+    // desktop at noon meant it, and so did the clock at midnight.
+    return this.night() || this.systemDark() ? 'dark' : 'light';
+  });
+
+  readonly themeChoices = computed(() => {
+    const labels = this.t().header.theme;
+    return [
+      { value: 'auto' as const, label: labels.auto },
+      { value: 'light' as const, label: labels.light },
+      { value: 'dark' as const, label: labels.dark }
+    ];
+  });
+
+  /* The icon alone cannot say which of the three states is in force, so the
+     control carries the state in its name — read out on focus, shown on hover. */
+  readonly themeStatus = computed(() => {
+    const labels = this.t().header.theme;
+    const current = this.themeChoices().find((choice) => choice.value === this.themePreference());
+    return `${labels.label}: ${current?.label ?? ''}`;
+  });
+
+  private themeFadeTimer = 0;
 
   /** Which impact metrics surface in the hero data strip. */
   readonly heroStatIndexes: readonly number[] = [0, 2, 3];
@@ -247,8 +302,11 @@ export class AppComponent {
   private slideCase: ((direction: number) => void) | null = null;
 
   constructor() {
+    effect(() => this.applyTheme(this.theme()));
+
     afterNextRender(() => {
       document.documentElement.lang = this.lang();
+      this.watchDaylight();
 
       const query = reducedMotionQuery();
       this.reduceMotion = query?.matches ?? false;
@@ -280,6 +338,34 @@ export class AppComponent {
     } catch {
       // Private mode / storage unavailable — selection still applies for this visit.
     }
+  }
+
+  setThemePreference(preference: ThemePreference): void {
+    if (preference === this.themePreference()) {
+      return;
+    }
+
+    this.themePreference.set(preference);
+    // The clock may have crossed a boundary while a manual choice was in force.
+    this.night.set(this.isNight());
+
+    try {
+      if (preference === 'auto') {
+        localStorage.removeItem(THEME_STORAGE_KEY);
+      } else {
+        localStorage.setItem(THEME_STORAGE_KEY, preference);
+      }
+    } catch {
+      // Private mode / storage unavailable — the choice still holds for this visit.
+    }
+  }
+
+  /* The header control walks all three states rather than hiding `auto` behind
+     a menu: whoever pins the scheme has to be able to hand it back to the day. */
+  cycleTheme(): void {
+    const order = this.themeChoices();
+    const index = order.findIndex((choice) => choice.value === this.themePreference());
+    this.setThemePreference(order[(index + 1) % order.length].value);
   }
 
   toggleMenu(): void {
@@ -370,6 +456,136 @@ export class AppComponent {
     this.contactSent.set(false);
     this.email.set('');
     this.emailTouched.set(false);
+  }
+
+  /* ================================================================== */
+  /* Appearance                                                         */
+  /* ================================================================== */
+
+  private detectInitialTheme(): ThemePreference {
+    if (typeof window === 'undefined') {
+      return 'auto';
+    }
+
+    try {
+      const stored = localStorage.getItem(THEME_STORAGE_KEY);
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+    } catch {
+      // Storage unavailable — fall through and follow the light.
+    }
+
+    return 'auto';
+  }
+
+  private detectSystemDark(): boolean {
+    return (
+      typeof window !== 'undefined' &&
+      !!window.matchMedia?.('(prefers-color-scheme: dark)').matches
+    );
+  }
+
+  private isNight(now = new Date()): boolean {
+    const hour = now.getHours();
+    return hour < DAY_STARTS_AT || hour >= DAY_ENDS_AT;
+  }
+
+  private applyTheme(theme: ResolvedTheme): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const root = document.documentElement;
+
+    // The boot script in index.html already resolved the same rule before the
+    // first paint, so the opening pass is a no-op and nothing fades on arrival.
+    if (root.dataset['theme'] === theme) {
+      return;
+    }
+
+    root.dataset['theme'] = theme;
+
+    // The browser chrome is part of the page as far as the reader is concerned.
+    // Reading the token back keeps the two colours in the stylesheet only.
+    const paper = getComputedStyle(root).getPropertyValue('--paper').trim();
+    if (paper) {
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', paper);
+    }
+
+    this.crossfadeTheme(root);
+  }
+
+  private crossfadeTheme(root: HTMLElement): void {
+    root.classList.add('theme-fade');
+
+    this.zone.runOutsideAngular(() => {
+      clearTimeout(this.themeFadeTimer);
+      this.themeFadeTimer = window.setTimeout(
+        () => root.classList.remove('theme-fade'),
+        THEME_FADE_MS
+      );
+    });
+  }
+
+  /* In `auto` the page has to keep following the light while it is open — a tab
+     left up through sunset should dim with the room. The timer lands on the next
+     boundary rather than polling, and the visibility check covers a machine that
+     was asleep across one. */
+  private watchDaylight(): void {
+    let timer = 0;
+
+    const schedule = () => {
+      timer = window.setTimeout(() => {
+        this.zone.run(() => this.night.set(this.isNight()));
+        schedule();
+      }, this.msUntilDaylightChange());
+    };
+
+    const onVisibility = () => {
+      if (document.visibilityState !== 'visible') {
+        return;
+      }
+      clearTimeout(timer);
+      this.zone.run(() => this.night.set(this.isNight()));
+      schedule();
+    };
+
+    const query = window.matchMedia?.('(prefers-color-scheme: dark)');
+    const onSystemChange = () => this.zone.run(() => this.systemDark.set(!!query?.matches));
+
+    this.zone.runOutsideAngular(() => {
+      schedule();
+      document.addEventListener('visibilitychange', onVisibility);
+      query?.addEventListener('change', onSystemChange);
+    });
+
+    this.destroyRef.onDestroy(() => {
+      clearTimeout(timer);
+      clearTimeout(this.themeFadeTimer);
+      document.removeEventListener('visibilitychange', onVisibility);
+      query?.removeEventListener('change', onSystemChange);
+    });
+  }
+
+  private msUntilDaylightChange(now = new Date()): number {
+    const next = new Date(now);
+    next.setMinutes(0, 0, 0);
+
+    const hour = now.getHours();
+    if (hour < DAY_STARTS_AT) {
+      next.setHours(DAY_STARTS_AT);
+    } else if (hour < DAY_ENDS_AT) {
+      next.setHours(DAY_ENDS_AT);
+    } else {
+      // Past sunset, so the next change is sunrise tomorrow.
+      next.setDate(next.getDate() + 1);
+      next.setHours(DAY_STARTS_AT);
+    }
+
+    // A minute of slack so the timer cannot land a hair early and reschedule
+    // itself for the same instant.
+    return Math.max(next.getTime() - now.getTime(), 0) + 60_000;
   }
 
   /* ================================================================== */

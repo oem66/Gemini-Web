@@ -14,9 +14,40 @@
   <meta name="twitter:title" content="Gemini — Software Engineering Studio">
   <meta name="twitter:description" content="Mobile apps, web platforms, robust backends and AI systems — engineered end to end.">
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#f2f0ec" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#100f0d" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f2f0ec">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- The scheme has to be resolved before the first paint, otherwise a reader
+       arriving at night sees a white page flash before the app boots. This runs
+       the same rule the app does — a stored choice wins, and failing that the
+       hour of the day and the OS preference decide — and writes the answer to
+       <html data-theme>, which is what the stylesheet keys off. Kept inline and
+       dependency-free on purpose: it must not wait for a network round trip. -->
+  <script>
+    (function () {
+      var DAY_STARTS_AT = 7;
+      var DAY_ENDS_AT = 19;
+
+      var stored = null;
+      try {
+        stored = localStorage.getItem('gemini-theme');
+      } catch (error) {
+        // Private mode or storage disabled — fall through to the automatic rule.
+      }
+
+      var hour = new Date().getHours();
+      var night = hour < DAY_STARTS_AT || hour >= DAY_ENDS_AT;
+      var systemDark = !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+      var dark = stored === 'dark' || (stored !== 'light' && (night || systemDark));
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) {
+        meta.setAttribute('content', dark ? '#100f0d' : '#f2f0ec');
+      }
+    })();
+  </script>
 
   <!-- Archivo is the grotesk the whole page is set in: one variable file covers
        400-700, so hierarchy comes from weight and size rather than from extra
