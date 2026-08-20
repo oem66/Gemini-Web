@@ -17,6 +17,7 @@ import {
   SiteContent,
   TRANSLATIONS
 } from './i18n';
+import { AnalyticsService } from './analytics.service';
 import { Spring, VelocityTracker, project, reducedMotionQuery, rubberband } from './motion';
 
 const LANGUAGE_STORAGE_KEY = 'gemini-lang';
@@ -54,6 +55,7 @@ export class AppComponent {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly destroyRef = inject(DestroyRef);
   private readonly zone = inject(NgZone);
+  private readonly analytics = inject(AnalyticsService);
 
   readonly year = new Date().getFullYear();
 
@@ -306,6 +308,12 @@ export class AppComponent {
 
     afterNextRender(() => {
       document.documentElement.lang = this.lang();
+      this.analytics.setContext({
+        site_language: this.lang(),
+        theme_preference: this.themePreference(),
+        resolved_theme: this.theme()
+      });
+      this.analytics.startEngagementTracking();
       this.watchDaylight();
 
       const query = reducedMotionQuery();
@@ -330,8 +338,14 @@ export class AppComponent {
       return;
     }
 
+    const previousLanguage = this.lang();
     this.lang.set(code);
     document.documentElement.lang = code;
+    this.analytics.capture('language_changed', {
+      from: previousLanguage,
+      to: code
+    });
+    this.analytics.setContext({ site_language: code });
 
     try {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, code);
@@ -345,9 +359,19 @@ export class AppComponent {
       return;
     }
 
+    const previousPreference = this.themePreference();
     this.themePreference.set(preference);
     // The clock may have crossed a boundary while a manual choice was in force.
     this.night.set(this.isNight());
+    this.analytics.capture('theme_changed', {
+      from: previousPreference,
+      to: preference,
+      resolved_theme: this.theme()
+    });
+    this.analytics.setContext({
+      theme_preference: preference,
+      resolved_theme: this.theme()
+    });
 
     try {
       if (preference === 'auto') {
@@ -372,11 +396,16 @@ export class AppComponent {
     const next = !this.menuOpen();
     this.menuOpen.set(next);
     document.body.classList.toggle('nav-open', next);
+    this.analytics.capture(next ? 'mobile_menu_opened' : 'mobile_menu_closed');
   }
 
   closeMenu(): void {
+    const wasOpen = this.menuOpen();
     this.menuOpen.set(false);
     document.body.classList.remove('nav-open');
+    if (wasOpen) {
+      this.analytics.capture('mobile_menu_closed');
+    }
   }
 
   @HostListener('window:resize')
@@ -402,6 +431,7 @@ export class AppComponent {
     }
 
     this.activeUseCase.set(index);
+    this.trackUseCaseViewed(index, 'tab');
     // Hint in the direction of travel so the change telegraphs where it came
     // from, exactly as the swipe gesture does.
     this.slideCase?.(index > current ? 1 : -1);
@@ -437,6 +467,19 @@ export class AppComponent {
     tabs[next]?.focus();
   }
 
+  private trackUseCaseViewed(index: number, interaction: 'tab' | 'swipe'): void {
+    const useCase = this.useCases()[index];
+    if (!useCase) {
+      return;
+    }
+
+    this.analytics.capture('use_case_viewed', {
+      index: index + 1,
+      use_case: useCase.name,
+      interaction
+    });
+  }
+
   setEmail(value: string): void {
     this.email.set(value);
   }
@@ -444,10 +487,17 @@ export class AppComponent {
   submitContact(): void {
     this.emailTouched.set(true);
     if (!this.emailValid()) {
+      this.analytics.capture('contact_form_validation_failed', {
+        reason: this.email().trim().length === 0 ? 'empty_email' : 'invalid_email'
+      });
       this.host.nativeElement.querySelector<HTMLInputElement>('.email-capture input')?.focus();
       return;
     }
 
+    // Deliberately never send the visitor's email address to analytics.
+    this.analytics.capture('contact_form_submitted', {
+      language: this.lang()
+    });
     this.contactSent.set(true);
   }
 
@@ -601,6 +651,11 @@ export class AppComponent {
 
     const update = () => {
       queued = false;
+      this.analytics.trackScrollPosition(
+        window.scrollY,
+        document.documentElement.scrollHeight,
+        window.innerHeight
+      );
       const next = window.scrollY > HEADER_RULE_AT;
       if (next !== last) {
         last = next;
@@ -788,7 +843,10 @@ export class AppComponent {
       }
 
       if (next !== index) {
-        this.zone.run(() => this.activeUseCase.set(next));
+        this.zone.run(() => {
+          this.activeUseCase.set(next);
+          this.trackUseCaseViewed(next, 'swipe');
+        });
         // The incoming case picks up exactly where the outgoing one was, so
         // the swap is invisible and it enters from the side it is heading to.
         const direction = next > index ? 1 : -1;
@@ -889,6 +947,7 @@ export class AppComponent {
             continue;
           }
           this.activeSection.set(entry.target.id);
+          this.analytics.trackSectionViewed(entry.target.id);
           if (entry.target.id === 'impact') {
             this.animateMetrics();
           }
