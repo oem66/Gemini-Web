@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build && node scripts/prepare-sites.mjs",
+    "build:github": "ng build --base-href /Gemini-Web/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
