@@ -17,6 +17,10 @@
   <meta name="theme-color" content="#f2f0ec">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
+  <!-- Loaded before Angular so analytics can initialize with deployment-specific
+       settings. This local asset contains only a public PostHog project token. -->
+  <script src="assets/analytics-config.js"></script>
+
   <!-- The scheme has to be resolved before the first paint, otherwise a reader
        arriving at night sees a white page flash before the app boots. This runs
        the same rule the app does — a stored choice wins, and failing that the
