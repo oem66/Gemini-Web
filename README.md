@@ -14,6 +14,18 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
+## Custom domain hosting
+
+The public website is hosted on GitHub Pages at https://geminiswe.com.
+The `build:github` script builds with `/` as the base path so assets and links
+resolve from the custom domain root. Pushes to `main` run the Pages deployment
+workflow. The repository's Pages settings use `geminiswe.com` as the custom domain.
+
+Cloudflare DNS points the apex domain to the four GitHub Pages addresses
+(`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and
+`185.199.111.153`), with `www` as a CNAME to `oem66.github.io`.
+These records use DNS-only mode so GitHub can provision and serve HTTPS.
+
 ## Website analytics
 
 PostHog analytics is integrated but remains dormant until a project token is
