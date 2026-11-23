@@ -21,29 +21,19 @@ six languages, and it deploys to GitHub Pages from `main`.
 
 ## Design Context
 
-### Users
+Product truth lives in **`PRODUCT.md`**: users, positioning, voice, evidence
+and open decisions. It was written by `/impeccable init`; read it before any
+design or copy work. The short version: the readers are CTOs and product leads
+in DACH and the Nordics; the personality is **precise, calm, confident**; and
+Gemini is a small senior team working end to end.
 
-The primary reader is a **CTO, head of engineering or product lead** at a
-mid-size or enterprise company, mostly in DACH and the Nordics. They are
-deciding whether to trust an outside team with a product that matters.
-Usually they arrive from a referral or a search, skim the page for a few
-minutes, and look for evidence:
+> **All client names, testimonials, project highlights and impact metrics in
+> `src/app/i18n.ts` are placeholders.** Never reuse, extend, translate or
+> restyle them as if they were real, and never invent replacements. See
+> PRODUCT.md → Evidence on Hand.
 
-- engineering quality, which the code specimen and the stack shown on the page are there to prove
-- delivery they can rely on, through process, timelines and named clients (Siemens, Bosch, Deutsche Telekom, ICA Banken)
-- an easy next step that commits them to nothing, such as the free intro call
-
-They are technical, so they distrust marketing gloss. Specifics persuade them
-and superlatives put them off. Many read the page in German or a Nordic
-language rather than English.
-
-### Brand personality
-
-**Precise. Calm. Confident.**
-
-- **Voice:** plain, specific and unhurried. State what we do and what happened. Use numbers and names, not adjectives. No exclamation marks, hype words, or "revolutionary / cutting-edge / seamless".
-- **Emotional goal:** the reader comes away thinking "these people are serious and will not waste my time." The page should feel quietly expensive, never loud.
-- **Confidence comes from restraint.** It shows in generous space, decisive type, and one accent colour that is used rarely.
+The rest of this section records the **incumbent visual system** for the
+`feature/new_design` work.
 
 ### Aesthetic direction: Swiss editorial, with Apple-grade motion
 
