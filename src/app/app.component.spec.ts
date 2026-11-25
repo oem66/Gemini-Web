@@ -1,54 +1,87 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { LANGUAGES, TRANSLATIONS } from './i18n';
+import { LanguageService } from './core/language.service';
+import { en } from './core/i18n';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     localStorage.removeItem('gemini-lang');
+    document.documentElement.lang = 'en';
 
     await TestBed.configureTestingModule({
       imports: [AppComponent]
     }).compileComponents();
   });
 
-  it('should create the app', () => {
+  function render() {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    fixture.detectChanges();
+    return { fixture, element: fixture.nativeElement as HTMLElement };
+  }
 
-  it('should provide translations for all supported languages', () => {
-    for (const language of LANGUAGES) {
-      const content = TRANSLATIONS[language.code];
-      expect(content).withContext(language.code).toBeTruthy();
-      expect(content.navItems.length).withContext(language.code).toBe(6);
-      expect(content.capabilities.length).withContext(language.code).toBe(6);
-      expect(content.hero.lead.length).withContext(language.code).toBeGreaterThan(0);
+  it('renders every section the navigation points to', () => {
+    const { element } = render();
+    for (const id of ['top', 'services', 'approach', 'difference', 'faq', 'contact']) {
+      expect(element.querySelector(`#${id}`)).withContext(id).not.toBeNull();
     }
   });
 
-  it('should render the hero heading in the active language', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-
-    const expected = TRANSLATIONS[app.lang()].hero.titleLead;
-    expect(compiled.querySelector('h1')?.textContent).toContain(expected);
+  it('has a section for every navigation link', () => {
+    const { element } = render();
+    for (const item of en.header.nav) {
+      expect(element.querySelector(`section#${item.id}`)).withContext(item.id).not.toBeNull();
+    }
   });
 
-  it('should switch content when the language changes', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
+  it('renders the hero headline, with a real space between its lines', () => {
+    const { element } = render();
+    const expected = en.hero.title.join(' ');
+    expect(element.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(expected);
+  });
 
-    app.setLanguage('de');
-    fixture.detectChanges();
-    let compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Mobile Apps. Web-Plattformen.');
+  it('switches content when the language changes', async () => {
+    const { fixture, element } = render();
+    const language = TestBed.inject(LanguageService);
 
-    app.setLanguage('fr');
+    await language.set('de');
     fixture.detectChanges();
-    compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Apps mobiles. Plateformes web.');
+    expect(element.querySelector('h1')?.textContent).toContain('Probleme verschwinden.');
+    expect(document.documentElement.lang).toBe('de');
+
+    await language.set('fr');
+    fixture.detectChanges();
+    expect(element.querySelector('h1')?.textContent).toContain('les problèmes complexes.');
+  });
+
+  it('keeps the latest choice when languages are switched quickly', async () => {
+    const { fixture, element } = render();
+    const language = TestBed.inject(LanguageService);
+
+    await Promise.all([language.set('sv'), language.set('it')]);
+    fixture.detectChanges();
+    expect(language.lang()).toBe('it');
+    expect(element.querySelector('h1')?.textContent).toContain('i problemi difficili.');
+  });
+
+  it('shows no phone number, email address or location anywhere on the page', () => {
+    const { element } = render();
+    const text = element.textContent ?? '';
+    const links = Array.from(element.querySelectorAll('a')).map((link) => link.getAttribute('href') ?? '');
+
+    expect(text).not.toMatch(/St\.?\s*Gallen|Switzerland/i);
+    expect(text).not.toMatch(/[\w.-]+@[\w-]+\.[a-z]{2,}/i);
+    expect(links.filter((href) => /^(mailto|tel):/.test(href))).toEqual([]);
+    expect(links.filter((href) => /facebook|instagram/.test(href))).toEqual([]);
+  });
+
+  it('shows no placeholder clients, testimonials or metrics', () => {
+    const { element } = render();
+    expect(element.textContent).not.toMatch(/Siemens|Bosch|Telekom|ICA Banken|Department of Justice/);
+    expect(element.textContent).not.toMatch(/\d+\s?%/);
+  });
+
+  it('offers the project form', () => {
+    const { element } = render();
+    expect(element.querySelector('#contact form')).not.toBeNull();
   });
 });

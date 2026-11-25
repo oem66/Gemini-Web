@@ -1,0 +1,42 @@
+<section class="section difference" id="difference" aria-labelledby="difference-title">
+  <div class="page">
+    <header class="section-head" appReveal>
+      <h2 class="section-title" id="difference-title">{{ t().difference.title }}</h2>
+      <p class="section-copy">{{ t().difference.copy }}</p>
+    </header>
+
+    <div class="compare">
+      <div class="compare-head" aria-hidden="true">
+        <span></span>
+        <span class="head-traditional">{{ t().difference.traditionalLabel }}</span>
+        <span class="head-gemini">{{ t().difference.geminiLabel }}</span>
+      </div>
+
+      <ul class="compare-rows">
+        @for (row of t().difference.rows; track i; let i = $index; let last = $last) {
+        <li class="compare-row" [class.is-last]="last" appReveal [style.--reveal-delay]="i * 60 + 'ms'">
+          <p class="aspect">{{ row.aspect }}</p>
+          <p class="traditional">
+            <span class="cell-label">{{ t().difference.traditionalLabel }}</span>
+            {{ row.traditional }}
+          </p>
+          <p class="gemini">
+            <span class="cell-label">{{ t().difference.geminiLabel }}</span>
+            <span class="flow-text">{{ row.gemini }}</span>
+          </p>
+        </li>
+        }
+      </ul>
+    </div>
+
+    <div class="cta" appReveal>
+      <a
+        class="btn btn-primary"
+        href="#contact"
+        data-analytics-event="cta_clicked"
+        data-analytics-location="difference"
+        data-analytics-target="contact"
+      >{{ t().difference.cta }}</a>
+    </div>
+  </div>
+</section>

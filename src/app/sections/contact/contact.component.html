@@ -1,0 +1,300 @@
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="page layout">
+    <div class="intro" appReveal>
+      <h2 class="section-title contact-title" id="contact-title">{{ t().contact.title }}</h2>
+      <p class="section-copy">{{ t().contact.copy }}</p>
+
+      <div class="next">
+        <p class="next-label">{{ t().contact.nextLabel }}</p>
+        <ol class="next-steps">
+          @for (step of t().contact.nextSteps; track i; let i = $index) {
+          <li><span class="next-num tnum" aria-hidden="true">{{ i + 1 }}</span>{{ step }}</li>
+          }
+        </ol>
+      </div>
+
+      <p class="note">{{ t().contact.note }}</p>
+    </div>
+
+    <div class="panel" appReveal>
+      @if (status() === 'sent' && sent()) {
+      <div class="sent" role="status">
+        <svg class="sent-mark" viewBox="0 0 52 52" aria-hidden="true">
+          <defs>
+            <linearGradient id="sent-gradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="var(--flow-1)" />
+              <stop offset="0.5" stop-color="var(--flow-2)" />
+              <stop offset="1" stop-color="var(--flow-3)" />
+            </linearGradient>
+          </defs>
+          <circle class="sent-ring" cx="26" cy="26" r="24" />
+          <path class="sent-check" d="M15 27.5 22.5 35 38 18.5" />
+        </svg>
+
+        <h3 class="sent-title" tabindex="-1">{{ form().sentTitle }}</h3>
+        <p class="sent-copy">{{ sentCopy() }}</p>
+
+        <div class="sent-summary">
+          <p class="sent-summary-label">{{ form().summaryLabel }}</p>
+          @for (line of sentLines(); track $index) {
+          <p>{{ line }}</p>
+          }
+        </div>
+
+        <button type="button" class="btn btn-ghost" (click)="startOver()">{{ form().sentAgain }}</button>
+      </div>
+      } @else {
+      <form
+        class="form"
+        novalidate
+        data-ph-no-autocapture
+        [style.--dir]="direction()"
+        (submit)="$event.preventDefault(); onSubmit()"
+      >
+        <!-- Progress: finished steps can be revisited directly. -->
+        <div class="progress">
+          <p class="progress-text" aria-live="polite">
+            {{ progressText() }} <span aria-hidden="true">·</span> {{ form().stepLabels[model.step()] }}
+          </p>
+          <ol class="progress-steps">
+            @for (label of form().stepLabels; track i; let i = $index) {
+            <li
+              [class.is-done]="i < model.step()"
+              [class.is-current]="i === model.step()"
+            >
+              <button
+                type="button"
+                [disabled]="i >= model.step()"
+                [attr.aria-current]="i === model.step() ? 'step' : null"
+                (click)="goTo(i)"
+              >
+                <span class="progress-bar" aria-hidden="true"></span>
+                <span class="progress-label">{{ label }}</span>
+              </button>
+            </li>
+            }
+          </ol>
+        </div>
+
+        <!-- Spam trap: invisible to people, irresistible to bots. -->
+        <div class="trap" aria-hidden="true">
+          <label>
+            Website
+            <input
+              type="text"
+              name="website"
+              tabindex="-1"
+              autocomplete="off"
+              [value]="model.honeypot()"
+              (input)="model.honeypot.set($any($event.target).value)"
+            />
+          </label>
+        </div>
+
+        @switch (model.step()) {
+        @case (0) {
+        <div class="step">
+          <h3 class="step-title" tabindex="-1">{{ form().servicesTitle }}</h3>
+          <p class="hint" id="pf-services-hint">{{ form().servicesHint }}</p>
+
+          <div
+            class="chips"
+            role="group"
+            [attr.aria-label]="form().servicesTitle"
+            [attr.aria-describedby]="errors().services ? 'pf-services-hint pf-services-error' : 'pf-services-hint'"
+          >
+            @for (option of form().services; track option.value) {
+            <label class="chip" [class.is-selected]="model.services().includes(option.value)">
+              <input
+                type="checkbox"
+                [value]="option.value"
+                [checked]="model.services().includes(option.value)"
+                (change)="model.toggleService(option.value)"
+              />
+              <span class="chip-box" aria-hidden="true"></span>
+              {{ option.label }}
+            </label>
+            }
+          </div>
+          @if (errors().services) {
+          <p class="error" id="pf-services-error" role="alert">{{ form().servicesError }}</p>
+          }
+
+          <div class="choice-row">
+            <div class="choice-group" role="radiogroup" aria-labelledby="pf-budget-title">
+              <p class="choice-title" id="pf-budget-title">
+                {{ form().budgetTitle }} <span class="optional">({{ form().optional }})</span>
+              </p>
+              <div class="chips chips-compact">
+                @for (option of form().budgets; track option.value) {
+                <label class="chip" [class.is-selected]="model.budget() === option.value">
+                  <input
+                    type="radio"
+                    name="budget"
+                    [value]="option.value"
+                    [checked]="model.budget() === option.value"
+                    (change)="model.budget.set(option.value)"
+                  />
+                  {{ option.label }}
+                </label>
+                }
+              </div>
+            </div>
+
+            <div class="choice-group" role="radiogroup" aria-labelledby="pf-timeline-title">
+              <p class="choice-title" id="pf-timeline-title">
+                {{ form().timelineTitle }} <span class="optional">({{ form().optional }})</span>
+              </p>
+              <div class="chips chips-compact">
+                @for (option of form().timelines; track option.value) {
+                <label class="chip" [class.is-selected]="model.timeline() === option.value">
+                  <input
+                    type="radio"
+                    name="timeline"
+                    [value]="option.value"
+                    [checked]="model.timeline() === option.value"
+                    (change)="model.timeline.set(option.value)"
+                  />
+                  {{ option.label }}
+                </label>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+
+        @case (1) {
+        <div class="step">
+          <h3 class="step-title" tabindex="-1">{{ form().messageTitle }}</h3>
+
+          <div class="field">
+            <label class="field-label" for="pf-message">{{ form().messageLabel }}</label>
+            <textarea
+              id="pf-message"
+              name="message"
+              rows="6"
+              [value]="model.message()"
+              [placeholder]="form().messagePlaceholder"
+              [class.is-invalid]="errors().message"
+              [attr.aria-invalid]="errors().message"
+              [attr.aria-describedby]="errors().message ? 'pf-message-count pf-message-error' : 'pf-message-count'"
+              (input)="model.message.set($any($event.target).value)"
+              (blur)="model.touch('message')"
+              (keydown)="onMessageKeydown($event)"
+            ></textarea>
+            <div class="field-meta">
+              @if (errors().message) {
+              <p class="error" id="pf-message-error" role="alert">{{ form().messageError }}</p>
+              }
+              <p class="count tnum" id="pf-message-count">{{ countText() }}</p>
+            </div>
+          </div>
+
+          <div class="starters">
+            <p class="choice-title">{{ form().startersLabel }}</p>
+            <div class="chips chips-compact">
+              @for (starter of form().starters; track starter.label) {
+              <button type="button" class="chip chip-action" (click)="useStarter(starter)">{{ starter.label }}</button>
+              }
+            </div>
+          </div>
+        </div>
+        }
+
+        @case (2) {
+        <div class="step">
+          <h3 class="step-title" tabindex="-1">{{ form().contactTitle }}</h3>
+
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label" for="pf-name">{{ form().nameLabel }}</label>
+              <input
+                id="pf-name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                [value]="model.name()"
+                [class.is-invalid]="errors().name"
+                [attr.aria-invalid]="errors().name"
+                [attr.aria-describedby]="errors().name ? 'pf-name-error' : null"
+                (input)="model.name.set($any($event.target).value)"
+                (blur)="model.touch('name')"
+              />
+              @if (errors().name) {
+              <p class="error" id="pf-name-error" role="alert">{{ form().nameError }}</p>
+              }
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="pf-email">{{ form().emailLabel }}</label>
+              <input
+                id="pf-email"
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                spellcheck="false"
+                [value]="model.email()"
+                [placeholder]="form().emailPlaceholder"
+                [class.is-invalid]="errors().email"
+                [attr.aria-invalid]="errors().email"
+                [attr.aria-describedby]="errors().email ? 'pf-email-error' : null"
+                (input)="model.email.set($any($event.target).value)"
+                (blur)="model.touch('email')"
+              />
+              @if (errors().email) {
+              <p class="error" id="pf-email-error" role="alert">{{ form().emailError }}</p>
+              }
+            </div>
+
+            <div class="field field-wide">
+              <label class="field-label" for="pf-company">
+                {{ form().companyLabel }} <span class="optional">({{ form().optional }})</span>
+              </label>
+              <input
+                id="pf-company"
+                name="company"
+                type="text"
+                autocomplete="organization"
+                [value]="model.company()"
+                (input)="model.company.set($any($event.target).value)"
+              />
+            </div>
+          </div>
+
+          <p class="privacy">{{ form().privacy }}</p>
+        </div>
+        }
+        }
+
+        @if (status() === 'failed') {
+        <div class="failed" role="alert">
+          <p>{{ form().failed }}</p>
+        </div>
+        }
+
+        <div class="actions">
+          @if (model.step() > 0) {
+          <button type="button" class="btn btn-ghost" (click)="back()">{{ form().back }}</button>
+          }
+
+          @if (model.step() < stepCount - 1) {
+          <button type="submit" class="btn btn-primary">{{ form().continue }}</button>
+          } @else {
+          <button type="submit" class="btn btn-primary submit" [disabled]="status() === 'sending'" [attr.aria-busy]="status() === 'sending'">
+            @if (status() === 'sending') {
+            <span class="spinner" aria-hidden="true"></span>{{ form().sending }}
+            } @else if (status() === 'failed') {
+            {{ form().retry }}
+            } @else {
+            {{ form().submit }}
+            }
+          </button>
+          }
+        </div>
+      </form>
+      }
+    </div>
+  </div>
+</section>

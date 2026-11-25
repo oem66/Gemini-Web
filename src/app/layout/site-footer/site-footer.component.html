@@ -1,0 +1,71 @@
+<footer class="footer">
+  <div class="page">
+    <div class="top">
+      <div class="brand">
+        <a
+          class="wordmark"
+          href="#top"
+          aria-label="Gemini"
+          data-analytics-event="navigation_clicked"
+          data-analytics-location="footer"
+          data-analytics-target="top"
+        >
+          <app-brand-mark [size]="28" />
+          <span>Gemini</span>
+        </a>
+        <p class="blurb">{{ t().footer.blurb }}</p>
+      </div>
+
+      <nav class="column" [attr.aria-label]="t().footer.exploreLabel">
+        <p class="column-title">{{ t().footer.exploreLabel }}</p>
+        @for (item of t().header.nav; track item.id) {
+        <a
+          [href]="'#' + item.id"
+          data-analytics-event="navigation_clicked"
+          data-analytics-location="footer"
+          [attr.data-analytics-target]="item.id"
+        >{{ item.label }}</a>
+        }
+        <a
+          href="#contact"
+          data-analytics-event="cta_clicked"
+          data-analytics-location="footer"
+          data-analytics-target="contact"
+        >{{ t().footer.startProject }}</a>
+      </nav>
+
+      <div class="column">
+        <p class="column-title">{{ t().footer.settingsLabel }}</p>
+        <div class="pills" role="group" [attr.aria-label]="t().header.languageLabel">
+          @for (option of language.languages; track option.code) {
+          <button
+            type="button"
+            [class.is-active]="language.lang() === option.code"
+            [attr.aria-pressed]="language.lang() === option.code"
+            [attr.lang]="option.code"
+            [title]="option.name"
+            (click)="language.set(option.code)"
+          >{{ option.code.toUpperCase() }}</button>
+          }
+        </div>
+        <div class="pills" role="group" [attr.aria-label]="t().header.theme.label">
+          @for (choice of themeChoices(); track choice.value) {
+          <button
+            type="button"
+            [class.is-active]="theme.preference() === choice.value"
+            [attr.aria-pressed]="theme.preference() === choice.value"
+            (click)="theme.set(choice.value)"
+          >{{ choice.label }}</button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <p class="giant" aria-hidden="true">Gemini</p>
+
+    <div class="base">
+      <p>© {{ year }} {{ t().footer.rights }}</p>
+      <a href="#top">{{ t().footer.backToTop }}</a>
+    </div>
+  </div>
+</footer>

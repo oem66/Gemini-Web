@@ -36,25 +36,30 @@ Stable named events are also emitted for reporting and funnels:
 
 | Event | Meaning |
 | --- | --- |
-| `cta_clicked` | A primary call to action was selected |
+| `cta_clicked` | A call to action was selected (`location`, `target`) |
 | `navigation_clicked` | Header, mobile, or footer navigation was used |
-| `service_link_clicked` | A footer service link was selected |
-| `direct_contact_clicked` | The email or phone contact link was selected |
-| `contact_form_submitted` | The contact form passed validation |
-| `contact_form_validation_failed` | The visitor tried to submit an empty or invalid email |
-| `section_viewed` | A page section first entered the viewport |
+| `section_viewed` | A page section first reached the reading line |
+| `service_viewed` | A capability first became the active one in "What we build" (`service`) |
+| `faq_opened` | An FAQ answer was expanded (`index`) |
+| `contact_form_step_completed` | The visitor finished a step of the project form (`step`) |
+| `contact_form_validation_failed` | The visitor tried to continue with a missing or invalid field (`step`, `field`) |
+| `contact_form_submitted` | The project request was delivered (`services`, `budget`, `timeline`, `language`) |
+| `contact_form_failed` | The request could not be delivered (`reason`: `network`, `timeout`, `rejected`, `not_configured`) |
 | `scroll_depth_reached` | The visit crossed 25%, 50%, 75%, 90%, or 100% scroll depth |
 | `engaged_time_reached` | The page remained visible for 10, 30, 60, 120, or 300 seconds |
-| `use_case_viewed` | An AI Lab use case was selected or swiped to |
 | `language_changed` | The site's language was changed |
 | `theme_changed` | The visitor changed the theme preference |
 | `mobile_menu_opened` / `mobile_menu_closed` | Mobile navigation state changed |
 
 Useful first funnels are:
 
-1. `$pageview` → `section_viewed` (`contact`) → `contact_form_submitted`
+1. `$pageview` → `section_viewed` (`contact`) → `contact_form_step_completed` (`step = 1`) → `contact_form_submitted`
 2. `$pageview` → `cta_clicked` (`target = contact`) → `contact_form_submitted`
-3. `$pageview` → `section_viewed` (`projects`) → `direct_contact_clicked`
+3. `$pageview` → `section_viewed` (`difference`) → `contact_form_submitted`
+
+The SDK is loaded after the page has finished loading and the browser is idle,
+so it never delays the first paint. Events fired before that are queued and
+sent in order once it is ready.
 
 ## Privacy controls
 
@@ -62,8 +67,8 @@ Useful first funnels are:
 - The SDK does not use PostHog cookies, local storage, or session storage and does
   not identify visitors.
 - Input values are masked in session replay.
-- The contact form is excluded from autocapture. Its named events never include
-  the visitor's email address.
+- The project form is excluded from autocapture. Its named events never include
+  the visitor's name, email address, company or message.
 - Session replay console-log capture is disabled.
 
 Review the site's privacy notice and PostHog project-level IP collection setting

@@ -1,0 +1,24 @@
+<section class="section approach" id="approach" aria-labelledby="approach-title">
+  <div class="page">
+    <header class="section-head" appReveal>
+      <h2 class="section-title" id="approach-title">{{ t().approach.title }}</h2>
+      <p class="section-copy">{{ t().approach.copy }}</p>
+    </header>
+
+    <ol class="timeline" #timeline [style.--n]="t().approach.steps.length">
+      <li class="track" aria-hidden="true"><span class="track-fill"></span></li>
+
+      @for (step of t().approach.steps; track i; let i = $index) {
+      <li class="step" [style.--i]="i">
+        <span class="marker tnum" aria-hidden="true">{{ i + 1 }}</span>
+        <h3 class="step-name">{{ step.name }}</h3>
+        <p class="step-description">{{ step.description }}</p>
+        <p class="step-deliverable">
+          <span class="deliverable-label">{{ t().approach.deliverableLabel }}</span>
+          <span class="flow-text">{{ step.deliverable }}</span>
+        </p>
+      </li>
+      }
+    </ol>
+  </div>
+</section>
