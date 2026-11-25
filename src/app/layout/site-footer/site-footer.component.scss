@@ -100,7 +100,8 @@
   }
 }
 
-/* The wordmark at architectural scale, fading into the floor of the page. */
+/* The wordmark at architectural scale, in one quiet solid tone and cut off at
+   the baseline by the rule below. Gradients are reserved for value. */
 .giant {
   margin: clamp(3rem, 7vw, 5rem) 0 -0.16em;
   font-size: clamp(5rem, 22.5vw, 21rem);
@@ -110,10 +111,7 @@
   letter-spacing: -0.06em;
   text-align: center;
   white-space: nowrap;
-  background: linear-gradient(to bottom, var(--line-strong), transparent 85%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--line);
   user-select: none;
 }
 
