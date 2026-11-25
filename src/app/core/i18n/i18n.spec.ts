@@ -51,10 +51,7 @@ describe('translations', () => {
       });
 
       it('has no empty strings', () => {
-        // A metric's prefix is legitimately empty ("41%" has none).
-        const empty = strings(asJson(content)).filter(
-          ([path, text]) => text.trim().length === 0 && !path.endsWith('.prefix')
-        );
+        const empty = strings(asJson(content)).filter(([, text]) => text.trim().length === 0);
         expect(empty.map(([path]) => path)).toEqual([]);
       });
 
@@ -75,6 +72,14 @@ describe('translations', () => {
         expect(form.messageCount).toContain('{count}');
         expect(form.sentCopy).toContain('{name}');
         expect(form.sentCopy).toContain('{email}');
+      });
+
+      it('contains no placeholder clients or unverified figures', () => {
+        const text = strings(asJson(content))
+          .map(([, value]) => value)
+          .join('\n');
+        expect(text).not.toMatch(/Siemens|Bosch|Telekom|ICA Banken|Department of Justice/);
+        expect(text).not.toMatch(/\d+\s?%|90\s?(days|Tage|jours|giorni|dagar|dager)/i);
       });
 
       it('sets the headline on exactly two lines', () => {

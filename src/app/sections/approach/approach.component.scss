@@ -104,12 +104,6 @@
   color: color-mix(in srgb, var(--on-flow) calc(var(--lit) * 100%), var(--ink-muted));
 }
 
-.step-time {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--ink-faint);
-}
-
 .step-name {
   font-size: var(--text-xl);
   font-weight: 720;

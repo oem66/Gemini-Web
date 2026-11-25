@@ -9,25 +9,22 @@ import { ContactComponent } from './sections/contact/contact.component';
 import { DifferenceComponent } from './sections/difference/difference.component';
 import { FaqComponent } from './sections/faq/faq.component';
 import { HeroComponent } from './sections/hero/hero.component';
-import { ProofComponent } from './sections/proof/proof.component';
 import { ServicesComponent } from './sections/services/services.component';
 import { ShiftComponent } from './sections/shift/shift.component';
-import { VoicesComponent } from './sections/voices/voices.component';
-import { WorkComponent } from './sections/work/work.component';
 
 /**
  * The page reads as one argument, top to bottom:
  *
  *   hero        — the promise, and the colour key (friction → flow)
- *   proof       — who trusts it, and what it measurably did
  *   shift       — the specific friction that disappears
  *   services    — what gets built to make that happen
  *   approach    — how, step by step
  *   difference  — why it is faster and cheaper
- *   work        — where it has already worked
- *   voices      — what those clients say
  *   faq         — the remaining objections
  *   contact     — the next step
+ *
+ * Client logos, case studies and testimonials come back only when there is
+ * real, cleared evidence to show (PRODUCT.md → Evidence on Hand).
  */
 @Component({
   selector: 'app-root',
@@ -35,13 +32,10 @@ import { WorkComponent } from './sections/work/work.component';
   imports: [
     SiteHeaderComponent,
     HeroComponent,
-    ProofComponent,
     ShiftComponent,
     ServicesComponent,
     ApproachComponent,
     DifferenceComponent,
-    WorkComponent,
-    VoicesComponent,
     FaqComponent,
     ContactComponent,
     SiteFooterComponent

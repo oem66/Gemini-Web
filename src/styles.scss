@@ -55,7 +55,8 @@
 
   --ink: #eceeff;
   --ink-muted: #a6acd9;
-  --ink-faint: #737aab;
+  /* Faint still passes AA (4.5:1) for small text on --bg and --bg-raised. */
+  --ink-faint: #8189bb;
 
   --friction: #ff7183;
   --friction-soft: rgba(255, 113, 131, 0.14);
@@ -106,7 +107,7 @@
 
   --ink: #0b0f33;
   --ink-muted: #4b5182;
-  --ink-faint: #767ba6;
+  --ink-faint: #5f6496;
 
   --friction: #cf2f4b;
   --friction-soft: rgba(207, 47, 75, 0.1);

@@ -55,7 +55,7 @@ Useful first funnels are:
 
 1. `$pageview` → `section_viewed` (`contact`) → `contact_form_step_completed` (`step = 1`) → `contact_form_submitted`
 2. `$pageview` → `cta_clicked` (`target = contact`) → `contact_form_submitted`
-3. `$pageview` → `section_viewed` (`work`) → `contact_form_submitted`
+3. `$pageview` → `section_viewed` (`difference`) → `contact_form_submitted`
 
 The SDK is loaded after the page has finished loading and the browser is idle,
 so it never delays the first paint. Events fired before that are queued and

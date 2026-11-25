@@ -10,7 +10,7 @@ export const de: SiteContent = {
     nav: [
       { label: 'Leistungen', id: 'services' },
       { label: 'Vorgehen', id: 'approach' },
-      { label: 'Projekte', id: 'work' },
+      { label: 'Warum wir', id: 'difference' },
       { label: 'FAQ', id: 'faq' }
     ],
     cta: 'Projekt starten',
@@ -29,45 +29,6 @@ export const de: SiteContent = {
     legendFriction: 'Reibung: Handarbeit, verstreute Daten, langsame Entscheidungen',
     legendFlow: 'Fluss: automatisiert, vernetzt, messbar',
     scrollHint: 'Scrollen zum Auflösen'
-  },
-  proof: {
-    clientsLabel: 'Umgesetzt für Teams bei',
-    clients: ['Siemens', 'Bosch', 'Deutsche Telekom', 'ICA Banken', 'Department of Justice'],
-    metricsLabel: 'Gemessen in Kundenprojekten',
-    metrics: [
-      {
-        numeric: 41,
-        prefix: '',
-        suffix: '%',
-        value: '41%',
-        label: 'kürzere Prozesszeiten',
-        detail: 'Nach der Automatisierung wiederkehrender operativer Abläufe.'
-      },
-      {
-        numeric: 82,
-        prefix: '',
-        suffix: '%',
-        value: '82%',
-        label: 'Automatisierungsgrad',
-        detail: 'Wiederkehrender Aufgaben in Vertrieb, Service und Betrieb.'
-      },
-      {
-        numeric: 29,
-        prefix: '',
-        suffix: '%',
-        value: '29%',
-        label: 'mehr Umsatz',
-        detail: 'Durch bessere Funnels, Routing und KI-Entscheidungshilfen.'
-      },
-      {
-        numeric: 90,
-        prefix: '<',
-        suffix: ' Tage',
-        value: '<90 Tage',
-        label: 'von der Idee bis zum Livebetrieb',
-        detail: 'Typische Zeit vom ersten Gespräch bis zum laufenden System.'
-      }
-    ]
   },
   shift: {
     title: 'Was verschwindet, wenn wir starten',
@@ -107,7 +68,7 @@ export const de: SiteContent = {
           'Verzögerung erkannt, neuer Liefertermin bestätigt',
           'Persönliche Antwort verfasst und gesendet'
         ],
-        result: 'In 41 Sekunden gelöst, ohne jemanden zu unterbrechen'
+        result: 'Automatisch gelöst, ohne jemanden zu unterbrechen'
       },
       {
         key: 'automation',
@@ -125,7 +86,7 @@ export const de: SiteContent = {
           'Abweichung unter dem Schwellenwert, freigegeben',
           'In der Buchhaltung gebucht, Team informiert'
         ],
-        result: 'In 12 Sekunden statt 15 Minuten erledigt'
+        result: 'Durchgängig verarbeitet, ohne manuelle Eingabe'
       },
       {
         key: 'products',
@@ -139,7 +100,7 @@ export const de: SiteContent = {
         ],
         log: [
           'Idee: eine Außendienst-App mit KI-Assistent',
-          'Klickbarer Prototyp mit 8 Nutzern getestet',
+          'Klickbarer Prototyp mit echten Nutzern getestet',
           'Feedback umgesetzt, Design finalisiert',
           'Im App Store und bei Google Play veröffentlicht'
         ],
@@ -174,9 +135,9 @@ export const de: SiteContent = {
           'Zusammenfassungen, Entwürfe und Übersetzungen'
         ],
         log: [
-          '312 Verträge hochgeladen',
+          'Gesamtes Vertragsarchiv hochgeladen',
           'Parteien, Fristen und Kernklauseln extrahiert',
-          '3 Verträge mit Verlängerungsrisiko markiert',
+          'Verträge mit Verlängerungsrisiko markiert',
           'Alles in normaler Sprache durchsuchbar'
         ],
         result: 'Tagelanges Lesen auf Minuten reduziert'
@@ -197,7 +158,7 @@ export const de: SiteContent = {
           'Doppelte Dateneingabe entfernt',
           'Monitoring und Alarme aktiviert'
         ],
-        result: 'Ein vernetztes System, null Ausfallzeit'
+        result: 'Ein vernetztes System, der Betrieb lief durchgehend weiter'
       }
     ]
   },
@@ -209,28 +170,24 @@ export const de: SiteContent = {
     steps: [
       {
         name: 'Verstehen',
-        time: 'Woche 1',
         description:
           'Wir analysieren das Problem, Ihre Daten und den Business Case und finden heraus, wo Automatisierung zuerst den größten Nutzen bringt.',
         deliverable: 'Einen klaren Plan mit Umfang, Zeitplan und erwartetem Nutzen'
       },
       {
         name: 'Prototyp',
-        time: 'Woche 2–3',
         description:
           'KI-beschleunigtes Design und Engineering bringen einen funktionierenden Prototyp in Ihre Hände, getestet mit echten Nutzern und echten Daten.',
         deliverable: 'Etwas, das Sie anklicken, ausprobieren und beurteilen können'
       },
       {
         name: 'Bauen und integrieren',
-        time: 'Woche 3–10',
         description:
           'Wir machen es produktionsreif: sicher, skalierbar und verbunden mit den Systemen, die Sie bereits betreiben.',
         deliverable: 'Ein Produktivsystem, auf das sich Ihr Team verlassen kann'
       },
       {
         name: 'Launchen und verbessern',
-        time: 'Laufend',
         description:
           'Wir gehen live, messen und verbessern weiter, während Ihr Geschäft wächst und sich die Technologie weiterentwickelt.',
         deliverable: 'Messbare Ergebnisse, jeden Monat'
@@ -278,87 +235,6 @@ export const de: SiteContent = {
     ],
     cta: 'Plan für Ihr Projekt anfordern'
   },
-  work: {
-    title: 'Ausgewählte Projekte',
-    copy: 'Komplexe Organisationen, messbare Ergebnisse. Einige der Systeme, die wir umgesetzt haben.',
-    challengeLabel: 'Ausgangslage',
-    resultLabel: 'Ergebnis',
-    projects: [
-      {
-        client: 'Siemens',
-        title: 'Industrieller Work-Management-Hub',
-        challenge: 'Telemetrie und Prozesssteuerung waren über getrennte Systeme, Konsolen und Teams verteilt.',
-        result: 'KI-gestütztes Monitoring und Workflow-Automatisierung verbesserten Reaktionszeiten und Zuverlässigkeit.',
-        tags: ['KI-Betrieb', 'Automatisierung', 'Monitoring']
-      },
-      {
-        client: 'Bosch',
-        title: 'Plattform für vernetzte Produkte',
-        challenge: 'Produkt- und Servicedaten brauchten mehr Automatisierung, Transparenz und Konsistenz.',
-        result: 'Eine integrierte Plattform mit Machine-Learning-Insights senkte den manuellen Aufwand deutlich.',
-        tags: ['Plattform', 'Machine Learning', 'Daten']
-      },
-      {
-        client: 'Deutsche Telekom',
-        title: 'Workflow-Automatisierung im Telekommunikationsbereich',
-        challenge: 'Servicekritische Abläufe mit hohem Volumen verzögerten Aktivierung, Support und Qualitätssicherung.',
-        result: 'KI-gestützte Orchestrierung und Prüfung beschleunigten Servicezyklen und verbesserten das Kundenerlebnis.',
-        tags: ['Orchestrierung', 'Telekommunikation', 'KI']
-      },
-      {
-        client: 'ICA Banken',
-        title: 'Smarte Banking-Operations-Engine',
-        challenge: 'Der Bankbetrieb brauchte schnellere Entscheidungszyklen für Risiko, Service und Reporting.',
-        result: 'Automatisierung und Analytics verbesserten Bearbeitungstempo und Entscheidungsqualität.',
-        tags: ['Finanzen', 'Machine Learning', 'Analytics']
-      },
-      {
-        client: 'Department of Justice',
-        title: 'Sichere Workflow-Modernisierung',
-        challenge: 'Geschäftskritische Abläufe mussten unter strenger Kontrolle und ohne Ausfall modernisiert werden.',
-        result: 'Eine resiliente Betriebsschicht mit Automatisierungskontrollen und vollständig prüfbaren Prozessen.',
-        tags: ['Sicherheit', 'Öffentlicher Sektor', 'Compliance']
-      }
-    ]
-  },
-  voices: {
-    title: 'Was Kunden sagen',
-    copy: 'Stimmen von Teams, die Tempo brauchten, ohne die Kontrolle abzugeben.',
-    previous: 'Vorheriges Zitat',
-    next: 'Nächstes Zitat',
-    quotes: [
-      {
-        client: 'Siemens',
-        role: 'Head of Digital Operations',
-        text: 'Gemini hat eine komplexe Modernisierungs-Roadmap in eine klare Launch-Abfolge übersetzt und schnell geliefert.',
-        impact: 'Der Automatisierungsgrad stieg und Durchlaufzeiten sanken in mehreren Betriebsteams.'
-      },
-      {
-        client: 'Bosch',
-        role: 'Program Director, Connected Systems',
-        text: 'Starke Engineering-Qualität, kombiniert mit praxisnahen KI-Anwendungsfällen, die unsere Geschäftsbereiche schnell übernehmen konnten.',
-        impact: 'Weniger manuelle Koordination bei messbar konsistenterer Lieferung.'
-      },
-      {
-        client: 'Deutsche Telekom',
-        role: 'Senior Transformation Manager',
-        text: 'Eine skalierbare Automatisierungsschicht, die der Komplexität und dem Tempo von Telekom-Abläufen gewachsen war.',
-        impact: 'Serviceaktivierungen wurden schneller und Probleme deutlich rascher gelöst.'
-      },
-      {
-        client: 'ICA Banken',
-        role: 'Digital Banking Operations Manager',
-        text: 'Gemini hat uns geholfen, KI vom Konzept zu echtem Nutzen in unseren Kernprozessen zu bringen.',
-        impact: 'Der Entscheidungsdurchsatz stieg und Engpässe im Bankbetrieb wurden abgebaut.'
-      },
-      {
-        client: 'Department of Justice',
-        role: 'Technology Modernisation Lead',
-        text: 'Disziplinierte, sichere und ergebnisorientierte Umsetzung — von der Analyse bis zum Rollout.',
-        impact: 'Kritische Abläufe wurden nachvollziehbarer, robuster und messbar effizienter.'
-      }
-    ]
-  },
   faq: {
     title: 'Häufige Fragen',
     copy: 'Was Teams uns meist fragen, bevor wir starten.',
@@ -376,7 +252,7 @@ export const de: SiteContent = {
       {
         question: 'Wann sehen wir erste Ergebnisse?',
         answer:
-          'Früh. Meist halten Sie in den ersten Wochen einen funktionierenden Prototyp in der Hand, und die meisten Projekte gehen in unter 90 Tagen live. Wir legen vorab fest, wie Erfolg aussieht, und messen ihn ab dem ersten Tag.'
+          'Früh. Sie halten in den ersten Wochen einen funktionierenden Prototyp in der Hand, nicht erst nach monatelanger Spezifikation. Wir legen vorab fest, wie Erfolg aussieht, und messen ihn ab dem ersten Tag.'
       },
       {
         question: 'Können Sie mit unseren bestehenden Systemen arbeiten?',

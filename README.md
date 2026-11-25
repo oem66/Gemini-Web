@@ -44,18 +44,17 @@ rebuild.
 ## Site structure
 
 The page is one argument, read top to bottom; each section is its own
-standalone component under `src/app/sections/`:
+standalone component under `src/app/sections/`. There is deliberately no
+client, case-study or testimonial section until real, cleared evidence exists
+(see `PRODUCT.md`).
 
 | Section | Purpose |
 | --- | --- |
 | `hero` | The promise, and the colour key. The canvas field (`resolve-field.ts`) turns friction into flow as you scroll |
-| `proof` | Clients and measured results |
 | `shift` | The specific friction that disappears, struck out as you scroll |
 | `services` | What gets built, with an example automation run beside it |
 | `approach` | The four-step delivery process |
 | `difference` | Why it is faster and cheaper than traditional delivery |
-| `work` | Case studies |
-| `voices` | Client quotes |
 | `faq` | Remaining objections |
 | `contact` | The three-step project form |
 

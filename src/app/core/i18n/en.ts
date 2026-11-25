@@ -10,7 +10,7 @@ export const en: SiteContent = {
     nav: [
       { label: 'Services', id: 'services' },
       { label: 'Approach', id: 'approach' },
-      { label: 'Work', id: 'work' },
+      { label: 'Why us', id: 'difference' },
       { label: 'FAQ', id: 'faq' }
     ],
     cta: 'Start a project',
@@ -29,45 +29,6 @@ export const en: SiteContent = {
     legendFriction: 'Friction: manual work, scattered data, slow decisions',
     legendFlow: 'Flow: automated, connected, measurable',
     scrollHint: 'Scroll to resolve'
-  },
-  proof: {
-    clientsLabel: 'Delivered for teams at',
-    clients: ['Siemens', 'Bosch', 'Deutsche Telekom', 'ICA Banken', 'Department of Justice'],
-    metricsLabel: 'Measured across client engagements',
-    metrics: [
-      {
-        numeric: 41,
-        prefix: '',
-        suffix: '%',
-        value: '41%',
-        label: 'shorter process times',
-        detail: 'After automating recurring operational workflows.'
-      },
-      {
-        numeric: 82,
-        prefix: '',
-        suffix: '%',
-        value: '82%',
-        label: 'automation coverage',
-        detail: 'Of recurring tasks across sales, service and operations.'
-      },
-      {
-        numeric: 29,
-        prefix: '',
-        suffix: '%',
-        value: '29%',
-        label: 'revenue uplift',
-        detail: 'Through smarter funnels, routing and AI decision support.'
-      },
-      {
-        numeric: 90,
-        prefix: '<',
-        suffix: ' days',
-        value: '<90 days',
-        label: 'from idea to production',
-        detail: 'Typical time from first conversation to a live system.'
-      }
-    ]
   },
   shift: {
     title: 'What disappears when we start',
@@ -107,7 +68,7 @@ export const en: SiteContent = {
           'Delay detected, new delivery date confirmed',
           'Personal reply written and sent'
         ],
-        result: 'Resolved in 41 seconds, no one interrupted'
+        result: 'Resolved automatically, no one interrupted'
       },
       {
         key: 'automation',
@@ -125,7 +86,7 @@ export const en: SiteContent = {
           'Difference under threshold, approved',
           'Booked in accounting, team notified'
         ],
-        result: 'Done in 12 seconds instead of 15 minutes'
+        result: 'Processed end to end, no manual entry'
       },
       {
         key: 'products',
@@ -139,7 +100,7 @@ export const en: SiteContent = {
         ],
         log: [
           'Idea: a field-service app with an AI assistant',
-          'Clickable prototype tested with 8 users',
+          'Clickable prototype tested with real users',
           'Feedback applied, design finalised',
           'Released to the App Store and Google Play'
         ],
@@ -174,9 +135,9 @@ export const en: SiteContent = {
           'Summaries, drafts and translations'
         ],
         log: [
-          '312 contracts uploaded',
+          'Full contract archive uploaded',
           'Parties, dates and key clauses extracted',
-          '3 contracts flagged for renewal risk',
+          'Contracts at risk of renewal flagged',
           'Everything searchable in plain language'
         ],
         result: 'Days of reading reduced to minutes'
@@ -197,7 +158,7 @@ export const en: SiteContent = {
           'Duplicate data entry removed',
           'Monitoring and alerts switched on'
         ],
-        result: 'One connected system, zero downtime'
+        result: 'One connected system, operations never paused'
       }
     ]
   },
@@ -209,28 +170,24 @@ export const en: SiteContent = {
     steps: [
       {
         name: 'Discover',
-        time: 'Week 1',
         description:
           'We map the problem, your data and the business case, and find where automation creates the most value first.',
         deliverable: 'A clear plan with scope, timeline and expected return'
       },
       {
         name: 'Prototype',
-        time: 'Weeks 2–3',
         description:
           'AI-accelerated design and engineering put a working prototype in your hands, tested with real users and real data.',
         deliverable: 'Something you can click, try and judge'
       },
       {
         name: 'Build and integrate',
-        time: 'Weeks 3–10',
         description:
           'We harden it for production: secure, scalable and connected to the systems you already run.',
         deliverable: 'A production system your team can rely on'
       },
       {
         name: 'Launch and improve',
-        time: 'Ongoing',
         description:
           'We launch, measure and keep improving as your business grows and the technology moves forward.',
         deliverable: 'Results you can measure, every month'
@@ -278,87 +235,6 @@ export const en: SiteContent = {
     ],
     cta: 'Get a plan for your project'
   },
-  work: {
-    title: 'Selected work',
-    copy: 'Complex organisations, measurable results. A few of the systems we have delivered.',
-    challengeLabel: 'Challenge',
-    resultLabel: 'Result',
-    projects: [
-      {
-        client: 'Siemens',
-        title: 'Industrial work management hub',
-        challenge: 'Telemetry and process control were spread across separate systems, consoles and teams.',
-        result: 'AI-powered monitoring and workflow automation improved incident response and reliability.',
-        tags: ['AI operations', 'Automation', 'Monitoring']
-      },
-      {
-        client: 'Bosch',
-        title: 'Connected product delivery platform',
-        challenge: 'Product and service data pipelines needed more automation, visibility and consistency.',
-        result: 'An integrated platform with machine-learning insights significantly reduced manual effort.',
-        tags: ['Platform', 'Machine learning', 'Data']
-      },
-      {
-        client: 'Deutsche Telekom',
-        title: 'Telecom workflow automation',
-        challenge: 'High-volume service workflows were delaying activation, support and quality assurance.',
-        result: 'AI-driven orchestration and verification accelerated service cycles and improved customer outcomes.',
-        tags: ['Orchestration', 'Telecom', 'AI']
-      },
-      {
-        client: 'ICA Banken',
-        title: 'Smart banking operations engine',
-        challenge: 'Financial operations needed faster decision loops for risk, service and reporting.',
-        result: 'Automation and analytics improved processing speed and the quality of decisions.',
-        tags: ['Finance', 'Machine learning', 'Analytics']
-      },
-      {
-        client: 'Department of Justice',
-        title: 'Secure workflow modernisation',
-        challenge: 'Mission-critical workflows needed secure modernisation under strict control and uptime.',
-        result: 'A resilient operations layer with automation controls and fully auditable processes.',
-        tags: ['Security', 'Public sector', 'Compliance']
-      }
-    ]
-  },
-  voices: {
-    title: 'What clients say',
-    copy: 'Feedback from teams that needed speed without giving up control.',
-    previous: 'Previous quote',
-    next: 'Next quote',
-    quotes: [
-      {
-        client: 'Siemens',
-        role: 'Head of Digital Operations',
-        text: 'Gemini turned a complex modernisation roadmap into a clear launch sequence and delivered fast.',
-        impact: 'Automation coverage went up and cycle times dropped across several operations teams.'
-      },
-      {
-        client: 'Bosch',
-        role: 'Program Director, Connected Systems',
-        text: 'Strong engineering quality combined with practical AI use cases our business units could adopt quickly.',
-        impact: 'Manual coordination dropped while delivery consistency measurably improved.'
-      },
-      {
-        client: 'Deutsche Telekom',
-        role: 'Senior Transformation Manager',
-        text: 'A scalable automation layer that matched the complexity and speed of telecom workflows.',
-        impact: 'Service activation accelerated and issues were resolved much faster.'
-      },
-      {
-        client: 'ICA Banken',
-        role: 'Digital Banking Operations Manager',
-        text: 'Gemini helped us move AI from concept to practical value inside our core processes.',
-        impact: 'Decision throughput improved and bottlenecks in banking operations were reduced.'
-      },
-      {
-        client: 'Department of Justice',
-        role: 'Technology Modernisation Lead',
-        text: 'Disciplined, secure and results-oriented execution — from discovery to deployment.',
-        impact: 'Critical workflows gained traceability, resilience and measurable efficiency.'
-      }
-    ]
-  },
   faq: {
     title: 'Questions, answered',
     copy: 'The things teams usually ask before we start.',
@@ -376,7 +252,7 @@ export const en: SiteContent = {
       {
         question: 'How soon will we see results?',
         answer:
-          'Early. You usually hold a working prototype within the first weeks, and most projects reach production in under 90 days. We agree on what success looks like up front and measure it from day one.'
+          'Early. You hold a working prototype within the first weeks, not after months of specification. We agree on what success looks like up front and measure it from day one.'
       },
       {
         question: 'Can you work with the systems we already have?',

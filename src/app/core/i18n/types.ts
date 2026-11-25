@@ -3,6 +3,10 @@
  *
  * Content is grouped by the section that renders it, so a translator can work
  * through one file top to bottom in the same order a visitor reads the page.
+ *
+ * There is deliberately no slot for client names, testimonials or impact
+ * metrics: the site shows only evidence that is real and cleared, and none is
+ * on hand yet (see PRODUCT.md → Evidence on Hand).
  */
 
 export type LanguageCode = 'en' | 'de' | 'no' | 'sv' | 'fr' | 'it';
@@ -18,16 +22,6 @@ export interface NavItem {
   label: string;
   /** Id of the section the link scrolls to. */
   id: string;
-}
-
-export interface Metric {
-  /** Animated from 0 when the number scrolls into view; `null` shows `value` as is. */
-  numeric: number | null;
-  prefix: string;
-  suffix: string;
-  value: string;
-  label: string;
-  detail: string;
 }
 
 export interface ShiftRow {
@@ -50,7 +44,6 @@ export type ServiceKey = 'agents' | 'automation' | 'products' | 'data' | 'docume
 
 export interface ApproachStep {
   name: string;
-  time: string;
   description: string;
   deliverable: string;
 }
@@ -59,21 +52,6 @@ export interface DifferenceRow {
   aspect: string;
   traditional: string;
   gemini: string;
-}
-
-export interface Project {
-  client: string;
-  title: string;
-  challenge: string;
-  result: string;
-  tags: string[];
-}
-
-export interface Quote {
-  client: string;
-  role: string;
-  text: string;
-  impact: string;
 }
 
 export interface FaqItem {
@@ -116,12 +94,6 @@ export interface SiteContent {
     legendFlow: string;
     scrollHint: string;
   };
-  proof: {
-    clientsLabel: string;
-    clients: string[];
-    metricsLabel: string;
-    metrics: Metric[];
-  };
   shift: {
     title: string;
     copy: string;
@@ -150,20 +122,6 @@ export interface SiteContent {
     geminiLabel: string;
     rows: DifferenceRow[];
     cta: string;
-  };
-  work: {
-    title: string;
-    copy: string;
-    challengeLabel: string;
-    resultLabel: string;
-    projects: Project[];
-  };
-  voices: {
-    title: string;
-    copy: string;
-    previous: string;
-    next: string;
-    quotes: Quote[];
   };
   faq: {
     title: string;

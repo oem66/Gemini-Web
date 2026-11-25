@@ -10,7 +10,7 @@ export const fr: SiteContent = {
     nav: [
       { label: 'Services', id: 'services' },
       { label: 'Méthode', id: 'approach' },
-      { label: 'Réalisations', id: 'work' },
+      { label: 'Pourquoi nous', id: 'difference' },
       { label: 'FAQ', id: 'faq' }
     ],
     cta: 'Lancer un projet',
@@ -29,45 +29,6 @@ export const fr: SiteContent = {
     legendFriction: 'Friction : tâches manuelles, données éparpillées, décisions lentes',
     legendFlow: 'Flux : automatisé, connecté, mesurable',
     scrollHint: 'Faites défiler pour résoudre'
-  },
-  proof: {
-    clientsLabel: 'Réalisé pour les équipes de',
-    clients: ['Siemens', 'Bosch', 'Deutsche Telekom', 'ICA Banken', 'Department of Justice'],
-    metricsLabel: 'Mesuré sur nos projets clients',
-    metrics: [
-      {
-        numeric: 41,
-        prefix: '',
-        suffix: ' %',
-        value: '41 %',
-        label: 'de temps de traitement en moins',
-        detail: 'Après l’automatisation des flux opérationnels récurrents.'
-      },
-      {
-        numeric: 82,
-        prefix: '',
-        suffix: ' %',
-        value: '82 %',
-        label: 'de tâches automatisées',
-        detail: 'Parmi les tâches récurrentes des ventes, du service et des opérations.'
-      },
-      {
-        numeric: 29,
-        prefix: '',
-        suffix: ' %',
-        value: '29 %',
-        label: 'de chiffre d’affaires en plus',
-        detail: 'Grâce à de meilleurs tunnels, au routage et à l’aide à la décision par l’IA.'
-      },
-      {
-        numeric: 90,
-        prefix: '<',
-        suffix: ' jours',
-        value: '<90 jours',
-        label: 'de l’idée à la production',
-        detail: 'Délai type entre le premier échange et un système en service.'
-      }
-    ]
   },
   shift: {
     title: 'Ce qui disparaît dès que nous commençons',
@@ -107,7 +68,7 @@ export const fr: SiteContent = {
           'Retard détecté, nouvelle date de livraison confirmée',
           'Réponse personnalisée rédigée et envoyée'
         ],
-        result: 'Résolu en 41 secondes, sans déranger personne'
+        result: 'Résolu automatiquement, sans déranger personne'
       },
       {
         key: 'automation',
@@ -125,7 +86,7 @@ export const fr: SiteContent = {
           'Écart sous le seuil, facture validée',
           'Comptabilisée, équipe informée'
         ],
-        result: 'Traité en 12 secondes au lieu de 15 minutes'
+        result: 'Traité de bout en bout, sans saisie manuelle'
       },
       {
         key: 'products',
@@ -139,7 +100,7 @@ export const fr: SiteContent = {
         ],
         log: [
           'Idée : une appli terrain avec assistant IA',
-          'Prototype cliquable testé avec 8 utilisateurs',
+          'Prototype cliquable testé avec de vrais utilisateurs',
           'Retours intégrés, design finalisé',
           'Publiée sur l’App Store et Google Play'
         ],
@@ -174,9 +135,9 @@ export const fr: SiteContent = {
           'Résumés, brouillons et traductions'
         ],
         log: [
-          '312 contrats importés',
+          'Archive complète de contrats importée',
           'Parties, échéances et clauses clés extraites',
-          '3 contrats signalés pour risque de renouvellement',
+          'Contrats à risque de renouvellement signalés',
           'Tout est interrogeable en langage courant'
         ],
         result: 'Des jours de lecture réduits à quelques minutes'
@@ -197,7 +158,7 @@ export const fr: SiteContent = {
           'Double saisie supprimée',
           'Supervision et alertes activées'
         ],
-        result: 'Un seul système connecté, zéro interruption'
+        result: 'Un seul système connecté, sans jamais arrêter l’activité'
       }
     ]
   },
@@ -209,28 +170,24 @@ export const fr: SiteContent = {
     steps: [
       {
         name: 'Comprendre',
-        time: 'Semaine 1',
         description:
           'Nous analysons le problème, vos données et l’enjeu économique, et identifions où l’automatisation crée d’abord le plus de valeur.',
         deliverable: 'Un plan clair : périmètre, calendrier et retour attendu'
       },
       {
         name: 'Prototyper',
-        time: 'Semaines 2–3',
         description:
           'Une conception et une ingénierie accélérées par l’IA vous mettent entre les mains un prototype fonctionnel, testé avec de vrais utilisateurs et de vraies données.',
         deliverable: 'Quelque chose à cliquer, essayer et juger'
       },
       {
         name: 'Construire et intégrer',
-        time: 'Semaines 3–10',
         description:
           'Nous le préparons pour la production : sécurisé, évolutif et relié aux systèmes que vous utilisez déjà.',
         deliverable: 'Un système de production sur lequel votre équipe peut compter'
       },
       {
         name: 'Lancer et améliorer',
-        time: 'En continu',
         description:
           'Nous mettons en service, mesurons et améliorons à mesure que votre activité grandit et que la technologie progresse.',
         deliverable: 'Des résultats mesurables, chaque mois'
@@ -278,87 +235,6 @@ export const fr: SiteContent = {
     ],
     cta: 'Obtenir un plan pour votre projet'
   },
-  work: {
-    title: 'Réalisations',
-    copy: 'Des organisations complexes, des résultats mesurables. Quelques-uns des systèmes que nous avons livrés.',
-    challengeLabel: 'Enjeu',
-    resultLabel: 'Résultat',
-    projects: [
-      {
-        client: 'Siemens',
-        title: 'Hub industriel de gestion des opérations',
-        challenge: 'Télémétrie et pilotage des processus étaient répartis entre systèmes, consoles et équipes distincts.',
-        result: 'Une supervision assistée par l’IA et des flux automatisés ont amélioré la réactivité aux incidents et la fiabilité.',
-        tags: ['Opérations IA', 'Automatisation', 'Supervision']
-      },
-      {
-        client: 'Bosch',
-        title: 'Plateforme de produits connectés',
-        challenge: 'Les flux de données produit et service manquaient d’automatisation, de visibilité et de cohérence.',
-        result: 'Une plateforme intégrée enrichie par le machine learning a nettement réduit le travail manuel.',
-        tags: ['Plateforme', 'Machine learning', 'Données']
-      },
-      {
-        client: 'Deutsche Telekom',
-        title: 'Automatisation des processus télécoms',
-        challenge: 'Des processus de service à fort volume ralentissaient l’activation, le support et le contrôle qualité.',
-        result: 'Une orchestration et une vérification pilotées par l’IA ont accéléré les cycles de service et amélioré l’expérience client.',
-        tags: ['Orchestration', 'Télécoms', 'IA']
-      },
-      {
-        client: 'ICA Banken',
-        title: 'Moteur intelligent d’opérations bancaires',
-        challenge: 'Les opérations financières avaient besoin de cycles de décision plus courts pour le risque, le service et le reporting.',
-        result: 'L’automatisation et l’analytique ont amélioré la vitesse de traitement et la qualité des décisions.',
-        tags: ['Finance', 'Machine learning', 'Analytique']
-      },
-      {
-        client: 'Department of Justice',
-        title: 'Modernisation sécurisée des processus',
-        challenge: 'Des processus critiques devaient être modernisés sous contrôle strict et sans interruption.',
-        result: 'Une couche opérationnelle résiliente avec des contrôles d’automatisation et des processus entièrement traçables.',
-        tags: ['Sécurité', 'Secteur public', 'Conformité']
-      }
-    ]
-  },
-  voices: {
-    title: 'Ce qu’en disent nos clients',
-    copy: 'Les retours d’équipes qui voulaient aller vite sans perdre le contrôle.',
-    previous: 'Citation précédente',
-    next: 'Citation suivante',
-    quotes: [
-      {
-        client: 'Siemens',
-        role: 'Head of Digital Operations',
-        text: 'Gemini a transformé une feuille de route de modernisation complexe en un plan de lancement clair, et a livré vite.',
-        impact: 'L’automatisation a progressé et les délais ont baissé dans plusieurs équipes opérationnelles.'
-      },
-      {
-        client: 'Bosch',
-        role: 'Program Director, Connected Systems',
-        text: 'Une ingénierie de grande qualité, alliée à des cas d’usage IA concrets que nos métiers ont pu adopter rapidement.',
-        impact: 'Moins de coordination manuelle et des livraisons nettement plus régulières.'
-      },
-      {
-        client: 'Deutsche Telekom',
-        role: 'Senior Transformation Manager',
-        text: 'Une couche d’automatisation évolutive, à la hauteur de la complexité et du rythme des processus télécoms.',
-        impact: 'Les activations sont plus rapides et les incidents résolus bien plus vite.'
-      },
-      {
-        client: 'ICA Banken',
-        role: 'Digital Banking Operations Manager',
-        text: 'Gemini nous a aidés à faire passer l’IA du concept à une valeur concrète au cœur de nos processus.',
-        impact: 'Le rythme des décisions s’est amélioré et les goulets d’étranglement ont reculé.'
-      },
-      {
-        client: 'Department of Justice',
-        role: 'Technology Modernisation Lead',
-        text: 'Une exécution rigoureuse, sécurisée et orientée résultats — de l’analyse au déploiement.',
-        impact: 'Les processus critiques ont gagné en traçabilité, en robustesse et en efficacité mesurable.'
-      }
-    ]
-  },
   faq: {
     title: 'Vos questions, nos réponses',
     copy: 'Ce que les équipes nous demandent le plus souvent avant de commencer.',
@@ -376,7 +252,7 @@ export const fr: SiteContent = {
       {
         question: 'Quand verrons-nous des résultats ?',
         answer:
-          'Très tôt. Vous avez généralement un prototype fonctionnel entre les mains dès les premières semaines, et la plupart des projets passent en production en moins de 90 jours. Nous définissons ensemble ce qu’est un succès, puis nous le mesurons dès le premier jour.'
+          'Très tôt. Vous avez un prototype fonctionnel entre les mains dès les premières semaines, pas après des mois de cahier des charges. Nous définissons ensemble ce qu’est un succès, puis nous le mesurons dès le premier jour.'
       },
       {
         question: 'Pouvez-vous travailler avec nos systèmes existants ?',

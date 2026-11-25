@@ -21,8 +21,15 @@ describe('AppComponent', () => {
 
   it('renders every section the navigation points to', () => {
     const { element } = render();
-    for (const id of ['top', 'services', 'approach', 'difference', 'work', 'faq', 'contact']) {
+    for (const id of ['top', 'services', 'approach', 'difference', 'faq', 'contact']) {
       expect(element.querySelector(`#${id}`)).withContext(id).not.toBeNull();
+    }
+  });
+
+  it('has a section for every navigation link', () => {
+    const { element } = render();
+    for (const item of en.header.nav) {
+      expect(element.querySelector(`section#${item.id}`)).withContext(item.id).not.toBeNull();
     }
   });
 
@@ -65,6 +72,12 @@ describe('AppComponent', () => {
     expect(text).not.toMatch(/[\w.-]+@[\w-]+\.[a-z]{2,}/i);
     expect(links.filter((href) => /^(mailto|tel):/.test(href))).toEqual([]);
     expect(links.filter((href) => /facebook|instagram/.test(href))).toEqual([]);
+  });
+
+  it('shows no placeholder clients, testimonials or metrics', () => {
+    const { element } = render();
+    expect(element.textContent).not.toMatch(/Siemens|Bosch|Telekom|ICA Banken|Department of Justice/);
+    expect(element.textContent).not.toMatch(/\d+\s?%/);
   });
 
   it('offers the project form', () => {

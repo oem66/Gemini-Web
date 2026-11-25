@@ -11,7 +11,6 @@
       @for (step of t().approach.steps; track i; let i = $index) {
       <li class="step" [style.--i]="i">
         <span class="marker tnum" aria-hidden="true">{{ i + 1 }}</span>
-        <p class="step-time">{{ step.time }}</p>
         <h3 class="step-name">{{ step.name }}</h3>
         <p class="step-description">{{ step.description }}</p>
         <p class="step-deliverable">

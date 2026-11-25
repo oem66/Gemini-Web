@@ -10,7 +10,7 @@ export const no: SiteContent = {
     nav: [
       { label: 'Tjenester', id: 'services' },
       { label: 'Arbeidsmåte', id: 'approach' },
-      { label: 'Prosjekter', id: 'work' },
+      { label: 'Hvorfor oss', id: 'difference' },
       { label: 'Spørsmål', id: 'faq' }
     ],
     cta: 'Start et prosjekt',
@@ -29,45 +29,6 @@ export const no: SiteContent = {
     legendFriction: 'Friksjon: manuelt arbeid, spredte data, trege beslutninger',
     legendFlow: 'Flyt: automatisert, tilkoblet, målbart',
     scrollHint: 'Rull for å løse opp'
-  },
-  proof: {
-    clientsLabel: 'Levert for team hos',
-    clients: ['Siemens', 'Bosch', 'Deutsche Telekom', 'ICA Banken', 'Department of Justice'],
-    metricsLabel: 'Målt i kundeprosjekter',
-    metrics: [
-      {
-        numeric: 41,
-        prefix: '',
-        suffix: ' %',
-        value: '41 %',
-        label: 'kortere prosesstid',
-        detail: 'Etter automatisering av gjentakende driftsflyter.'
-      },
-      {
-        numeric: 82,
-        prefix: '',
-        suffix: ' %',
-        value: '82 %',
-        label: 'automatiseringsgrad',
-        detail: 'Av gjentakende oppgaver i salg, service og drift.'
-      },
-      {
-        numeric: 29,
-        prefix: '',
-        suffix: ' %',
-        value: '29 %',
-        label: 'høyere omsetning',
-        detail: 'Gjennom smartere salgsløp, ruting og AI-støtte til beslutninger.'
-      },
-      {
-        numeric: 90,
-        prefix: '<',
-        suffix: ' dager',
-        value: '<90 dager',
-        label: 'fra idé til produksjon',
-        detail: 'Typisk tid fra første samtale til et system i drift.'
-      }
-    ]
   },
   shift: {
     title: 'Dette forsvinner når vi starter',
@@ -107,7 +68,7 @@ export const no: SiteContent = {
           'Forsinkelse oppdaget, ny leveringsdato bekreftet',
           'Personlig svar skrevet og sendt'
         ],
-        result: 'Løst på 41 sekunder uten å forstyrre noen'
+        result: 'Løst automatisk uten å forstyrre noen'
       },
       {
         key: 'automation',
@@ -125,7 +86,7 @@ export const no: SiteContent = {
           'Avvik under terskelen, godkjent',
           'Bokført, teamet varslet'
         ],
-        result: 'Ferdig på 12 sekunder i stedet for 15 minutter'
+        result: 'Behandlet hele veien, uten manuell registrering'
       },
       {
         key: 'products',
@@ -139,7 +100,7 @@ export const no: SiteContent = {
         ],
         log: [
           'Idé: en app for feltteknikere med AI-assistent',
-          'Klikkbar prototyp testet med 8 brukere',
+          'Klikkbar prototyp testet med ekte brukere',
           'Tilbakemeldinger tatt inn, design ferdigstilt',
           'Publisert i App Store og Google Play'
         ],
@@ -174,9 +135,9 @@ export const no: SiteContent = {
           'Sammendrag, utkast og oversettelser'
         ],
         log: [
-          '312 kontrakter lastet opp',
+          'Hele kontraktsarkivet lastet opp',
           'Parter, frister og nøkkelklausuler hentet ut',
-          '3 kontrakter flagget for fornyelsesrisiko',
+          'Kontrakter med fornyelsesrisiko flagget',
           'Alt søkbart på vanlig språk'
         ],
         result: 'Dager med lesing redusert til minutter'
@@ -197,7 +158,7 @@ export const no: SiteContent = {
           'Dobbeltregistrering fjernet',
           'Overvåking og varsler slått på'
         ],
-        result: 'Ett tilkoblet system, null nedetid'
+        result: 'Ett tilkoblet system, driften stoppet aldri'
       }
     ]
   },
@@ -209,28 +170,24 @@ export const no: SiteContent = {
     steps: [
       {
         name: 'Forstå',
-        time: 'Uke 1',
         description:
           'Vi kartlegger problemet, dataene og forretningsverdien, og finner hvor automatisering gir mest verdi først.',
         deliverable: 'En tydelig plan med omfang, tidslinje og forventet gevinst'
       },
       {
         name: 'Prototyp',
-        time: 'Uke 2–3',
         description:
           'AI-akselerert design og utvikling gir deg en fungerende prototyp, testet med ekte brukere og ekte data.',
         deliverable: 'Noe du kan klikke på, prøve og vurdere'
       },
       {
         name: 'Bygge og integrere',
-        time: 'Uke 3–10',
         description:
           'Vi gjør den klar for produksjon: sikker, skalerbar og koblet til systemene dere allerede bruker.',
         deliverable: 'Et produksjonssystem teamet kan stole på'
       },
       {
         name: 'Lansere og forbedre',
-        time: 'Løpende',
         description:
           'Vi lanserer, måler og forbedrer videre i takt med at virksomheten vokser og teknologien utvikler seg.',
         deliverable: 'Målbare resultater, hver måned'
@@ -278,87 +235,6 @@ export const no: SiteContent = {
     ],
     cta: 'Få en plan for prosjektet ditt'
   },
-  work: {
-    title: 'Utvalgte prosjekter',
-    copy: 'Komplekse organisasjoner, målbare resultater. Noen av systemene vi har levert.',
-    challengeLabel: 'Utfordring',
-    resultLabel: 'Resultat',
-    projects: [
-      {
-        client: 'Siemens',
-        title: 'Industriell hub for driftsstyring',
-        challenge: 'Telemetri og prosesstyring var spredt over separate systemer, konsoller og team.',
-        result: 'AI-drevet overvåking og automatiserte flyter forbedret hendelseshåndtering og pålitelighet.',
-        tags: ['AI-drift', 'Automatisering', 'Overvåking']
-      },
-      {
-        client: 'Bosch',
-        title: 'Plattform for tilkoblede produkter',
-        challenge: 'Produkt- og servicedata trengte mer automatisering, oversikt og konsistens.',
-        result: 'En integrert plattform med maskinlæring reduserte det manuelle arbeidet betydelig.',
-        tags: ['Plattform', 'Maskinlæring', 'Data']
-      },
-      {
-        client: 'Deutsche Telekom',
-        title: 'Automatisering av telekomflyter',
-        challenge: 'Serviceflyter med store volumer forsinket aktivering, kundestøtte og kvalitetssikring.',
-        result: 'AI-drevet orkestrering og verifisering gjorde servicesyklusene raskere og kundeopplevelsen bedre.',
-        tags: ['Orkestrering', 'Telekom', 'AI']
-      },
-      {
-        client: 'ICA Banken',
-        title: 'Smart motor for bankdrift',
-        challenge: 'Bankdriften trengte raskere beslutningssløyfer for risiko, service og rapportering.',
-        result: 'Automatisering og analyse forbedret både behandlingstid og beslutningskvalitet.',
-        tags: ['Finans', 'Maskinlæring', 'Analyse']
-      },
-      {
-        client: 'Department of Justice',
-        title: 'Sikker modernisering av arbeidsflyter',
-        challenge: 'Virksomhetskritiske flyter måtte moderniseres under streng kontroll og uten avbrudd.',
-        result: 'Et robust driftslag med automatiseringskontroller og fullt sporbare prosesser.',
-        tags: ['Sikkerhet', 'Offentlig sektor', 'Etterlevelse']
-      }
-    ]
-  },
-  voices: {
-    title: 'Dette sier kundene',
-    copy: 'Tilbakemeldinger fra team som trengte fart uten å miste kontrollen.',
-    previous: 'Forrige sitat',
-    next: 'Neste sitat',
-    quotes: [
-      {
-        client: 'Siemens',
-        role: 'Head of Digital Operations',
-        text: 'Gemini gjorde en kompleks moderniseringsplan om til en tydelig lanseringsrekkefølge og leverte raskt.',
-        impact: 'Automatiseringsgraden økte og ledetidene falt i flere driftsteam.'
-      },
-      {
-        client: 'Bosch',
-        role: 'Program Director, Connected Systems',
-        text: 'Sterk teknisk kvalitet kombinert med praktiske AI-brukstilfeller som forretningsområdene våre raskt tok i bruk.',
-        impact: 'Mindre manuell koordinering og målbart jevnere leveranser.'
-      },
-      {
-        client: 'Deutsche Telekom',
-        role: 'Senior Transformation Manager',
-        text: 'Et skalerbart automatiseringslag som matchet kompleksiteten og tempoet i telekomflytene.',
-        impact: 'Aktiveringer gikk raskere og problemer ble løst langt fortere.'
-      },
-      {
-        client: 'ICA Banken',
-        role: 'Digital Banking Operations Manager',
-        text: 'Gemini hjalp oss å ta AI fra konsept til reell verdi i kjerneprosessene våre.',
-        impact: 'Beslutningstakten økte og flaskehalser i bankdriften ble redusert.'
-      },
-      {
-        client: 'Department of Justice',
-        role: 'Technology Modernisation Lead',
-        text: 'Disiplinert, sikker og resultatorientert gjennomføring — fra analyse til utrulling.',
-        impact: 'Kritiske flyter ble mer sporbare, robuste og målbart mer effektive.'
-      }
-    ]
-  },
   faq: {
     title: 'Spørsmål og svar',
     copy: 'Det team ofte spør om før vi setter i gang.',
@@ -376,7 +252,7 @@ export const no: SiteContent = {
       {
         question: 'Hvor fort ser vi resultater?',
         answer:
-          'Tidlig. Som regel har dere en fungerende prototyp i hendene i løpet av de første ukene, og de fleste prosjekter går i produksjon på under 90 dager. Vi blir enige om hva suksess er fra start og måler det fra dag én.'
+          'Tidlig. Dere har en fungerende prototyp i hendene i løpet av de første ukene, ikke etter måneder med spesifikasjoner. Vi blir enige om hva suksess er fra start og måler det fra dag én.'
       },
       {
         question: 'Kan dere jobbe med systemene vi allerede har?',
