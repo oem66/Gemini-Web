@@ -1,169 +1,145 @@
 /* ==========================================================================
    Gemini — design tokens
 
-   The system is Swiss editorial: a strict grid, hairline rules as the only
-   structural device, one typeface carrying every level of hierarchy through
-   size and weight, and a single accent used sparingly. There are no gradients,
-   no glass, no shadows and no corner radii — depth comes from the grid and
-   from type, not from effects.
+   Friction → flow. The page is built on one idea: problems dissolve into
+   outcomes. Colour carries that idea and nothing else:
+
+   - Friction (coral) marks problems — manual work, waiting, waste.
+   - Flow (a mint → blue → violet gradient) marks value — results, metrics,
+     outcomes. If something is in the flow colour, it is something a client
+     gets. Nothing decorative is allowed to use it.
+
+   Type carries it too. Mona Sans has a width axis: problems are set condensed,
+   outcomes are set wide, so the transformation is visible in the letters.
    ========================================================================== */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 
   /* ---------------------------------------------------------------- */
-  /* Typography                                                       */
+  /* Type                                                             */
   /* ---------------------------------------------------------------- */
 
-  --font-sans: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
-    'Liberation Mono', monospace;
+  --font: 'Mona Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /* A wide scale with real jumps between steps. Editorial layouts read as
-     designed because the sizes are decisively different, not incrementally so. */
-  --text-label: 0.6875rem;
   --text-xs: 0.8125rem;
   --text-sm: 0.9375rem;
   --text-base: 1.0625rem;
-  --text-lg: 1.25rem;
-  --text-xl: clamp(1.375rem, 1.1rem + 1.1vw, 1.75rem);
-  --text-2xl: clamp(1.75rem, 1.3rem + 1.9vw, 2.5rem);
-  --text-3xl: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
-  --text-display: clamp(2.75rem, 1rem + 8vw, 7.5rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --text-xl: clamp(1.3125rem, 1.15rem + 0.75vw, 1.75rem);
+  --text-2xl: clamp(1.625rem, 1.3rem + 1.5vw, 2.5rem);
+  --text-3xl: clamp(2.125rem, 1.45rem + 3.1vw, 4rem);
+  --text-display: clamp(2.5rem, 0.95rem + 7vw, 7.75rem);
 
-  /* Large type tightens, small type opens. Labels open the most — they are
-     read as marks rather than as words. */
-  --tracking-display: -0.035em;
-  --tracking-title: -0.022em;
-  --tracking-heading: -0.014em;
-  --tracking-body: -0.004em;
-  --tracking-label: 0.14em;
+  /* The width axis, named by what it means on this page. */
+  --width-friction: 75%;
+  --width-body: 100%;
+  --width-heading: 112%;
+  --width-flow: 125%;
 
   --leading-display: 0.94;
-  --leading-title: 1.06;
-  --leading-heading: 1.2;
+  --leading-heading: 1.04;
   --leading-body: 1.6;
 
   /* ---------------------------------------------------------------- */
-  /* Colour                                                           */
-  /* Warm newsprint, warm ink. The rule colour is the most important   */
-  /* value in the file — it draws the entire structure of the page.    */
+  /* Colour — dark is the native scheme                               */
   /* ---------------------------------------------------------------- */
 
-  --paper: #f2f0ec;
-  --paper-raised: #e9e6e0;
-  --paper-invert: #16150f;
+  --bg: #0a0d2c;
+  --bg-raised: #11153f;
+  --bg-sunken: #070922;
+  --line: rgba(150, 160, 255, 0.16);
+  --line-strong: rgba(170, 180, 255, 0.32);
 
-  --ink: #16150f;
-  --ink-muted: #514d45;
-  --ink-faint: #837e74;
-  --ink-invert: #f4f2ed;
+  --ink: #eceeff;
+  --ink-muted: #a6acd9;
+  --ink-faint: #737aab;
 
-  --rule: #d3cec4;
-  --rule-strong: #16150f;
+  --friction: #ff7183;
+  --friction-soft: rgba(255, 113, 131, 0.14);
 
-  /* One accent, on links, the odd rule and nothing else. */
-  --accent: #b7350f;
-  --accent-hover: #8f2708;
-  --on-accent: #ffffff;
+  --flow-1: #5df2cf;
+  --flow-2: #72a6ff;
+  --flow-3: #b691ff;
+  --on-flow: #0a0d2c;
+  --flow-glow: rgba(114, 166, 255, 0.28);
 
-  /* Status only — never decoration. */
-  --positive: #2f6b3f;
-  --negative: #a6122f;
+  --glass: rgba(17, 21, 63, 0.72);
+  --scrim: rgba(4, 6, 24, 0.7);
 
-  --scrim: rgba(22, 21, 15, 0.4);
+  --flow: linear-gradient(100deg, var(--flow-1) 0%, var(--flow-2) 52%, var(--flow-3) 100%);
 
   /* ---------------------------------------------------------------- */
-  /* Grid + rhythm                                                    */
+  /* Space + shape                                                    */
   /* ---------------------------------------------------------------- */
 
-  --page-max: 84rem;
-  --page-pad: 1.25rem;
-  --gutter: 1.5rem;
+  --page-max: 82rem;
+  --page-pad: clamp(1rem, 4.2vw, 3.5rem);
+  --space-section: clamp(5rem, 10vw, 10rem);
 
-  --space-section: clamp(4.5rem, 8vw, 9rem);
-  --hairline: 1px;
+  /* Radius follows hierarchy: controls are round, panels are soft, the page is square. */
+  --radius-control: 999px;
+  --radius-field: 0.875rem;
+  --radius-panel: 1.5rem;
 
   /* ---------------------------------------------------------------- */
   /* Motion                                                           */
-  /* Restrained on purpose: things fade and settle, they do not fly.   */
   /* ---------------------------------------------------------------- */
 
-  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --duration-fast: 160ms;
-  --duration-base: 320ms;
-  --duration-slow: 620ms;
-
-  --motion-fast: var(--duration-fast) var(--ease-out);
-  --motion-base: var(--duration-base) var(--ease-out);
+  --duration-base: 360ms;
+  --duration-slow: 900ms;
 }
 
-/* ---------------------------------------------------------------- */
-/* Dark scheme — the same design, relit                             */
-/*                                                                  */
-/* Which scheme applies is decided for the reader: by default the    */
-/* page follows the hour of the day — light through the working day, */
-/* dark after sunset — and the OS preference, and a header control   */
-/* overrides that for good. The resolved value is written to         */
-/* <html data-theme> before first paint, so the page never flashes   */
-/* the wrong scheme; the media query is the fallback for the moment  */
-/* before that runs.                                                 */
-/* ---------------------------------------------------------------- */
-
-@mixin dark-scheme {
-  --paper: #100f0d;
-  --paper-raised: #1a1916;
-  --paper-invert: #f4f2ed;
-
-  --ink: #f0ede6;
-  --ink-muted: #a29d93;
-  --ink-faint: #6f6b62;
-  --ink-invert: #100f0d;
-
-  --rule: #2e2b26;
-  --rule-strong: #f0ede6;
-
-  /* A dark field absorbs saturation, so the accent moves up in lightness
-     and chroma rather than being the light value dimmed. */
-  --accent: #ff6a33;
-  --accent-hover: #ff8f63;
-  --on-accent: #14120e;
-
-  --positive: #5aa96f;
-  --negative: #ff5d7a;
-
-  --scrim: rgba(0, 0, 0, 0.65);
-}
-
-/* An explicit choice pins the scheme for form controls and scrollbars too. */
-:root[data-theme='light'] {
+@mixin light-scheme {
   color-scheme: light;
+
+  --bg: #f3f4fb;
+  --bg-raised: #ffffff;
+  --bg-sunken: #e8eaf6;
+  --line: rgba(18, 24, 80, 0.12);
+  --line-strong: rgba(18, 24, 80, 0.26);
+
+  --ink: #0b0f33;
+  --ink-muted: #4b5182;
+  --ink-faint: #767ba6;
+
+  --friction: #cf2f4b;
+  --friction-soft: rgba(207, 47, 75, 0.1);
+
+  /* Deeper stops so flow text keeps its contrast on a light page. */
+  --flow-1: #04806a;
+  --flow-2: #2d5be6;
+  --flow-3: #7a3ce0;
+  --on-flow: #ffffff;
+  --flow-glow: rgba(45, 91, 230, 0.18);
+
+  --glass: rgba(255, 255, 255, 0.78);
+  --scrim: rgba(11, 15, 51, 0.35);
 }
 
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  @include dark-scheme;
+:root[data-theme='light'] {
+  @include light-scheme;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
-    @include dark-scheme;
+    @include light-scheme;
   }
 }
 
-/* Changing scheme is a change of light, not a change of design, so the colours
-   cross-fade instead of cutting. The class is only on the page for the length
-   of that fade — the rest of the time every element keeps its own transitions.
-   Under reduced motion the durations below already resolve to 1ms. */
+/* Changing scheme is a change of light, not of design, so colours cross-fade.
+   The class is only present for the length of the fade. */
 :root.theme-fade,
 :root.theme-fade *,
 :root.theme-fade *::before,
 :root.theme-fade *::after {
   transition: background-color var(--duration-base) var(--ease-out),
-    border-color var(--duration-base) var(--ease-out),
-    color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out),
     fill var(--duration-base) var(--ease-out) !important;
 }
 
@@ -179,27 +155,30 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 html,
 body {
   margin: 0;
   min-height: 100%;
-  background: var(--paper);
+  background: var(--bg);
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font);
   font-size: var(--text-base);
   font-weight: 400;
+  font-stretch: var(--width-body);
   line-height: var(--leading-body);
-  letter-spacing: var(--tracking-body);
   color: var(--ink);
   font-synthesis: none;
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
 }
 
 body.nav-open {
@@ -207,8 +186,8 @@ body.nav-open {
 }
 
 ::selection {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--flow-2);
+  color: var(--on-flow);
 }
 
 h1,
@@ -217,7 +196,9 @@ h3,
 h4,
 p,
 figure,
-blockquote {
+blockquote,
+dl,
+dd {
   margin: 0;
 }
 
@@ -242,7 +223,8 @@ button {
 }
 
 img,
-svg {
+svg,
+canvas {
   display: block;
   max-width: 100%;
 }
@@ -260,38 +242,182 @@ a,
 button,
 select,
 label,
-[role='tab'],
-input {
+input,
+textarea {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-/* A visible, consistent focus path for keyboard users. */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--flow-2);
   outline-offset: 3px;
 }
 
-::-webkit-scrollbar {
-  width: 12px;
+/* ==========================================================================
+   Shared primitives — used by more than one section
+   ========================================================================== */
+
+.page {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
 }
 
-::-webkit-scrollbar-track {
-  background: var(--paper);
+.section {
+  position: relative;
+  padding-block: var(--space-section);
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--rule);
-  border: 4px solid var(--paper);
+.section-head {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 46rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--ink-faint);
+.section-title {
+  font-size: var(--text-3xl);
+  font-weight: 760;
+  font-stretch: var(--width-heading);
+  line-height: var(--leading-heading);
+  letter-spacing: -0.032em;
+  text-wrap: balance;
+}
+
+.section-copy {
+  max-width: 38rem;
+  font-size: var(--text-lg);
+  line-height: 1.55;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+
+/* Value text: anything a client gets. */
+.flow-text {
+  background: var(--flow);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------- */
+/* Buttons                            */
+/* ---------------------------------- */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.25rem;
+  padding: 0 1.6rem;
+  border-radius: var(--radius-control);
+  border: 1px solid transparent;
+  font-size: var(--text-sm);
+  font-weight: 620;
+  font-stretch: 108%;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  isolation: isolate;
+  transition: transform var(--duration-fast) var(--ease-out), color var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out), border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+
+  &:active {
+    transform: scale(0.97);
+    transition-duration: 80ms;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.55;
+  }
+}
+
+/* The primary action becomes flow on hover: pressing it is the first step
+   from friction to outcome. */
+.btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--flow);
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      color: var(--on-flow);
+      box-shadow: 0 0.75rem 2.5rem -0.75rem var(--flow-glow);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.btn-ghost {
+  border-color: var(--line-strong);
+  color: var(--ink);
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: var(--bg-raised);
+      border-color: var(--ink-faint);
+    }
+  }
+}
+
+.btn-sm {
+  min-height: 2.5rem;
+  padding: 0 1.1rem;
+  font-size: var(--text-xs);
+}
+
+/* ---------------------------------- */
+/* Scroll reveal                      */
+/* ---------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+  transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+
+  &.is-in {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ==========================================================================
    Accessibility preferences
-   Each is answered on its own terms; none of them mean "remove the feedback".
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
@@ -303,6 +429,11 @@ input {
 
   html {
     scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 
   *,
@@ -318,10 +449,24 @@ input {
   :root {
     --ink-muted: var(--ink);
     --ink-faint: var(--ink);
-    --rule: var(--ink);
+    --line: var(--line-strong);
   }
 
   :focus-visible {
     outline-width: 3px;
   }
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border: 4px solid var(--bg);
+  border-radius: 999px;
 }

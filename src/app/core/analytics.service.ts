@@ -1,12 +1,20 @@
 import { DestroyRef, Injectable, NgZone, inject } from '@angular/core';
-import posthog, { Properties } from 'posthog-js';
+import type { PostHog, Properties } from 'posthog-js';
 
 const DEFAULT_POSTHOG_HOST = 'https://eu.i.posthog.com';
 const ENGAGEMENT_MILESTONES = [10, 30, 60, 120, 300] as const;
 const SCROLL_MILESTONES = [25, 50, 75, 90, 100] as const;
 
+/** Longest the SDK waits for an idle moment before loading anyway. */
+const LOAD_TIMEOUT_MS = 3000;
+
 /**
  * One privacy-conscious entry point for all website analytics.
+ *
+ * The PostHog SDK is the largest dependency on the page, so it is fetched only
+ * once the page has loaded and the browser is idle — it never competes with
+ * the first paint. Anything captured before then is queued and replayed in
+ * order, so no event is lost.
  *
  * Autocapture provides the raw interaction detail, while the named events below
  * keep dashboards and conversion funnels stable when visible copy is translated
@@ -19,7 +27,9 @@ export class AnalyticsService {
 
   private readonly viewedSections = new Set<string>();
   private readonly reachedScrollMilestones = new Set<number>();
-  private initialized = false;
+  private readonly pending: ((client: PostHog) => void)[] = [];
+  private client: PostHog | null = null;
+  private enabled = false;
   private engagementStarted = false;
 
   constructor() {
@@ -36,72 +46,85 @@ export class AnalyticsService {
       return;
     }
 
+    this.enabled = true;
+
     this.zone.runOutsideAngular(() => {
-      posthog.init(projectToken, {
-        api_host: runtimeConfig?.posthogHost?.trim() || DEFAULT_POSTHOG_HOST,
-        defaults: '2026-05-30',
-
-        // This is an anonymous marketing site. Server-hash mode measures repeat
-        // activity without browser storage or persistent person profiles.
-        cookieless_mode: 'always',
-        person_profiles: 'never',
-
-        autocapture: true,
-        capture_pageview: 'history_change',
-        capture_pageleave: true,
-        capture_heatmaps: true,
-        capture_dead_clicks: true,
-        rageclick: true,
-        capture_exceptions: true,
-        capture_performance: {
-          network_timing: true,
-          web_vitals: true,
-          web_vitals_attribution: true
-        },
-        disable_scroll_properties: false,
-        session_recording: {
-          maskAllInputs: true,
-          maskTextSelector: '[data-private]'
-        },
-
-        // Console payloads can contain developer-provided personal data. Browser
-        // exceptions are still captured by capture_exceptions above.
-        enable_recording_console_log: false,
-        // Person profiles are intentionally disabled, so do not let the SDK
-        // attempt to create a special profile for local test traffic.
-        internal_or_test_user_hostname: null,
-
-        loaded: (client) => {
-          this.initialized = true;
-          client.register({ website: 'gemini-digital' });
-          if (runtimeConfig?.debug) {
-            client.debug();
-          }
-        }
-      });
-
-      // init establishes the local SDK synchronously; network delivery and
-      // remote product configuration continue asynchronously.
-      this.initialized = true;
-
       this.listenForNamedInteractions();
+
+      const load = () =>
+        import('posthog-js')
+          .then(({ default: posthog }) => {
+            posthog.init(projectToken, {
+              api_host: runtimeConfig?.posthogHost?.trim() || DEFAULT_POSTHOG_HOST,
+              defaults: '2026-05-30',
+
+              // This is an anonymous marketing site. Server-hash mode measures
+              // repeat activity without browser storage or person profiles.
+              cookieless_mode: 'always',
+              person_profiles: 'never',
+
+              autocapture: true,
+              capture_pageview: 'history_change',
+              capture_pageleave: true,
+              capture_heatmaps: true,
+              capture_dead_clicks: true,
+              rageclick: true,
+              capture_exceptions: true,
+              capture_performance: {
+                network_timing: true,
+                web_vitals: true,
+                web_vitals_attribution: true
+              },
+              disable_scroll_properties: false,
+              session_recording: {
+                maskAllInputs: true,
+                maskTextSelector: '[data-private]'
+              },
+
+              // Console payloads can contain developer-provided personal data.
+              // Browser exceptions are still captured by capture_exceptions.
+              enable_recording_console_log: false,
+              internal_or_test_user_hostname: null,
+
+              loaded: (client) => {
+                client.register({ website: 'gemini-digital' });
+                if (runtimeConfig?.debug) {
+                  client.debug();
+                }
+              }
+            });
+
+            this.client = posthog;
+            for (const run of this.pending.splice(0)) {
+              run(posthog);
+            }
+          })
+          .catch(() => {
+            // Blocked by an extension or offline: the site works the same without it.
+            this.enabled = false;
+            this.pending.length = 0;
+          });
+
+      // Safari has no requestIdleCallback; a short delay after load does the same job there.
+      const whenIdle = () =>
+        typeof window.requestIdleCallback === 'function'
+          ? window.requestIdleCallback(() => void load(), { timeout: LOAD_TIMEOUT_MS })
+          : window.setTimeout(() => void load(), 1200);
+
+      if (document.readyState === 'complete') {
+        whenIdle();
+      } else {
+        window.addEventListener('load', whenIdle, { once: true });
+      }
     });
   }
 
   capture(event: string, properties: Properties = {}): void {
-    if (!this.initialized) {
-      return;
-    }
-
-    posthog.capture(event, properties);
+    this.run((client) => client.capture(event, properties));
   }
 
   setContext(properties: Properties): void {
-    if (!this.initialized) {
-      return;
-    }
-
-    posthog.register(properties);
+    this.run((client) => client.register(properties));
   }
 
   trackSectionViewed(section: string): void {
@@ -126,7 +149,7 @@ export class AnalyticsService {
   }
 
   startEngagementTracking(): void {
-    if (!this.initialized || this.engagementStarted) {
+    if (!this.enabled || this.engagementStarted) {
       return;
     }
 
@@ -151,6 +174,19 @@ export class AnalyticsService {
 
       this.destroyRef.onDestroy(() => window.clearInterval(timer));
     });
+  }
+
+  /** Runs now if the SDK is ready, otherwise as soon as it is. */
+  private run(action: (client: PostHog) => void): void {
+    if (!this.enabled) {
+      return;
+    }
+
+    if (this.client) {
+      action(this.client);
+    } else {
+      this.pending.push(action);
+    }
   }
 
   private listenForNamedInteractions(): void {

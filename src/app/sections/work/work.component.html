@@ -1,0 +1,37 @@
+<section class="section work" id="work" aria-labelledby="work-title">
+  <div class="page">
+    <header class="section-head" appReveal>
+      <h2 class="section-title" id="work-title">{{ t().work.title }}</h2>
+      <p class="section-copy">{{ t().work.copy }}</p>
+    </header>
+
+    <ul class="cards" #list>
+      @for (project of t().work.projects; track project.client; let i = $index) {
+      <li class="card" #card [style.--i]="i">
+        <article class="card-inner">
+          <div class="card-intro">
+            <p class="client">{{ project.client }}</p>
+            <h3 class="title">{{ project.title }}</h3>
+            <ul class="tags">
+              @for (tag of project.tags; track tag) {
+              <li>{{ tag }}</li>
+              }
+            </ul>
+          </div>
+
+          <dl class="card-detail">
+            <div class="field">
+              <dt>{{ t().work.challengeLabel }}</dt>
+              <dd class="challenge">{{ project.challenge }}</dd>
+            </div>
+            <div class="field">
+              <dt>{{ t().work.resultLabel }}</dt>
+              <dd class="result"><span class="flow-text">{{ project.result }}</span></dd>
+            </div>
+          </dl>
+        </article>
+      </li>
+      }
+    </ul>
+  </div>
+</section>

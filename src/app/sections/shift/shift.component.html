@@ -1,0 +1,32 @@
+<section class="section shift" aria-labelledby="shift-title">
+  <div class="page">
+    <header class="section-head" appReveal>
+      <h2 class="section-title" id="shift-title">{{ t().shift.title }}</h2>
+      <p class="section-copy">{{ t().shift.copy }}</p>
+    </header>
+
+    <div class="columns" aria-hidden="true">
+      <span class="column-friction">{{ t().shift.problemLabel }}</span>
+      <span class="column-flow">{{ t().shift.outcomeLabel }}</span>
+    </div>
+
+    <ol class="rows">
+      @for (row of t().shift.rows; track $index) {
+      <li class="row" #row>
+        <p class="problem">
+          <span class="visually-hidden">{{ t().shift.problemLabel }}: </span>
+          <span class="strike">{{ row.problem }}</span>
+        </p>
+
+        <span class="connector" aria-hidden="true"></span>
+
+        <p class="outcome">
+          <span class="visually-hidden">{{ t().shift.outcomeLabel }}: </span>
+          <span class="outcome-base">{{ row.outcome }}</span>
+          <span class="outcome-lit flow-text" aria-hidden="true">{{ row.outcome }}</span>
+        </p>
+      </li>
+      }
+    </ol>
+  </div>
+</section>

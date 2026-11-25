@@ -1,0 +1,228 @@
+:host {
+  display: block;
+}
+
+/* The section is taller than the screen so scrolling through it scrubs the
+   field from friction to flow while the stage stays pinned. */
+.hero {
+  --p: 0;
+  position: relative;
+  height: 172svh;
+
+  @media (max-width: 47.99rem) {
+    height: 150svh;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    height: auto;
+  }
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100svh;
+  min-height: 38rem;
+  overflow: hidden;
+}
+
+.field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Keeps the type legible over the field without boxing it in. */
+.veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+      to top,
+      var(--bg) 0%,
+      color-mix(in srgb, var(--bg) 72%, transparent) 34%,
+      transparent 64%
+    ),
+    radial-gradient(ellipse 62% 58% at 10% 88%, color-mix(in srgb, var(--bg) 82%, transparent), transparent 72%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding-top: 7rem;
+  padding-bottom: clamp(3.5rem, 9vh, 6.5rem);
+  transform: translate3d(0, calc(var(--p) * -5vh), 0);
+}
+
+/* ---------------------------------- */
+/* Headline                           */
+/* ---------------------------------- */
+
+.title {
+  /* A character-count estimate until the component measures the real lines
+     (--fit-size). Either way every line fits at full width, so expanding the
+     headline never reflows the page. */
+  --fit: calc((min(100vw, var(--page-max)) - 2 * var(--page-pad)) / (var(--chars) * 0.62));
+
+  font-size: clamp(2.5rem, 10.5vw, 3.75rem);
+  font-weight: 800;
+  font-stretch: 112%;
+  line-height: var(--leading-display);
+  letter-spacing: -0.038em;
+  text-wrap: balance;
+
+  @media (min-width: 48rem) {
+    font-size: var(--fit-size, min(8.5rem, var(--fit)));
+    text-wrap: nowrap;
+  }
+}
+
+.line {
+  display: block;
+}
+
+/* The page-load moment: the headline arrives condensed — friction — and
+   opens up to full width — flow. One motion, once. */
+@media (min-width: 48rem) {
+  .line {
+    font-stretch: 118%;
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .line {
+      font-stretch: 75%;
+      transition: font-stretch 1.7s var(--ease-out);
+      transition-delay: calc(var(--line) * 140ms + 80ms);
+    }
+
+    .is-ready .line {
+      font-stretch: 118%;
+    }
+  }
+}
+
+/* ---------------------------------- */
+/* Lead + actions                     */
+/* ---------------------------------- */
+
+.foot {
+  display: grid;
+  gap: 1.75rem;
+  margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 36rem) auto;
+    align-items: end;
+    justify-content: space-between;
+  }
+}
+
+.lead {
+  max-width: 36rem;
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ---------------------------------- */
+/* Colour key                         */
+/* ---------------------------------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  margin-top: clamp(2rem, 5vh, 3rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.swatch {
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+}
+
+/* As the field resolves, friction fades from the key and flow takes over. */
+.legend-friction {
+  opacity: calc(1 - var(--p) * 0.55);
+
+  .swatch {
+    background: var(--friction);
+  }
+}
+
+.legend-flow {
+  opacity: calc(0.75 + var(--p) * 0.25);
+
+  .swatch {
+    background: var(--flow);
+    box-shadow: 0 0 0 calc(var(--p) * 4px) var(--flow-glow);
+  }
+}
+
+/* ---------------------------------- */
+/* Scroll hint                        */
+/* ---------------------------------- */
+
+.scroll-hint {
+  position: absolute;
+  right: var(--page-pad);
+  bottom: clamp(1.25rem, 3vh, 2rem);
+  z-index: 1;
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  opacity: calc(1 - var(--p) * 6);
+
+  @media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+    display: inline-flex;
+  }
+}
+
+.scroll-line {
+  position: relative;
+  width: 2.5rem;
+  height: 1px;
+  overflow: hidden;
+  background: var(--line-strong);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--flow);
+    transform: translateX(-100%);
+    animation: hint 2.4s var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes hint {
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
+}

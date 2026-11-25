@@ -1,0 +1,51 @@
+<section class="hero" id="top" #section [style.--chars]="longestLine()">
+  <div class="stage">
+    <canvas class="field" #canvas aria-hidden="true"></canvas>
+    <div class="veil" aria-hidden="true"></div>
+
+    <div class="page content">
+      <h1 class="title" #title>
+        <!-- The lines are blocks, so the space between them is invisible — but
+             screen readers and search engines need it to read two words. -->
+        @for (line of t().hero.title; track i; let i = $index, last = $last) {
+        <span class="line" [style.--line]="i">{{ line }}</span>{{ last ? '' : ' ' }}
+        }
+      </h1>
+
+      <div class="foot">
+        <p class="lead">{{ t().hero.lead }}</p>
+
+        <div class="actions">
+          <a
+            class="btn btn-primary"
+            href="#contact"
+            data-analytics-event="cta_clicked"
+            data-analytics-location="hero"
+            data-analytics-target="contact"
+          >{{ t().hero.primaryCta }}</a>
+          <a
+            class="btn btn-ghost"
+            href="#approach"
+            data-analytics-event="cta_clicked"
+            data-analytics-location="hero"
+            data-analytics-target="approach"
+          >{{ t().hero.secondaryCta }}</a>
+        </div>
+      </div>
+
+      <!-- The page's colour key, taught once and used everywhere after. -->
+      <ul class="legend" [attr.aria-label]="t().hero.legendLabel">
+        <li class="legend-item legend-friction">
+          <span class="swatch" aria-hidden="true"></span>{{ t().hero.legendFriction }}
+        </li>
+        <li class="legend-item legend-flow">
+          <span class="swatch" aria-hidden="true"></span>{{ t().hero.legendFlow }}
+        </li>
+      </ul>
+    </div>
+
+    <p class="scroll-hint" aria-hidden="true">
+      <span class="scroll-line"></span>{{ t().hero.scrollHint }}
+    </p>
+  </div>
+</section>

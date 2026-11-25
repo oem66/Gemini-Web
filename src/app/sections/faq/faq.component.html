@@ -1,0 +1,33 @@
+<section class="section faq" id="faq" aria-labelledby="faq-title">
+  <div class="page layout">
+    <header class="section-head" appReveal>
+      <h2 class="section-title" id="faq-title">{{ t().faq.title }}</h2>
+      <p class="section-copy">{{ t().faq.copy }}</p>
+    </header>
+
+    <ul class="items">
+      @for (item of t().faq.items; track i; let i = $index) {
+      <li class="item" [class.is-open]="open().has(i)">
+        <h3>
+          <button
+            type="button"
+            class="question"
+            [id]="'faq-q-' + i"
+            [attr.aria-expanded]="open().has(i)"
+            [attr.aria-controls]="'faq-a-' + i"
+            (click)="toggle(i)"
+          >
+            <span>{{ item.question }}</span>
+            <span class="icon" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="answer" [id]="'faq-a-' + i" role="region" [attr.aria-labelledby]="'faq-q-' + i">
+          <div class="answer-inner">
+            <p>{{ item.answer }}</p>
+          </div>
+        </div>
+      </li>
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,154 @@
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="header" [class.is-solid]="solid() || menuOpen()">
+  <div class="page bar">
+    <a
+      class="wordmark"
+      href="#top"
+      aria-label="Gemini"
+      data-analytics-event="navigation_clicked"
+      data-analytics-location="header"
+      data-analytics-target="top"
+      (click)="closeMenu()"
+    >
+      <app-brand-mark />
+      <span>Gemini</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      @for (item of t().header.nav; track item.id) {
+      <a
+        [href]="'#' + item.id"
+        [class.is-active]="activeSection() === item.id"
+        [attr.aria-current]="activeSection() === item.id ? 'true' : null"
+        data-analytics-event="navigation_clicked"
+        data-analytics-location="header"
+        [attr.data-analytics-target]="item.id"
+      >{{ item.label }}</a>
+      }
+    </nav>
+
+    <div class="tools">
+      <label class="lang">
+        <span class="visually-hidden">{{ t().header.languageLabel }}</span>
+        <select [value]="language.lang()" (change)="language.set($any($event.target).value)">
+          @for (option of language.languages; track option.code) {
+          <option [value]="option.code" [selected]="option.code === language.lang()">{{ option.code.toUpperCase() }}</option>
+          }
+        </select>
+      </label>
+
+      <button
+        type="button"
+        class="icon-button theme-toggle"
+        (click)="theme.cycle()"
+        [title]="themeStatus()"
+        [attr.aria-label]="themeStatus()"
+      >
+        @switch (theme.preference()) {
+        @case ('light') {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.25" />
+          <path d="M12 2.4v2.3M12 19.3v2.3M21.6 12h-2.3M4.7 12H2.4M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6M18.8 18.8l-1.6-1.6M6.8 6.8L5.2 5.2" />
+        </svg>
+        }
+        @case ('dark') {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.2 14.6A8.6 8.6 0 0 1 9.4 3.8a8.6 8.6 0 1 0 10.8 10.8Z" />
+        </svg>
+        }
+        @default {
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.25" />
+          <path d="M12 3.75a8.25 8.25 0 0 1 0 16.5Z" fill="currentColor" stroke="none" />
+        </svg>
+        }
+        }
+      </button>
+
+      <a
+        class="btn btn-primary btn-sm cta"
+        href="#contact"
+        data-analytics-event="cta_clicked"
+        data-analytics-location="header"
+        data-analytics-target="contact"
+      >{{ t().header.cta }}</a>
+
+      <button
+        type="button"
+        class="icon-button menu-toggle"
+        [class.is-open]="menuOpen()"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="mobile-menu"
+        [attr.aria-label]="menuOpen() ? t().header.menuClose : t().header.menuOpen"
+      >
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Outside the header: its backdrop-filter would otherwise become the
+     containing block for this fixed sheet. -->
+<div
+    class="sheet"
+    id="mobile-menu"
+    [class.is-open]="menuOpen()"
+    [attr.inert]="menuOpen() ? null : ''"
+  >
+    <nav class="page sheet-inner" aria-label="Mobile">
+      <div class="sheet-links">
+        @for (item of t().header.nav; track item.id; let i = $index) {
+        <a
+          [href]="'#' + item.id"
+          [style.--i]="i"
+          data-analytics-event="navigation_clicked"
+          data-analytics-location="mobile_menu"
+          [attr.data-analytics-target]="item.id"
+          (click)="closeMenu()"
+        >{{ item.label }}</a>
+        }
+      </div>
+
+      <div class="sheet-group" role="group" [attr.aria-label]="t().header.languageLabel">
+        <p class="sheet-label">{{ t().header.languageLabel }}</p>
+        <div class="segmented">
+          @for (option of language.languages; track option.code) {
+          <button
+            type="button"
+            [class.is-active]="language.lang() === option.code"
+            [attr.aria-pressed]="language.lang() === option.code"
+            [attr.lang]="option.code"
+            [title]="option.name"
+            (click)="language.set(option.code)"
+          >{{ option.code.toUpperCase() }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="sheet-group" role="group" [attr.aria-label]="t().header.theme.label">
+        <p class="sheet-label">{{ t().header.theme.label }}</p>
+        <div class="segmented">
+          @for (choice of themeChoices(); track choice.value) {
+          <button
+            type="button"
+            [class.is-active]="theme.preference() === choice.value"
+            [attr.aria-pressed]="theme.preference() === choice.value"
+            (click)="setTheme(choice.value)"
+          >{{ choice.label }}</button>
+          }
+        </div>
+      </div>
+
+      <a
+        class="btn btn-primary sheet-cta"
+        href="#contact"
+        data-analytics-event="cta_clicked"
+        data-analytics-location="mobile_menu"
+        data-analytics-target="contact"
+        (click)="closeMenu()"
+      >{{ t().header.cta }}</a>
+    </nav>
+  </div>

@@ -1,0 +1,60 @@
+<section class="section services" id="services" aria-labelledby="services-title">
+  <div class="page">
+    <header class="section-head" appReveal>
+      <h2 class="section-title" id="services-title">{{ t().services.title }}</h2>
+      <p class="section-copy">{{ t().services.copy }}</p>
+    </header>
+
+    <div class="layout">
+      <ul class="items">
+        @for (service of t().services.items; track service.key; let i = $index) {
+        <li class="item" #item [class.is-active]="active() === i">
+          <h3 class="item-name">{{ service.name }}</h3>
+          <p class="item-summary">{{ service.summary }}</p>
+          <ul class="item-points">
+            @for (point of service.points; track point) {
+            <li>{{ point }}</li>
+            }
+          </ul>
+
+          <!-- Inline console: shown on small screens, read by assistive tech everywhere. -->
+          <div class="console console-inline" appReveal>
+            <p class="console-head">
+              <span class="pulse" aria-hidden="true"></span>{{ t().services.consoleLabel }}
+            </p>
+            <ol class="console-lines">
+              @for (line of service.log; track l; let l = $index) {
+              <li [style.--i]="l"><span class="tick" aria-hidden="true"></span>{{ line }}</li>
+              }
+            </ol>
+            <p class="console-result" [style.--i]="service.log.length">
+              <span class="flow-text">{{ service.result }}</span>
+            </p>
+          </div>
+        </li>
+        }
+      </ul>
+
+      <!-- Desktop console: one pinned panel replaying the active capability. -->
+      <div class="rail" aria-hidden="true">
+        <div class="console console-pinned">
+          <p class="console-head">
+            <span class="pulse"></span>{{ t().services.consoleLabel }}
+            <span class="console-name">{{ activeService().name }}</span>
+          </p>
+          @for (service of [activeService()]; track service.key) {
+          <ol class="console-lines">
+            @for (line of service.log; track l; let l = $index) {
+            <li [style.--i]="l"><span class="tick"></span>{{ line }}</li>
+            }
+          </ol>
+          <p class="console-result" [style.--i]="service.log.length">
+            <span class="flow-text">{{ service.result }}</span>
+          </p>
+          }
+          <p class="console-note">{{ t().services.consoleNote }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

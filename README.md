@@ -26,6 +26,49 @@ Cloudflare DNS points the apex domain to the four GitHub Pages addresses
 `185.199.111.153`), with `www` as a CNAME to `oem66.github.io`.
 These records use DNS-only mode so GitHub can provision and serve HTTPS.
 
+## Project form (contact requests)
+
+The "Start a project" form posts each request to
+[FormSubmit](https://formsubmit.co), which emails it to the inbox configured in
+`src/assets/contact-config.js`. No account or server is needed, which suits a
+static GitHub Pages site.
+
+One-time activation: the first request sent from the live site triggers an
+"Activate Form" email to that inbox. Requests are only delivered after the link
+in it has been clicked, so send a test request right after deploying. The same
+email contains a random alias — replace the address in
+`contact-config.js` with `https://formsubmit.co/ajax/<alias>` to keep the inbox
+address out of the page source. The file is an unhashed asset, so this needs no
+rebuild.
+
+## Site structure
+
+The page is one argument, read top to bottom; each section is its own
+standalone component under `src/app/sections/`:
+
+| Section | Purpose |
+| --- | --- |
+| `hero` | The promise, and the colour key. The canvas field (`resolve-field.ts`) turns friction into flow as you scroll |
+| `proof` | Clients and measured results |
+| `shift` | The specific friction that disappears, struck out as you scroll |
+| `services` | What gets built, with an example automation run beside it |
+| `approach` | The four-step delivery process |
+| `difference` | Why it is faster and cheaper than traditional delivery |
+| `work` | Case studies |
+| `voices` | Client quotes |
+| `faq` | Remaining objections |
+| `contact` | The three-step project form |
+
+Design tokens live in `src/styles.scss`. Colour has one rule: coral (`--friction`)
+marks problems, the mint → violet gradient (`--flow`) marks value — results,
+metrics and outcomes — and nothing decorative uses either. Mona Sans is the only
+typeface; its width axis is used the same way (condensed for problems, wide for
+outcomes).
+
+Copy lives in `src/app/core/i18n/`, one file per language. English is bundled;
+the other languages are loaded on demand. `i18n.spec.ts` fails if a language is
+missing a string or drifts from the English structure.
+
 ## Website analytics
 
 PostHog analytics is integrated but remains dormant until a project token is

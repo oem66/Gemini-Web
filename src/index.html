@@ -1,35 +1,37 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <title>Gemini — Software Engineering Studio</title>
+  <title>Gemini — AI-native software and automation studio</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Gemini builds native iOS and Android apps, web platforms, backends and AI automation for ambitious teams.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Gemini combines frontier AI, autonomous agents and automation to turn hard problems into systems that run themselves — delivered faster and at lower cost.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Gemini — Software Engineering Studio">
-  <meta property="og:description" content="Mobile apps, web platforms, robust backends and AI systems — engineered end to end.">
-  <meta property="og:image" content="https://gemini.dev/assets/og.png">
+  <meta property="og:url" content="https://geminiswe.com/">
+  <meta property="og:title" content="Gemini — AI-native software and automation studio">
+  <meta property="og:description" content="We make hard problems disappear. AI agents, automation and intelligent products — delivered in weeks, not quarters.">
+  <meta property="og:image" content="https://geminiswe.com/assets/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Gemini — Software Engineering Studio">
-  <meta name="twitter:description" content="Mobile apps, web platforms, robust backends and AI systems — engineered end to end.">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#f2f0ec">
-  <link rel="icon" type="image/x-icon" href="favicon.ico?v=gemini-g1" sizes="16x16 32x32 48x48 64x64">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/gemini-icon-32.png">
-  <link rel="icon" type="image/svg+xml" sizes="any" href="assets/gemini-icon.svg">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <meta name="twitter:title" content="Gemini — AI-native software and automation studio">
+  <meta name="twitter:description" content="We make hard problems disappear. AI agents, automation and intelligent products — delivered in weeks, not quarters.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0a0d2c">
+  <link rel="canonical" href="https://geminiswe.com/">
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=gemini-g2" sizes="16x16 32x32 48x48 64x64">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/gemini-icon-32.png?v=2">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="assets/gemini-icon.svg?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=2">
 
-  <!-- Loaded before Angular so analytics can initialize with deployment-specific
-       settings. This local asset contains only a public PostHog project token. -->
+  <!-- Deployment-specific settings, loaded before Angular boots. Neither file
+       holds a secret: a public PostHog project token and the public endpoint
+       the project form posts to. -->
   <script src="assets/analytics-config.js"></script>
+  <script src="assets/contact-config.js"></script>
 
-  <!-- The scheme has to be resolved before the first paint, otherwise a reader
-       arriving at night sees a white page flash before the app boots. This runs
-       the same rule the app does — a stored choice wins, and failing that the
-       hour of the day and the OS preference decide — and writes the answer to
-       <html data-theme>, which is what the stylesheet keys off. Kept inline and
-       dependency-free on purpose: it must not wait for a network round trip. -->
+  <!-- The scheme is resolved before first paint so nobody sees the wrong one
+       flash. Same rule as ThemeService: a stored choice wins; otherwise night
+       hours or a dark OS mean dark. Keep DAY_STARTS_AT / DAY_ENDS_AT and the
+       two colours in sync with theme.service.ts and styles.scss. -->
   <script>
     (function () {
       var DAY_STARTS_AT = 7;
@@ -39,7 +41,7 @@
       try {
         stored = localStorage.getItem('gemini-theme');
       } catch (error) {
-        // Private mode or storage disabled — fall through to the automatic rule.
+        // Storage disabled — fall through to the automatic rule.
       }
 
       var hour = new Date().getHours();
@@ -51,22 +53,23 @@
 
       var meta = document.querySelector('meta[name="theme-color"]');
       if (meta) {
-        meta.setAttribute('content', dark ? '#100f0d' : '#f2f0ec');
+        meta.setAttribute('content', dark ? '#0a0d2c' : '#f3f4fb');
       }
     })();
   </script>
 
-  <!-- Archivo is the grotesk the whole page is set in: one variable file covers
-       400-700, so hierarchy comes from weight and size rather than from extra
-       downloads. IBM Plex Mono carries labels, figures and the code specimen. -->
+  <!-- Mona Sans is the only typeface: one variable file with weight and width
+       axes. Width is used expressively — condensed for problems, expanded for
+       outcomes — so a single download carries the whole hierarchy. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+    href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,200..900&display=swap">
 </head>
 <body>
   <app-root></app-root>
+  <noscript>
+    <style>.reveal { opacity: 1 !important; transform: none !important; }</style>
+  </noscript>
 </body>
 </html>
